@@ -8,18 +8,27 @@ using TMPro;
 public class FloatBlock
 {
     private readonly TMP_InputField block;
+    private UnityAction<string> modBlock;
     private float currentValue = 0;
     public float CurrentValue { get { return currentValue; } set { block.text = value.ToString(); } }
 
-    public FloatBlock(TMP_InputField block, Button[] buts, UnityAction<string> modBlock)
+    public FloatBlock(TMP_InputField block, Button[] buts)
     {
-        block.onValueChanged.AddListener(modBlock);
+        this.block = block;
         block.onValueChanged.AddListener(new UnityAction<string>(UpdateValue));
         buts[0].onClick.AddListener(new UnityAction(But1));
         buts[1].onClick.AddListener(new UnityAction(But2));
         buts[2].onClick.AddListener(new UnityAction(But3));
         buts[3].onClick.AddListener(new UnityAction(But4));
         buts[4].onClick.AddListener(new UnityAction(But5));
+    }
+
+    public void Mod(UnityAction<string> modBlock)
+    {
+        if (this.modBlock != null)
+            block.onValueChanged.RemoveListener(this.modBlock);
+        block.onValueChanged.AddListener(modBlock);
+        this.modBlock = modBlock;
     }
 
     private void But1() { CurrentValue = currentValue - 1f; }

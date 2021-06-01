@@ -166,13 +166,13 @@ class LevelManager// Convert JSON to Track Animation and reverse
     #endregion
 
     #region Static
-    private static int String2Int(string value)
+    public static int String2Int(string value)
     {
         if (int.TryParse(value, out int result))
             return result;
         return 0;
     }
-    private static float String2Float(string value)
+    public static float String2Float(string value)
     {
         if (float.TryParse(value, out float result))
             return result;

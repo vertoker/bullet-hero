@@ -5,19 +5,23 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class MarkerObjectWindow : MonoBehaviour, IWindow
+public class MarkerObjectWindow : MonoBehaviour, IWindow, IOpenSingleArray
 {
 
     public void Init()
     {
 
     }
-    public RectTransform Open()
+    public RectTransform Open(int index)
     {
         return GetComponent<RectTransform>();
     }
     public void Close()
     {
 
+    }
+    public IWindow GetIClose()
+    {
+        return this;
     }
 }

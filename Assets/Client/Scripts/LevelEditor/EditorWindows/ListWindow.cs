@@ -9,7 +9,7 @@ using TMPro;
 public delegate List<IData> GetList();
 public delegate string GetParameter(IData item);
 
-public class ListWindow : MonoBehaviour, IWindow
+public class ListWindow : MonoBehaviour, IWindow, IOpen
 {
     [SerializeField] private TMP_InputField search;
     [SerializeField] private RectTransform objUI;
@@ -17,16 +17,18 @@ public class ListWindow : MonoBehaviour, IWindow
 
     private Queue<RectTransform> poolEnable;
     private Queue<RectTransform> poolDisable;
-    private readonly Coroutine process;
+    private Coroutine process;
 
     private GetList getList;
     private GetParameter getName;
     private GetParameter[] parameters;
+    private UnityAction<int> but;
     private int lengthParameters;
     private int lengthList;
 
-    public void Init(GetList getList, GetParameter getName, GetParameter[] parameters)
+    public void Init(GetList getList, GetParameter getName, GetParameter[] parameters, UnityAction<int> but)
     {
+        this.but = but;
         poolEnable = new Queue<RectTransform>();
         poolDisable = new Queue<RectTransform>();
         search.onValueChanged.AddListener(new UnityAction<string>(StartSearch));
@@ -35,6 +37,15 @@ public class ListWindow : MonoBehaviour, IWindow
         this.parameters = parameters;
         lengthParameters = parameters.Length;
         lengthList = getList.Invoke().Count;
+    }
+    public RectTransform Open()
+    {
+        return GetComponent<RectTransform>();
+    }
+    public void Close()
+    {
+        StopSearch();
+        ClearUI();
     }
 
     public void StartSearch(string search_source)
@@ -50,15 +61,13 @@ public class ListWindow : MonoBehaviour, IWindow
             ClearUI();
         }
     }
-
     private void SearchProcess(string search_source, int index)
     {
         IData element = getList.Invoke()[index];
-        if (getName.Invoke(element).Contains(search_source))
-            AddItemUI(element);
+        if (string.IsNullOrEmpty(search_source) || getName.Invoke(element).Contains(search_source))
+            AddItemUI(element, index);
     }
-
-    private void AddItemUI(IData item)
+    private void AddItemUI(IData item, int index)
     {
         if (poolDisable.Count == 0)
             poolDisable.Enqueue(Instantiate(objUI, parent));
@@ -66,6 +75,7 @@ public class ListWindow : MonoBehaviour, IWindow
         poolEnable.Enqueue(obj);
         Vector3 pos = new Vector3(poolEnable.Count * -200, 0, 0);
         obj.position = pos;
+        obj.GetComponent<Button>().onClick.AddListener(() => { but.Invoke(index); });
         for (int i = 0; i < lengthParameters; i++)
             obj.GetChild(i).GetComponent<TMP_Text>().text = parameters[i].Invoke(item);
         obj.gameObject.SetActive(true);
@@ -75,21 +85,13 @@ public class ListWindow : MonoBehaviour, IWindow
         while (poolEnable.Count > 0)
         {
             RectTransform obj = poolEnable.Dequeue();
+            obj.GetComponent<Button>().onClick.RemoveAllListeners();
             obj.gameObject.SetActive(false);
             poolDisable.Enqueue(obj);
         }
     }
-
-    public void Init()
+    public IWindow GetIClose()
     {
-
-    }
-    public RectTransform Open()
-    {
-        return GetComponent<RectTransform>();
-    }
-    public void Close()
-    {
-
+        return this;
     }
 }

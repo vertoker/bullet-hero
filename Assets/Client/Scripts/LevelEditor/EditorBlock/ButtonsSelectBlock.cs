@@ -7,10 +7,12 @@ using TMPro;
 
 public class ButtonsSelectBlock
 {
+    private Button[] buttons;
     private UnityAction<int> action;
     private Color enable, disable;
     private Image[] images;
     private int selectID;
+    private readonly int length;
 
     public int SelectID 
     {
@@ -18,21 +20,36 @@ public class ButtonsSelectBlock
         set { ReActivate(selectID, value); selectID = value; } 
     }
 
-    public ButtonsSelectBlock(Button[] buttons, int selectID, UnityAction<int> action, Color enable, Color disable)
+    public ButtonsSelectBlock(Button[] buttons, Color enable, Color disable)
     {
-        this.action = action;
-        this.selectID = selectID;
+        length = buttons.Length;
         this.enable = enable;
         this.disable = disable;
-        images = new Image[buttons.Length];
-        for (int i = 0; i < buttons.Length; i++)
+        this.buttons = buttons;
+        images = new Image[length];
+        for (int i = 0; i < length; i++)
         {
             buttons[i].onClick.AddListener(Activate);
-            buttons[i].onClick.AddListener(() => { ReActivate(this.selectID, i); this.selectID = i; });
+            buttons[i].onClick.AddListener(() => { ReActivate(selectID, i); selectID = i; });
+        }
+        images[selectID].color = enable;
+    }
+
+    public void Mod(UnityAction<int> action, int selectID)
+    {
+        if (this.action != null)
+        {
+            for (int i = 0; i < length; i++)
+                buttons[i].onClick.RemoveAllListeners();
+        }
+        for (int i = 0; i < length; i++)
+        {
+            buttons[i].onClick.AddListener(Activate);
+            buttons[i].onClick.AddListener(() => { ReActivate(selectID, i); selectID = i; });
             images[i] = buttons[i].image;
             images[i].color = disable;
         }
-        images[selectID].color = enable;
+        this.action = action;
     }
 
     public void Activate()

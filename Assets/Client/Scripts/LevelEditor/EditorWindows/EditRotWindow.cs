@@ -5,19 +5,23 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class EditRotWindow : MonoBehaviour, IWindow
+public class EditRotWindow : MonoBehaviour, IWindow, IOpenDoubleArray
 {
 
     public void Init()
     {
 
     }
-    public RectTransform Open()
+    public RectTransform Open(int index, int index2)
     {
         return GetComponent<RectTransform>();
     }
     public void Close()
     {
 
+    }
+    public IWindow GetIClose()
+    {
+        return this;
     }
 }

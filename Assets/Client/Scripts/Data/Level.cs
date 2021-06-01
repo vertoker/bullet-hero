@@ -50,6 +50,11 @@ public class Level : IData
         //e = effects;
     }
 
+    public Level()
+    {
+
+    }
+
     public string GetParameter(int index)
     {
         switch (index)
@@ -106,6 +111,11 @@ public class LevelData : IData
         efo = end_fade_out;
     }
 
+    public LevelData()
+    {
+
+    }
+
     public string GetParameter(int index)
     {
         switch (index)
@@ -156,6 +166,11 @@ public class Marker : IData
         r = red;
         g = green;
         b = blue;
+    }
+
+    public Marker()
+    {
+
     }
 
     public string GetParameter(int index)
@@ -220,6 +235,11 @@ public class Checkpoint : IData
         this.ex = ex;
         this.ey = ey;
         this.i = i;
+    }
+
+    public Checkpoint()
+    {
+
     }
 
     public string GetParameter(int index)
@@ -313,6 +333,11 @@ public class Prefab : IData
         a2 = anchor;
         h = height;
         l = layer;
+    }
+
+    public Prefab()
+    {
+
     }
 
     public string GetParameter(int index)
@@ -592,6 +617,12 @@ public class EditorPrefab : IData
     {
         p = prefabs;
     }
+
+    public EditorPrefab()
+    {
+
+    }
+
     public string GetParameter(int index)
     {
         return p.ToString();
@@ -664,9 +695,9 @@ public enum SpriteType
 // для большей кастомизации позиции объектов
 public enum AnchorPresets
 {
-    Left_Top = 1, Center_Top = 2, Right_Top = 3,
-    Left_Middle = 4, Center_Middle = 5, Right_Middle = 6,
-    Left_Bottom = 7, Center_Bottom = 8, Right_Bottom = 9
+    Left_Top = 0, Center_Top = 1, Right_Top = 2,
+    Left_Middle = 3, Center_Middle = 4, Right_Middle = 5,
+    Left_Bottom = 6, Center_Bottom = 7, Right_Bottom = 8
 }
 // Типы рандома для координат
 public enum VectorRandomType

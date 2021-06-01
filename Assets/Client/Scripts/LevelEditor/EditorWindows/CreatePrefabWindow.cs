@@ -5,9 +5,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class CreatePrefabWindow : MonoBehaviour, IWindow
+public class CreatePrefabWindow : MonoBehaviour, IWindow, IOpen
 {
-
     public void Init()
     {
 
@@ -19,5 +18,9 @@ public class CreatePrefabWindow : MonoBehaviour, IWindow
     public void Close()
     {
 
+    }
+    public IWindow GetIClose()
+    {
+        return this;
     }
 }

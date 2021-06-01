@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class CreateCheckpointWindow : MonoBehaviour, IWindow
+public class CreateCheckpointWindow : MonoBehaviour, IWindow, IOpen
 {
 
     public void Init()
@@ -19,5 +19,9 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow
     public void Close()
     {
 
+    }
+    public IWindow GetIClose()
+    {
+        return this;
     }
 }

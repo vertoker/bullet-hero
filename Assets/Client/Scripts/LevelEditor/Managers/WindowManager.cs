@@ -9,10 +9,23 @@ public enum WindowFocus
     None = 0, EditorLeft = 1, EditorRight = 2, EditorDown = 3,
     Timeline = 4, Toolbar = 5, GameStream = 6
 }
+public interface IOpen
+{
+    public RectTransform Open();
+    public IWindow GetIClose();
+}
+public interface IOpenSingleArray
+{
+    public RectTransform Open(int index);
+    public IWindow GetIClose();
+}
+public interface IOpenDoubleArray
+{
+    public RectTransform Open(int index, int index2);
+    public IWindow GetIClose();
+}
 public interface IWindow
 {
-    public void Init();
-    public RectTransform Open();
     public void Close();
 }
 
@@ -27,13 +40,18 @@ public class WindowManager : MonoBehaviour
     private Vector2 halfScreen;
     private float camAspect;
 
-    public static Color butEnableBG() { return new Color(1f, 1f, 1f); }
-    public static Color butNotSelectBG() { return new Color(0.85f, 0.85f, 0.85f); }
-    public static Color butDisableBG() { return new Color(0.7f, 0.7f, 0.7f); }
-    public static Color butEnable() { return new Color(0.1f, 0.1f, 0.1f); }
-    public static Color butDisable() { return new Color(0f, 0f, 0f); }
+    public static Color butEnableBG = new Color(1f, 1f, 1f);
+    public static Color butNotSelectBG = new Color(0.85f, 0.85f, 0.85f);
+    public static Color butDisableBG = new Color(0.7f, 0.7f, 0.7f);
+    public static Color butEnable = new Color(0.1f, 0.1f, 0.1f);
+    public static Color butDisable = new Color(0f, 0f, 0f);
 
-    private Dictionary<string, IWindow> left_windows, right_windows;
+    private Dictionary<string, IWindow> left_windows_window, right_windows_window;
+    private Dictionary<string, IOpen> left_windows_open, right_windows_open;
+    private Dictionary<string, IOpenSingleArray> left_windows_open_single_array;
+    private Dictionary<string, IOpenSingleArray> right_windows_open_single_array;
+    private Dictionary<string, IOpenDoubleArray> left_windows_open_double_array;
+    private Dictionary<string, IOpenDoubleArray> right_windows_open_double_array;
     private IWindow left_active_Window, right_active_Window;
 
     [Header("EditorLeft")]
@@ -62,7 +80,8 @@ public class WindowManager : MonoBehaviour
         camAspect = cam.aspect;
         LevelManager.Load("0 demo level");
 
-        left_windows = new Dictionary<string, IWindow>()
+        #region Windows Dictionarys
+        left_windows_window = new Dictionary<string, IWindow>()
         {
             { "object_editor", object_editor },
             { "create_marker", create_marker },
@@ -72,7 +91,7 @@ public class WindowManager : MonoBehaviour
             { "create_prefab_level", create_prefab_level },
             { "create_prefab_memory", create_prefab_memory }
         };
-        right_windows = new Dictionary<string, IWindow>()
+        right_windows_window = new Dictionary<string, IWindow>()
         {
             { "marker_object_window", marker_object_window },
             { "marker_list", marker_list },
@@ -83,29 +102,93 @@ public class WindowManager : MonoBehaviour
             { "edit_clr", edit_clr },
             { "object_list", object_list }
         };
+        left_windows_open = new Dictionary<string, IOpen>()
+        {
+            { "create_marker", create_marker },
+            { "create_checkpoint", create_checkpoint },
+            { "create_prefab", create_prefab },
+            { "create_prefab_standard", create_prefab_standard },
+            { "create_prefab_level", create_prefab_level },
+            { "create_prefab_memory", create_prefab_memory }
+        };
+        right_windows_open = new Dictionary<string, IOpen>()
+        {
+            { "marker_list", marker_list },
+            { "checkpoint_list", checkpoint_list },
+            { "object_list", object_list }
+        };
+        left_windows_open_single_array = new Dictionary<string, IOpenSingleArray>()
+        {
+            { "object_editor", object_editor },
+        };
+        right_windows_open_single_array = new Dictionary<string, IOpenSingleArray>()
+        {
+            { "marker_object_window", marker_object_window }
+        };
+        left_windows_open_double_array = new Dictionary<string, IOpenDoubleArray>() { };
+        right_windows_open_double_array = new Dictionary<string, IOpenDoubleArray>()
+        {
+            { "edit_pos", edit_pos },
+            { "edit_sca", edit_sca },
+            { "edit_rot", edit_rot },
+            { "edit_clr", edit_clr }
+        };
+        #endregion
+
+        #region Windows Init
+        object_editor.Init();
+        #endregion
     }
 
     public void LeftEditorOpen(string key)
     {
         if (left_active_Window != null)
             left_active_Window.Close();
-        left_active_Window = left_windows[key];
-        left_active_Window.Open();
+        left_active_Window = left_windows_open[key].GetIClose();
+        left_windows_open[key].Open();
+    }
+    public void LeftEditorOpenSingleArray(string key, int index)
+    {
+        if (left_active_Window != null)
+            left_active_Window.Close();
+        left_active_Window = left_windows_open_single_array[key].GetIClose();
+        left_windows_open_single_array[key].Open(index);
+    }
+    public void LeftEditorOpenDoubleArray(string key, int index, int index2)
+    {
+        if (left_active_Window != null)
+            left_active_Window.Close();
+        left_active_Window = left_windows_open_double_array[key].GetIClose();
+        left_windows_open_double_array[key].Open(index, index2);
     }
     public void RightEditorOpen(string key)
     {
         if (right_active_Window != null)
             right_active_Window.Close();
-        right_active_Window = right_windows[key];
-        right_active_Window.Open();
+        right_active_Window = right_windows_open[key].GetIClose();
+        right_windows_open[key].Open();
+    }
+    public void RightEditorSingleOpen(string key, int index)
+    {
+        if (right_active_Window != null)
+            right_active_Window.Close();
+        right_active_Window = right_windows_open_single_array[key].GetIClose();
+        right_windows_open_single_array[key].Open(index);
+    }
+    public void RightEditorDoubleOpen(string key, int index, int index2)
+    {
+        if (right_active_Window != null)
+            right_active_Window.Close();
+        right_active_Window = right_windows_open_double_array[key].GetIClose();
+        right_windows_open_double_array[key].Open(index, index2);
     }
     public void LeftEditorClose(string key)
     {
-        left_windows[key].Close();
+        left_windows_window[key].Close();
     }
     public void RightEditorClose(string key)
     {
-        right_windows[key].Close();
+        right_windows_window[key].Close();
     }
 
     private void Update()
