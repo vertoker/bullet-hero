@@ -3,253 +3,548 @@ using System.Collections;
 using UnityEngine;
 using System;
 
+#region Data
+/// <summary>
+/// Класс для унификации всех классов с данными
+/// </summary>
+public interface IData
+{
+    public string GetParameter(int index);
+}
+#endregion
 
 #region Основной класс сохранения
-/// Это класс можно сохранить в JSON
+/// Это класс нужно сохранять в JSON
 /// Основной класс, хранящиц всю информацию об уровне
 [Serializable]
-public class Level
+public class Level : IData
 {
-    static int CURRENT_VERSION = 1;
+    public static int CURRENT_VERSION = 1;
 
-    public LevelData data;// Базовая информация об уровне
-    public List<Marker> markers;// Маркеры для редактора
-    public List<Checkpoint> checkpoints;// Сохранение игрока на уровне
-    public List<Prefab> prefabs;// 
-    public List<GameEvent> gameEvents;// 
-    public List<EditorPrefab> editorPrefabs;// 
-    public Effects effects;// 
+    [SerializeField] private LevelData ld;// Базовая информация об уровне (level data)
+    [SerializeField] private List<Marker> m;// Маркеры для редактора (markers)
+    [SerializeField] private List<Checkpoint> c;// Сохранения игрока на уровне (checkpoints)
+    [SerializeField] private List<Prefab> p;// Все объекты на сцене (prefabs)
+    [SerializeField] private List<EditorPrefab> ep;// Объекты редактора (editor prefabs)
+    //[SerializeField] private Effects e;// Эффекты в игре (effects)
 
-    public Level(LevelData data, List<Marker> markers, List<Checkpoint> checkpoints, List<Prefab> prefabs, List<GameEvent> gameEvents, List<EditorPrefab> editorPrefabs, Effects effects)
+    public LevelData LevelData { get { return ld; } set { ld = value; } }
+    public List<Marker> Markers { get { return m; } set { m = value; } }
+    public List<Checkpoint> Checkpoints { get { return c; } set { c = value; } }
+    public List<Prefab> Prefabs { get { return p; } set { p = value; } }
+    public List<EditorPrefab> EditorPrefabs { get { return ep; } set { ep = value; } }
+    //public Effects Effects { get { return e; } set { e = value; } }
+
+    public Level(LevelData level_data, 
+        List<Marker> markers, 
+        List<Checkpoint> checkpoints, 
+        List<Prefab> prefabs, 
+        List<EditorPrefab> editor_prefabs)//, 
+        //Effects effects)
     {
-        this.data = data;
-        this.markers = markers;
-        this.checkpoints = checkpoints;
-        
-        this.prefabs = prefabs;
-        this.editorPrefabs = editorPrefabs;
-        this.gameEvents = gameEvents;
-        this.effects = effects;
+        ld = level_data;
+        m = markers;
+        c = checkpoints;
+        p = prefabs;
+        ep = editor_prefabs;
+        //e = effects;
+    }
+
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return ld.ToString();
+            case 1: return m.ToString();
+            case 2: return c.ToString();
+            case 3: return p.ToString();
+            case 4: return ep.ToString();
+            //case 5: return e.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region LevelData
-// Базовая информация об уровне
+/// <summary>
+/// Базовая информация об уровне
+/// <summary>
 [Serializable]
-public class LevelData
+public class LevelData : IData
 {
-    public string levelName;
-    public int editor_version;//editor version
-    public string music_title;
-    public string music_author;
-    public string level_author;
+    [SerializeField] private string ln;// Название уровня (level name)
+    [SerializeField] private int ev;// Версия редактора (editor version)
+    [SerializeField] private string mt;// Название трека (music title)
+    [SerializeField] private string ma;// Автор трека (music author)
+    [SerializeField] private string la;// Автор уровня (level author)
+    [SerializeField] private float sfo;// Начало убывания музыки (start fade out)
+    [SerializeField] private float efo;// Конец убывания музыки (end fade out)
 
-    public int threadCount;
-    public float startFadeOut;
-    public float endFadeOut;
+    public string LevelName { get { return ln; } set { ln = value; } }
+    public int EditorVersion { get { return ev; } set { ev = value; } }
+    public string MusicTitle { get { return mt; } set { mt = value; } }
+    public string MusicAuthor { get { return ma; } set { ma = value; } }
+    public string LevelAuthor { get { return la; } set { la = value; } }
+    public float StartFadeOut { get { return sfo; } set { sfo = value; } }
+    public float EndFadeOut { get { return efo; } set { efo = value; } }
 
-    public LevelData(string levelName, int editor_version, string music_title, string music_author, string level_author, int threadCount, float startFadeOut, float endFadeOut)
+    public LevelData(string level_name, 
+        int editor_version, 
+        string music_title, 
+        string music_author, 
+        string level_author,
+        float start_fade_out, 
+        float end_fade_out)
     {
-        this.levelName = levelName;
-        this.editor_version = editor_version;
-        this.music_title = music_title;
-        this.music_author = music_author;
-        this.level_author = level_author;
+        ln = level_name;
+        ev = editor_version;
+        mt = music_title;
+        ma = music_author;
+        la = level_author;
+        sfo = start_fade_out;
+        efo = end_fade_out;
+    }
 
-        this.threadCount = threadCount;
-        this.startFadeOut = startFadeOut;
-        this.endFadeOut = endFadeOut;
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return ln.ToString();
+            case 1: return ev.ToString();
+            case 2: return mt.ToString();
+            case 3: return ma.ToString();
+            case 4: return sfo.ToString();
+            case 5: return efo.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region Markers
-// Маркеры для редактора
+/// <summary>
+/// Маркеры для редактора
+/// <summary>
 [Serializable]
-public class Marker
+public class Marker : IData
 {
-    public int groupID;
-    public string name;
-    public string description;
-    public float t;
+    [SerializeField] private string n;// Имя маркера (name)
+    [SerializeField] private string d;// Описание маркера (description)
+    [SerializeField] private float t;// На каком моменте времени находиться метка (time)
+    [SerializeField] private float r;// Цвет маркера (красное) (red)
+    [SerializeField] private float g;// Цвет маркера (синее) (green)
+    [SerializeField] private float b;// Цвет маркера (зелёное) (blue)
 
-    public Marker(int groupID, string name, string description, float t)
+    public string Name { get { return n; } set { n = value; } }
+    public string Description { get { return d; } set { d = value; } }
+    public float Time { get { return t; } set { t = value; } }
+    public float Red { get { return r; } set { r = value; } }
+    public float Green { get { return g; } set { g = value; } }
+    public float Blue { get { return b; } set { b = value; } }
+
+    public Marker(string name, 
+        string description, 
+        float time,
+        float red,
+        float green,
+        float blue)
     {
-        this.groupID = groupID;
-        this.description = description;
-        this.name = name;
-        this.t = t;
+        n = name;
+        d = description;
+        t = time;
+        r = red;
+        g = green;
+        b = blue;
+    }
+
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return n.ToString();
+            case 1: return d.ToString();
+            case 2: return t.ToString();
+            case 3: return r.ToString();
+            case 4: return g.ToString();
+            case 5: return b.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region Checkpoint
-// Сохранение игрока на уровне
+/// <summary>
+/// Сохранение игрока на уровне
+/// <summary>
 [Serializable]
-public class Checkpoint
+public class Checkpoint : IData
 {
-    public bool active;
-    public string name;
-    public float t;
-    public float x;//spawn pos x
-    public float y;//spawn pos y
+    [SerializeField] private bool a;// Активность чекпоинта (active)
+    [SerializeField] private string n;// Название чекпоинта (name)
+    [SerializeField] private float t;// На каком моменте времени находиться чекпоинт (time)
+    [SerializeField] private VectorRandomType r;// Тип рандома у позиции (type of random)
+    // Параметры позиции
+    [SerializeField] private float sx;// start x
+    [SerializeField] private float sy;// start y
+    [SerializeField] private float ex;// end x
+    [SerializeField] private float ey;// end y
+    [SerializeField] private float i; // internal
 
-    public Checkpoint(bool active, string name, float t, float x = 0, float y = 0)
+    public bool Active { get { return a; } set { a = value; } }
+    public string Name { get { return n; } set { n = value; } }
+    public float Time { get { return t; } set { t = value; } }
+    public VectorRandomType RandomType { get { return r; } set { r = value; } }
+    public float SX { get { return sx; } set { sx = value; } }
+    public float SY { get { return sy; } set { sy = value; } }
+    public float EX { get { return ex; } set { ex = value; } }
+    public float EY { get { return ey; } set { ey = value; } }
+    public float Interval { get { return i; } set { i = value; } }
+
+    public Checkpoint(bool active,
+        string name,
+        float time,
+        VectorRandomType random_type,
+        float sx, float sy,
+        float ex = 0, float ey = 0,
+        float i = 0)
     {
-        this.active = active;
-        this.name = name;
-        this.x = x;
-        this.t = t;
-        this.y = y;
+        a = active;
+        n = name;
+        t = time;
+        r = random_type;
+
+        this.sx = sx;
+        this.sy = sy;
+        this.ex = ex;
+        this.ey = ey;
+        this.i = i;
+    }
+
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return a.ToString();
+            case 1: return n.ToString();
+            case 2: return t.ToString();
+            case 3: return r.ToString();
+            case 4: return sx.ToString();
+            case 5: return sy.ToString();
+            case 6: return ex.ToString();
+            case 7: return ey.ToString();
+            case 8: return i.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region Prefab
-//Объекты в уровне с данными для игры
+/// <summary>
+/// Объекты в уровне с данными для игры
+/// <summary>
 [Serializable]
-public class Prefab
+public class Prefab : IData
 {
-    public string name;// Имя у объекта
-    public bool active;// Активность объекта
-    public bool collider;// Наличие коллайдера у объекта
-    public List<Pos> pos;// Список с метками позиции
-    public List<Sca> sca;// Список с метками размера
-    public List<Rot> rot;// Список с метками поворота
-    public List<Clr> clr;// Список с метками цветов
-    public SpriteType st;// Тип спрайта у объекта
-    public int startFrame;// На этом моменте времени создавать объект
-    public int frameTimeExist;// Столько объект должен существовать на сцене
-    public int endFrame;// На этом моменте времени убирать объект
-    public AnchorPresets pivot;// Якорь объекта
-    public int id, idParent;// ID объекта и его родителя
-    public int layer;// 
-    public int height;//x
-    public int thread;//z
+    [SerializeField] private string n;// Имя у объекта (name)
+    [SerializeField] private bool a;// Активность объекта (active)
+    [SerializeField] private bool c;// Наличие коллайдера у объекта (collider)
+    [SerializeField] private List<Pos> pos;// Список с метками позиции (position)
+    [SerializeField] private List<Sca> sca;// Список с метками размера (scale)
+    [SerializeField] private List<Rot> rot;// Список с метками поворота (rotation)
+    [SerializeField] private List<Clr> clr;// Список с метками цветов (color)
+    [SerializeField] private SpriteType st;// Тип спрайта у объекта (sprite type)
+    [SerializeField] private int sf;// На этом моменте времени создаёться объект (start frame)
+    [SerializeField] private int ef;// На этом моменте времени удаляеться объект (end frame)
+    [SerializeField] private AnchorPresets a2;// Якорь объекта (anchor)
+    [SerializeField] private int id, idp;// ID объекта и его родителя (id, idp)
+    [SerializeField] private int l;// Слой на котором находиться объект, относительно других (layer) (выше или ниже)
+    [SerializeField] private int h;//На каком потоке (в редакторе) находиться объект (height)
 
-    public Prefab(string name, bool active, bool collider, List<Pos> pos, List<Sca> sca, List<Rot> rot, List<Clr> clr, SpriteType st,
-        int startFrame, int frameTimeExist, int endFrame, int idParent, int id, AnchorPresets pivot, int thread, int height, int layer)
+    public string Name { get { return n; } set { n = value; } }
+    public bool Active { get { return a; } set { a = value; } }
+    public bool Collider { get { return c; } set { c = value; } }
+    public List<Pos> Pos { get { return pos; } set { pos = value; } }
+    public List<Sca> Sca { get { return sca; } set { sca = value; } }
+    public List<Rot> Rot { get { return rot; } set { rot = value; } }
+    public List<Clr> Clr { get { return clr; } set { clr = value; } }
+    public SpriteType SpriteType { get { return st; } set { st = value; } }
+    public int StartFrame { get { return sf; } set { sf = value; } }
+    public int EndFrame { get { return ef; } set { ef = value; } }
+    public AnchorPresets Anchor { get { return a2; } set { a2 = value; } }
+    public int ID { get { return id; } set { id = value; } }
+    public int ParentID { get { return idp; } set { idp = value; } }
+    public int Layer { get { return l; } set { l = value; } }
+    public int Height { get { return h; } set { h = value; } }
+    public int GetFrameLength { get { return ef - sf; } }
+
+    public Prefab(string name, 
+        bool active, 
+        bool collider, 
+        List<Pos> pos, 
+        List<Sca> sca, 
+        List<Rot> rot, 
+        List<Clr> clr, 
+        SpriteType st,
+        int startFrame, 
+        int endFrame,
+        AnchorPresets anchor,
+        int id, int idParent,
+        int layer, 
+        int height)
     {
-        this.name = name;
-        this.active = active;
-        this.collider = collider;
+        n = name;
+        a = active;
+        c = collider;
         this.pos = pos;
         this.sca = sca;
         this.rot = rot;
         this.clr = clr;
 
         this.st = st;
-        this.startFrame = startFrame;
-        this.frameTimeExist = frameTimeExist;
-        this.endFrame = endFrame;
+        sf = startFrame;
+        ef = endFrame;
 
-        this.idParent = idParent;
+        idp = idParent;
         this.id = id;
 
-        this.pivot = pivot;
-        this.height = height;
-        this.thread = thread;
-        this.layer = layer;
+        a2 = anchor;
+        h = height;
+        l = layer;
+    }
+
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return n.ToString();
+            case 1: return a.ToString();
+            case 2: return c.ToString();
+            case 3: return pos.ToString();
+            case 4: return sca.ToString();
+            case 5: return rot.ToString();
+            case 6: return clr.ToString();
+            case 7: return st.ToString();
+            case 8: return sf.ToString();
+            case 9: return ef.ToString();
+            case 10: return idp.ToString();
+            case 11: return id.ToString();
+            case 12: return a2.ToString();
+            case 13: return h.ToString();
+            case 14: return l.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region Классы, хранящие данные об объекте
-// Интерфейс для работы общих методов
+/// <summary>
+/// Интерфейс для работы общих методов
+/// <summary>
 public interface MarkerData { }
-[Serializable]
-// Класс для хранения позиции
-public struct Pos : MarkerData
-{
-    public float t; // time
-    public VectorRandomType r;// type of random
-    public AnchorPresets a;// Якорь экрана
-    public EasingType eas;// Тип функции
-    public float sx;// start x
-    public float sy;// start y
-    public float ex;// end x
-    public float ey;// end y
-    public float i; // internal
 
-    public Pos(float t, VectorRandomType r, AnchorPresets a, EasingType eas, float sx, float sy, float ex = 0, float ey = 0, float i = 0)
+[Serializable]
+public struct Pos : MarkerData, IData
+{
+    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private VectorRandomType r;// Тип рандома у позиции (type of random)
+    [SerializeField] private EasingType e;// Тип функции (easing)
+    // Параметры позиции
+    [SerializeField] private float sx;// start x
+    [SerializeField] private float sy;// start y
+    [SerializeField] private float ex;// end x
+    [SerializeField] private float ey;// end y
+    [SerializeField] private float i; // internal
+
+    public float Time { get { return t; } set { t = value; } }
+    public VectorRandomType RandomType { get { return r; } set { r = value; } }
+    public EasingType Easing { get { return e; } set { e = value; } }
+    public float SX { get { return sx; } set { sx = value; } }
+    public float SY { get { return sy; } set { sy = value; } }
+    public float EX { get { return ex; } set { ex = value; } }
+    public float EY { get { return ey; } set { ey = value; } }
+    public float Interval { get { return i; } set { i = value; } }
+
+    public Pos(float time, 
+        VectorRandomType random_type, 
+        EasingType easing, 
+        float sx, float sy, 
+        float ex = 0, float ey = 0, 
+        float i = 0)
     {
-        this.t = t;
-        this.r = r;
-        this.a = a;
-        this.eas = eas;
+        t = time;
+        r = random_type;
+        e = easing;
         this.sx = sx;
         this.sy = sy;
         this.ex = ex;
         this.ey = ey;
         this.i = i;
     }
-}
-[Serializable]
-public struct Sca : MarkerData
-{
-    public float t; // time
-    public VectorRandomType r;// type of random
-    public EasingType eas;// Тип функции
-    public float sx;// start x
-    public float sy;// start y
-    public float ex;// end x
-    public float ey;// end y
-    public float i; // internal
 
-    public Sca(float t, VectorRandomType r, EasingType eas, float sx, float sy, float ex = 0, float ey = 0, float i = 0)
+    public string GetParameter(int index)
     {
-        this.t = t;
-        this.r = r;
-        this.eas = eas;
+        switch (index)
+        {
+            case 0: return t.ToString();
+            case 1: return r.ToString();
+            case 2: return e.ToString();
+            case 3: return sx.ToString();
+            case 4: return sy.ToString();
+            case 5: return ex.ToString();
+            case 6: return ey.ToString();
+            case 7: return i.ToString();
+        }
+        return null;
+    }
+}
+
+[Serializable]
+public struct Sca : MarkerData, IData
+{
+    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private VectorRandomType r;// Тип рандома у размера (type of random)
+    [SerializeField] private EasingType e;// Тип функции (easing)
+    // Параметры размера
+    [SerializeField] private float sx;// start x
+    [SerializeField] private float sy;// start y
+    [SerializeField] private float ex;// end x
+    [SerializeField] private float ey;// end y
+    [SerializeField] private float i; // internal
+
+    public float Time { get { return t; } set { t = value; } }
+    public VectorRandomType RandomType { get { return r; } set { r = value; } }
+    public EasingType Easing { get { return e; } set { e = value; } }
+    public float SX { get { return sx; } set { sx = value; } }
+    public float SY { get { return sy; } set { sy = value; } }
+    public float EX { get { return ex; } set { ex = value; } }
+    public float EY { get { return ey; } set { ey = value; } }
+    public float Interval { get { return i; } set { i = value; } }
+
+    public Sca(float time,
+        VectorRandomType random_type,
+        EasingType easing,
+        float sx, float sy,
+        float ex = 0, float ey = 0,
+        float i = 0)
+    {
+        t = time;
+        r = random_type;
+        e = easing;
         this.sx = sx;
         this.sy = sy;
         this.ex = ex;
         this.ey = ey;
         this.i = i;
     }
-}
-[Serializable]
-public struct Rot : MarkerData
-{
-    public float t; // time
-    public FloatRandomType r;// type of random
-    public EasingType eas;// Тип функции
-    public float sa;// start angle
-    public float ea;// end angle
-    public float i; // internal
 
-    public Rot(float t, FloatRandomType r, EasingType eas, float sa, float ea = 0, float i = 0)
+    public string GetParameter(int index)
     {
-        this.t = t;
-        this.r = r;
-        this.eas = eas;
+        switch (index)
+        {
+            case 0: return t.ToString();
+            case 1: return r.ToString();
+            case 2: return e.ToString();
+            case 3: return sx.ToString();
+            case 4: return sy.ToString();
+            case 5: return ex.ToString();
+            case 6: return ey.ToString();
+            case 7: return i.ToString();
+        }
+        return null;
+    }
+}
+
+[Serializable]
+public struct Rot : MarkerData, IData
+{
+    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private FloatRandomType r;// Тип рандома у угла (type of random)
+    [SerializeField] private EasingType e;// Тип функции (easing)
+    // Параметры угла
+    [SerializeField] private float sa;// start angle
+    [SerializeField] private float ea;// end angle
+    [SerializeField] private float i; // internal
+
+    public float Time { get { return t; } set { t = value; } }
+    public FloatRandomType RandomType { get { return r; } set { r = value; } }
+    public EasingType Easing { get { return e; } set { e = value; } }
+    public float SA { get { return sa; } set { sa = value; } }
+    public float EA { get { return ea; } set { ea = value; } }
+    public float Interval { get { return i; } set { i = value; } }
+
+    public Rot(float time,
+        FloatRandomType random_type,
+        EasingType easing,
+        float sa, float ea = 0,
+        float i = 0)
+    {
+        t = time;
+        r = random_type;
+        e = easing;
         this.sa = sa;
         this.ea = ea;
         this.i = i;
     }
-}
-[Serializable]
-public struct Clr : MarkerData
-{
-    public float t; // time
-    public ColorRandomType r;// type of random
-    public EasingType eas;// Тип функции
-    public float sr;// start r
-    public float sg;// start g
-    public float sb;// start b
-    public float sa;// start a
-    public float er;// end r
-    public float eg;// end g
-    public float eb;// end b
-    public float ea;// end a
-    public float i; // internal
 
-    public Clr(float t, ColorRandomType r, EasingType eas, float sr, float sg, float sb, float sa, float er = 0, float eg = 0, float eb = 0, float ea = 0, float i = 0)
+    public string GetParameter(int index)
     {
-        this.t = t;
-        this.r = r;
-        this.eas = eas;
+        switch (index)
+        {
+            case 0: return t.ToString();
+            case 1: return r.ToString();
+            case 2: return e.ToString();
+            case 3: return sa.ToString();
+            case 4: return ea.ToString();
+            case 5: return i.ToString();
+        }
+        return null;
+    }
+}
+
+[Serializable]
+public struct Clr : MarkerData, IData
+{
+    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private ColorRandomType r;// Тип рандома у угла (type of random)
+    [SerializeField] private EasingType e;// Тип функции (easing)
+    // Параметры угла
+    [SerializeField] private float sr;// start r
+    [SerializeField] private float sg;// start g
+    [SerializeField] private float sb;// start b
+    [SerializeField] private float sa;// start a
+    [SerializeField] private float er;// end r
+    [SerializeField] private float eg;// end g
+    [SerializeField] private float eb;// end b
+    [SerializeField] private float ea;// end a
+    [SerializeField] private float i; // internal
+
+    public float Time { get { return t; } set { t = value; } }
+    public ColorRandomType RandomType { get { return r; } set { r = value; } }
+    public EasingType Easing { get { return e; } set { e = value; } }
+    public float SR { get { return sr; } set { sr = value; } }
+    public float SG { get { return sg; } set { sg = value; } }
+    public float SB { get { return sb; } set { sb = value; } }
+    public float SA { get { return sa; } set { sa = value; } }
+    public float ER { get { return er; } set { er = value; } }
+    public float EG { get { return eg; } set { eg = value; } }
+    public float EB { get { return eb; } set { eb = value; } }
+    public float EA { get { return ea; } set { ea = value; } }
+    public float Interval { get { return i; } set { i = value; } }
+
+    public Clr(float time,
+        ColorRandomType random_type,
+        EasingType easing, 
+        float sr, float sg, float sb, float sa, 
+        float er = 0, float eg = 0, float eb = 0, float ea = 0, 
+        float i = 0)
+    {
+        t = time;
+        r = random_type;
+        e = easing;
         this.sr = sr;
         this.sg = sg;
         this.sb = sb;
@@ -260,27 +555,47 @@ public struct Clr : MarkerData
         this.ea = ea;
         this.i = i;
     }
-}
-#endregion
 
-#region EditorPrefab
-[Serializable]
-public class EditorPrefab
-{
-    public List<Prefab> prefabs;
-
-    public EditorPrefab(List<Prefab> prefabs)
+    public string GetParameter(int index)
     {
-        this.prefabs = prefabs;
+        switch (index)
+        {
+            case 0: return t.ToString();
+            case 1: return r.ToString();
+            case 2: return e.ToString();
+            case 3: return sr.ToString();
+            case 4: return sg.ToString();
+            case 5: return sb.ToString();
+            case 6: return sa.ToString();
+            case 7: return er.ToString();
+            case 8: return eg.ToString();
+            case 9: return eb.ToString();
+            case 10: return ea.ToString();
+            case 11: return i.ToString();
+        }
+        return null;
     }
 }
 #endregion
 
 #region EditorPrefab
 [Serializable]
-public class GameEvent
+public class EditorPrefab : IData
 {
+    [SerializeField] private List<Prefab> p;//Объекты, находяящиеся в наследственности с главный объектом (главный объект на 0 позиции)
 
+    public List<Prefab> Prefabs { get { return p; } set { p = value; } }
+    public int CountObjects { get { return p.Count; } }
+    public int GetFrameLength { get { return p[0].EndFrame - p[0].StartFrame; } }
+
+    public EditorPrefab(List<Prefab> prefabs)
+    {
+        p = prefabs;
+    }
+    public string GetParameter(int index)
+    {
+        return p.ToString();
+    }
 }
 #endregion
 
@@ -288,7 +603,7 @@ public class GameEvent
 [Serializable]
 public class Effects
 {
-    public CamData camZoom;//zoom
+    [SerializeField] private CamData camZoom;//zoom
 
     public Effects(CamData camZoom)
     {
@@ -299,9 +614,9 @@ public class Effects
 [Serializable]
 public class CamData
 {
-    public List<Zoom> zoom;
-    public List<Pos> pos;
-    public List<Rot> rot;
+    [SerializeField] private List<Zoom> zoom;
+    [SerializeField] private List<Pos> pos;
+    [SerializeField] private List<Rot> rot;
 
     public CamData(List<Zoom> zoom, List<Pos> pos, List<Rot> rot)
     {
@@ -316,8 +631,8 @@ public class CamData
 [Serializable]
 public class Zoom
 {
-    public float t;
-    public float s;//size
+    [SerializeField] private float t;
+    [SerializeField] private float s;//size
 
     public Zoom(float t, float s)
     {
@@ -349,9 +664,9 @@ public enum SpriteType
 // для большей кастомизации позиции объектов
 public enum AnchorPresets
 {
-    Left_Top = 0, Center_Top = 1, Right_Top = 2,
-    Left_Middle = 3, Center_Middle = 4, Right_Middle = 5,
-    Left_Bottom = 6, Center_Bottom = 7, Right_Bottom = 8
+    Left_Top = 1, Center_Top = 2, Right_Top = 3,
+    Left_Middle = 4, Center_Middle = 5, Right_Middle = 6,
+    Left_Bottom = 7, Center_Bottom = 8, Right_Bottom = 9
 }
 // Типы рандома для координат
 public enum VectorRandomType
