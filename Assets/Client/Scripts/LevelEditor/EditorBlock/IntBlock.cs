@@ -5,13 +5,13 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class FloatBlock
+public class IntBlock
 {
     private TMP_InputField block;
     private UnityAction<string> modBlock;
-    public float CurrentValue { get { return float.Parse(block.text); } set { block.text = value.ToString(); } }
+    public int CurrentValue { get { return int.Parse(block.text); } set { block.text = value.ToString(); } }
 
-    public FloatBlock(TMP_InputField block, Button[] buts)
+    public IntBlock(TMP_InputField block, Button[] buts)
     {
         this.block = block;
         buts[0].onClick.AddListener(new UnityAction(But1));
@@ -21,7 +21,7 @@ public class FloatBlock
         buts[4].onClick.AddListener(new UnityAction(But5));
     }
 
-    public void Mod(UnityAction<string> modBlock, float value)
+    public void Mod(UnityAction<string> modBlock, int value)
     {
         if (this.modBlock != null)
             block.onValueChanged.RemoveListener(this.modBlock);
@@ -30,9 +30,11 @@ public class FloatBlock
         this.modBlock = modBlock;
     }
 
-    private void But1() { CurrentValue = float.Parse(block.text) - 1f; }
-    private void But2() { CurrentValue = float.Parse(block.text) - 0.1f; }
-    private void But3() { CurrentValue = EditorTimer.SecCurrent; }
-    private void But4() { CurrentValue = float.Parse(block.text) + 0.1f; }
-    private void But5() { CurrentValue = float.Parse(block.text) + 1f; }
+    private const int but_1_0 = EditorTimer.FRAMES_PER_SECOND_INT;
+    private const int but_0_1 = EditorTimer.FRAMES_PER_SECOND_INT / 10;
+    private void But1() { CurrentValue = int.Parse(block.text) - but_1_0; }
+    private void But2() { CurrentValue = int.Parse(block.text) - but_0_1; }
+    private void But3() { CurrentValue = EditorTimer.FrameCurrent; }
+    private void But4() { CurrentValue = int.Parse(block.text) + but_0_1; }
+    private void But5() { CurrentValue = int.Parse(block.text) + but_1_0; }
 }

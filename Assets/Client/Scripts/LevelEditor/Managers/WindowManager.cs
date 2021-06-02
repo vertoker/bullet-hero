@@ -9,23 +9,9 @@ public enum WindowFocus
     None = 0, EditorLeft = 1, EditorRight = 2, EditorDown = 3,
     Timeline = 4, Toolbar = 5, GameStream = 6
 }
-public interface IOpen
-{
-    public RectTransform Open();
-    public IWindow GetIClose();
-}
-public interface IOpenSingleArray
-{
-    public RectTransform Open(int index);
-    public IWindow GetIClose();
-}
-public interface IOpenDoubleArray
-{
-    public RectTransform Open(int index, int index2);
-    public IWindow GetIClose();
-}
 public interface IWindow
 {
+    public RectTransform Open();
     public void Close();
 }
 
@@ -46,16 +32,11 @@ public class WindowManager : MonoBehaviour
     public static Color butEnable = new Color(0.1f, 0.1f, 0.1f);
     public static Color butDisable = new Color(0f, 0f, 0f);
 
-    private Dictionary<string, IWindow> left_windows_window, right_windows_window;
-    private Dictionary<string, IOpen> left_windows_open, right_windows_open;
-    private Dictionary<string, IOpenSingleArray> left_windows_open_single_array;
-    private Dictionary<string, IOpenSingleArray> right_windows_open_single_array;
-    private Dictionary<string, IOpenDoubleArray> left_windows_open_double_array;
-    private Dictionary<string, IOpenDoubleArray> right_windows_open_double_array;
-    private IWindow left_active_Window, right_active_Window;
+    private Dictionary<string, IWindow> left_windows, right_windows, game_windows;
+    private IWindow left_active_window, right_active_window, game_active_window;
 
     [Header("EditorLeft")]
-    [SerializeField] private ScrollRect editor_left__scroll_rect;
+    [SerializeField] private ScrollRect editor_left_scroll_rect;
     [SerializeField] private ObjectEditorWindow object_editor;
     [SerializeField] private CreateMarkerWindow create_marker;
     [SerializeField] private CreateCheckpointWindow create_checkpoint;
@@ -73,6 +54,11 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private EditRotWindow edit_rot;
     [SerializeField] private EditClrWindow edit_clr;
     [SerializeField] private ListWindow object_list;
+    [Header("GameEditor")]
+    [SerializeField] private LevelDataWindow level_data_window;
+    [SerializeField] private NewLevelWindow new_level_window;
+    [SerializeField] private OpenLevelWindow open_level_window;
+    [SerializeField] private SaveWindow save_window;
 
     private void Start()
     {
@@ -80,8 +66,8 @@ public class WindowManager : MonoBehaviour
         camAspect = cam.aspect;
         LevelManager.Load("0 demo level");
 
-        #region Windows Dictionarys
-        left_windows_window = new Dictionary<string, IWindow>()
+        // Windows Dictionarys
+        left_windows = new Dictionary<string, IWindow>()
         {
             { "object_editor", object_editor },
             { "create_marker", create_marker },
@@ -91,7 +77,7 @@ public class WindowManager : MonoBehaviour
             { "create_prefab_level", create_prefab_level },
             { "create_prefab_memory", create_prefab_memory }
         };
-        right_windows_window = new Dictionary<string, IWindow>()
+        right_windows = new Dictionary<string, IWindow>()
         {
             { "marker_object_window", marker_object_window },
             { "marker_list", marker_list },
@@ -102,93 +88,60 @@ public class WindowManager : MonoBehaviour
             { "edit_clr", edit_clr },
             { "object_list", object_list }
         };
-        left_windows_open = new Dictionary<string, IOpen>()
+        game_windows = new Dictionary<string, IWindow>()
         {
-            { "create_marker", create_marker },
-            { "create_checkpoint", create_checkpoint },
-            { "create_prefab", create_prefab },
-            { "create_prefab_standard", create_prefab_standard },
-            { "create_prefab_level", create_prefab_level },
-            { "create_prefab_memory", create_prefab_memory }
+            { "level_data_window", level_data_window },
+            { "new_level_window", new_level_window },
+            { "open_level_window", open_level_window },
+            { "save_window", save_window }
         };
-        right_windows_open = new Dictionary<string, IOpen>()
-        {
-            { "marker_list", marker_list },
-            { "checkpoint_list", checkpoint_list },
-            { "object_list", object_list }
-        };
-        left_windows_open_single_array = new Dictionary<string, IOpenSingleArray>()
-        {
-            { "object_editor", object_editor },
-        };
-        right_windows_open_single_array = new Dictionary<string, IOpenSingleArray>()
-        {
-            { "marker_object_window", marker_object_window }
-        };
-        left_windows_open_double_array = new Dictionary<string, IOpenDoubleArray>() { };
-        right_windows_open_double_array = new Dictionary<string, IOpenDoubleArray>()
-        {
-            { "edit_pos", edit_pos },
-            { "edit_sca", edit_sca },
-            { "edit_rot", edit_rot },
-            { "edit_clr", edit_clr }
-        };
-        #endregion
 
-        #region Windows Init
+        // Windows Init
         object_editor.Init();
-        #endregion
+        create_marker.Init();
     }
 
+    public void GameOpen(string key)
+    {
+        if (game_active_window != null)
+            game_active_window.Close();
+        if (game_windows.TryGetValue(key, out IWindow value))
+        {
+            game_active_window = value;
+            value.Open();
+        }
+    }
     public void LeftEditorOpen(string key)
     {
-        if (left_active_Window != null)
-            left_active_Window.Close();
-        left_active_Window = left_windows_open[key].GetIClose();
-        left_windows_open[key].Open();
-    }
-    public void LeftEditorOpenSingleArray(string key, int index)
-    {
-        if (left_active_Window != null)
-            left_active_Window.Close();
-        left_active_Window = left_windows_open_single_array[key].GetIClose();
-        left_windows_open_single_array[key].Open(index);
-    }
-    public void LeftEditorOpenDoubleArray(string key, int index, int index2)
-    {
-        if (left_active_Window != null)
-            left_active_Window.Close();
-        left_active_Window = left_windows_open_double_array[key].GetIClose();
-        left_windows_open_double_array[key].Open(index, index2);
+        if (left_active_window != null)
+            left_active_window.Close();
+        if (left_windows.TryGetValue(key, out IWindow value))
+        {
+            left_active_window = value;
+            editor_left_scroll_rect.content = value.Open();
+            editor_left_scroll_rect.verticalScrollbar.value = 1f;
+        }
     }
     public void RightEditorOpen(string key)
     {
-        if (right_active_Window != null)
-            right_active_Window.Close();
-        right_active_Window = right_windows_open[key].GetIClose();
-        right_windows_open[key].Open();
-    }
-    public void RightEditorSingleOpen(string key, int index)
-    {
-        if (right_active_Window != null)
-            right_active_Window.Close();
-        right_active_Window = right_windows_open_single_array[key].GetIClose();
-        right_windows_open_single_array[key].Open(index);
-    }
-    public void RightEditorDoubleOpen(string key, int index, int index2)
-    {
-        if (right_active_Window != null)
-            right_active_Window.Close();
-        right_active_Window = right_windows_open_double_array[key].GetIClose();
-        right_windows_open_double_array[key].Open(index, index2);
+        if (right_active_window != null)
+            right_active_window.Close();
+        if (left_windows.TryGetValue(key, out IWindow value))
+        {
+            right_active_window = value;
+            editor_right_scroll_rect.content = value.Open();
+            editor_right_scroll_rect.verticalScrollbar.value = 1f;
+        }
     }
     public void LeftEditorClose(string key)
     {
-        left_windows_window[key].Close();
+        left_windows[key].Close();
+        editor_left_scroll_rect.content = null;
     }
     public void RightEditorClose(string key)
     {
-        right_windows_window[key].Close();
+        right_windows[key].Close();
+        editor_right_scroll_rect.content = null;
     }
 
     private void Update()

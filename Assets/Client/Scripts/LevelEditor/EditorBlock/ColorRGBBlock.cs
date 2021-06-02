@@ -7,26 +7,16 @@ using TMPro;
 
 public class ColorRGBBlock
 {
-    private readonly Slider sliderR;
-    private readonly Slider sliderG;
-    private readonly Slider sliderB;
-    private readonly TMP_Text textR;
-    private readonly TMP_Text textG;
-    private readonly TMP_Text textB;
-    private float r = 0;
-    private float g = 0;
-    private float b = 0;
+    private readonly Slider sliderR, sliderG, sliderB;
+    private readonly TMP_Text textR, textG, textB;
+    private UnityAction<float> r, g, b;
 
-    public float R { get { return r; } set { sliderR.value = value; } }
-    public float G { get { return g; } set { sliderG.value = value; } }
-    public float B { get { return b; } set { sliderB.value = value; } }
+    public float R { get { return sliderR.value; } set { sliderR.value = value; } }
+    public float G { get { return sliderG.value; } set { sliderG.value = value; } }
+    public float B { get { return sliderB.value; } set { sliderB.value = value; } }
 
-    public ColorRGBBlock(Slider sliderR, Slider sliderG, Slider sliderB, TMP_Text textR, TMP_Text textG, TMP_Text textB,
-        UnityAction<float> r, UnityAction<float> g, UnityAction<float> b)
+    public ColorRGBBlock(Slider sliderR, Slider sliderG, Slider sliderB, TMP_Text textR, TMP_Text textG, TMP_Text textB)
     {
-        sliderR.onValueChanged.AddListener(r);
-        sliderG.onValueChanged.AddListener(g);
-        sliderB.onValueChanged.AddListener(b);
         sliderR.onValueChanged.AddListener(Red);
         sliderG.onValueChanged.AddListener(Green);
         sliderB.onValueChanged.AddListener(Blue);
@@ -38,7 +28,26 @@ public class ColorRGBBlock
         this.textB = textB;
     }
 
-    public void Red(float value) { textR.text = value.ToString("0.000"); r = value; }
-    public void Green(float value) { textG.text = value.ToString("0.000"); g = value; }
-    public void Blue(float value) { textB.text = value.ToString("0.000"); b = value; }
+    public void Mod(UnityAction<float> r, UnityAction<float> g, UnityAction<float> b, float rv, float gv, float bv)
+    {
+        if (this.r != null)
+        {
+            sliderR.onValueChanged.RemoveListener(this.r);
+            sliderG.onValueChanged.RemoveListener(this.g);
+            sliderB.onValueChanged.RemoveListener(this.b);
+        }
+        sliderR.onValueChanged.AddListener(r);
+        sliderG.onValueChanged.AddListener(g);
+        sliderB.onValueChanged.AddListener(b);
+        sliderR.value = rv;
+        sliderG.value = gv;
+        sliderB.value = bv;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+
+    public void Red(float value) { textR.text = value.ToString("0.000"); }
+    public void Green(float value) { textG.text = value.ToString("0.000"); }
+    public void Blue(float value) { textB.text = value.ToString("0.000"); }
 }

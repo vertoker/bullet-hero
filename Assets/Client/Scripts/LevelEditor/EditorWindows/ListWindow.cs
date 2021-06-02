@@ -9,7 +9,7 @@ using TMPro;
 public delegate List<IData> GetList();
 public delegate string GetParameter(IData item);
 
-public class ListWindow : MonoBehaviour, IWindow, IOpen
+public class ListWindow : MonoBehaviour, IWindow
 {
     [SerializeField] private TMP_InputField search;
     [SerializeField] private RectTransform objUI;
@@ -89,9 +89,5 @@ public class ListWindow : MonoBehaviour, IWindow, IOpen
             obj.gameObject.SetActive(false);
             poolDisable.Enqueue(obj);
         }
-    }
-    public IWindow GetIClose()
-    {
-        return this;
     }
 }

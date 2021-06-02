@@ -5,23 +5,28 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class EditPosWindow : MonoBehaviour, IWindow, IOpenDoubleArray
+public class EditPosWindow : MonoBehaviour, IWindow
 {
+    private int prefabIndex, posIndex;
 
     public void Init()
     {
 
     }
-    public RectTransform Open(int index, int index2)
+    public void SelectPrefab(int index)
+    {
+        prefabIndex = index;
+    }
+    public void SelectPos(int index)
+    {
+        posIndex = index;
+    }
+    public RectTransform Open()
     {
         return GetComponent<RectTransform>();
     }
     public void Close()
     {
 
-    }
-    public IWindow GetIClose()
-    {
-        return this;
     }
 }

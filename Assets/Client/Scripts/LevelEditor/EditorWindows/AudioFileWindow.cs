@@ -5,17 +5,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class MarkerObjectWindow : MonoBehaviour, IWindow
+public class AudioFileWindow : MonoBehaviour, IWindow
 {
-    private int markerIndex;
-    public void Init()
-    {
-
-    }
-    public void MarkerSelect(int index)
-    {
-        markerIndex = index;
-    }
     public RectTransform Open()
     {
         return GetComponent<RectTransform>();

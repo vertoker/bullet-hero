@@ -8,13 +8,14 @@ public class EditorTimer : MonoBehaviour
 {
     private bool isPlay = false;
     private static float secCurrent = 0;
-    private float frameCurrent = 0;
+    private static int frameCurrent = 0;
     private float secLength = 0;
     private float timeScale = 1;
     private Coroutine timer;
 
     public float TimeScale { get { return timeScale; } set { timeScale = value; } }
     public static float SecCurrent { get { return secCurrent; } }
+    public static int FrameCurrent { get { return frameCurrent; } }
 
     private List<RenderFrameUpdate> updates = new List<RenderFrameUpdate>();
     private int length = 0;
@@ -79,6 +80,7 @@ public class EditorTimer : MonoBehaviour
     }
 
     public const float FRAMES_PER_SECOND = 60;
+    public const int FRAMES_PER_SECOND_INT = 60;
     public static float Frame2Sec(int frame)
     {
         return frame / FRAMES_PER_SECOND;
