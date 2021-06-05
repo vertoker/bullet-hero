@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class ObjectEditorWindow : MonoBehaviour, IWindow
+public class ObjectEditorWindow : MonoBehaviour, IWindow, IInit
 {
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private Toggle activeToggle;

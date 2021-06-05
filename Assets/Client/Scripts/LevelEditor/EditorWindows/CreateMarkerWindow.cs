@@ -6,7 +6,7 @@ using UnityEngine;
 using TMPro;
 
 
-public class CreateMarkerWindow : MonoBehaviour, IWindow
+public class CreateMarkerWindow : MonoBehaviour, IWindow, IInit
 {
     [SerializeField] private Button create;
     [SerializeField] private TMP_InputField nameField;

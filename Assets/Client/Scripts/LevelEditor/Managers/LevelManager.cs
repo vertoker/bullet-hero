@@ -332,6 +332,15 @@ class LevelManager// Convert JSON to Track Animation and reverse
         File.WriteAllText(path, json);
         Debug.Log(json.Length);
     }
+    public static bool Load()
+    {
+        if (PlayerPrefs.HasKey("level_editor"))
+        {
+            Load(PlayerPrefs.GetString("level_editor"));
+            return true;
+        }
+        return false;
+    }
     public static void Load(string name)
     {
         string path = GetPathLevel(name);

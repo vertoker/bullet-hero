@@ -14,6 +14,10 @@ public interface IWindow
     public RectTransform Open();
     public void Close();
 }
+public interface IInit
+{
+    public void Init();
+}
 
 public class WindowManager : MonoBehaviour
 {
@@ -40,7 +44,7 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private ObjectEditorWindow object_editor;
     [SerializeField] private CreateMarkerWindow create_marker;
     [SerializeField] private CreateCheckpointWindow create_checkpoint;
-    [SerializeField] private CreatePrefabWindow create_prefab;
+    [SerializeField] private Window create_prefab;
     [SerializeField] private ListWindow create_prefab_standard;
     [SerializeField] private ListWindow create_prefab_level;
     [SerializeField] private ListWindow create_prefab_memory;
@@ -60,7 +64,7 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private OpenLevelWindow open_level_window;
     [SerializeField] private SaveWindow save_window;
 
-    private void Start()
+    public void Init(bool load_level)
     {
         halfScreen = new Vector2(Screen.width, Screen.height) / 2f;
         camAspect = cam.aspect;

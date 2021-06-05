@@ -8,7 +8,23 @@ using UnityEditor;
 
 public class GameEditor : MonoBehaviour
 {
+    private WindowManager windowManager;
 
+    private void Awake()
+    {
+        windowManager = GetComponent<WindowManager>();
+    }
+
+    private void Start()
+    {
+        windowManager.Init(LevelManager.Load());
+    }
+
+    public void Quit()
+    {
+        SaveWindow.Instance.Open();
+        SceneStatic.LoadMenu();
+    }
 }
 
 #if UNITY_EDITOR

@@ -18696,7 +18696,7 @@ MonoBehaviour:
   raycaster: {fileID: 1807832784}
   eventSystem: {fileID: 1988597848}
   cam: {fileID: 1563262635}
-  editor_left_scroll_rect: {fileID: 0}
+  editor_left_scroll_rect: {fileID: 853645979}
   object_editor: {fileID: 1760736180}
   create_marker: {fileID: 1587709962}
   create_checkpoint: {fileID: 2027100227}
@@ -18713,10 +18713,10 @@ MonoBehaviour:
   edit_rot: {fileID: 316087008}
   edit_clr: {fileID: 830185345}
   object_list: {fileID: 845241490}
-  level_data_window: {fileID: 0}
-  new_level_window: {fileID: 0}
-  open_level_window: {fileID: 0}
-  save_window: {fileID: 0}
+  level_data_window: {fileID: 686264337}
+  new_level_window: {fileID: 11617365}
+  open_level_window: {fileID: 416553466}
+  save_window: {fileID: 2044173344}
 --- !u!1 &321230263
 GameObject:
   m_ObjectHideFlags: 0
@@ -93985,7 +93985,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1760736179
 RectTransform:
   m_ObjectHideFlags: 0
@@ -108652,7 +108652,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2027100226
 RectTransform:
   m_ObjectHideFlags: 0
@@ -108684,7 +108684,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 467.9}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 800}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2027100227
@@ -108699,6 +108699,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a90cdad20cd9748af42a9f7d6ef51d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  create: {fileID: 511603247}
+  nameField: {fileID: 110950415}
+  timeField: {fileID: 1732182713}
+  timeButs:
+  - {fileID: 1453405397}
+  - {fileID: 120826500}
+  - {fileID: 285527207}
+  - {fileID: 1290724096}
+  - {fileID: 932269095}
+  typeRandom:
+  - {fileID: 5244576}
+  - {fileID: 1596449131}
+  - {fileID: 1183131326}
+  - {fileID: 1899649276}
+  - {fileID: 2142627910}
+  SXButs:
+  - {fileID: 1642869815}
+  - {fileID: 414299540}
+  - {fileID: 1245949016}
+  - {fileID: 1480595598}
+  SYButs:
+  - {fileID: 928628927}
+  - {fileID: 954582643}
+  - {fileID: 1809841234}
+  - {fileID: 1636166817}
+  EXButs:
+  - {fileID: 550424094}
+  - {fileID: 532406283}
+  - {fileID: 750223094}
+  - {fileID: 343786590}
+  EYButs:
+  - {fileID: 553278992}
+  - {fileID: 518628580}
+  - {fileID: 957634170}
+  - {fileID: 1882619010}
+  IButs:
+  - {fileID: 67389427}
+  - {fileID: 1809679703}
+  - {fileID: 1674345254}
+  - {fileID: 1886717366}
+  SXField: {fileID: 1985050831}
+  SYField: {fileID: 1054155187}
+  EXField: {fileID: 2103453270}
+  EYField: {fileID: 58120}
+  IField: {fileID: 390092129}
 --- !u!1 &2030957059
 GameObject:
   m_ObjectHideFlags: 0

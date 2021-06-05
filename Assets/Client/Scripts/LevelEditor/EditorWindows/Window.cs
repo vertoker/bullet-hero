@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using UnityEngine;
-using TMPro;
 
-public class CreatePrefabWindow : MonoBehaviour, IWindow
+public class Window : MonoBehaviour, IWindow, IInit
 {
     public void Init()
     {
@@ -17,6 +14,6 @@ public class CreatePrefabWindow : MonoBehaviour, IWindow
     }
     public void Close()
     {
-
+        gameObject.SetActive(false);
     }
 }
