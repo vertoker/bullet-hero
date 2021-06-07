@@ -25,7 +25,7 @@ public class EditScaWindow : MonoBehaviour, IWindow
     private Sca sca;
 
     private UnityAction<int> actionEasing;
-    private UnityAction[] actionButs = new UnityAction[5];
+    private UnityAction[] actionButs = new UnityAction[length];
 
     public void Init()
     {
@@ -60,7 +60,6 @@ public class EditScaWindow : MonoBehaviour, IWindow
     public RectTransform Open()
     {
         sca = LevelManager.level.Prefabs[prefabIndex].Sca[scaIndex];
-        easingDropdown.onValueChanged.RemoveAllListeners();
         easingDropdown.value = (int)sca.Easing;
 
         for (int i = 0; i < length; i++)
@@ -69,7 +68,8 @@ public class EditScaWindow : MonoBehaviour, IWindow
             typeRandom[i].onClick.AddListener(actionButs[i]);
         }
 
-        easingDropdown.onValueChanged.AddListener((int value) => { sca.Easing = (EasingType)value; Save(); });
+        actionEasing = (int value) => { sca.Easing = (EasingType)value; Save(); };
+        easingDropdown.onValueChanged.AddListener(actionEasing);
         timeBlock.Mod((string value) => { sca.Time = LevelManager.String2Float(value); Save(); }, sca.Time);
         SXBlock.Mod((string value) => { sca.SX = LevelManager.String2Float(value); Save(); }, sca.SX);
         SYBlock.Mod((string value) => { sca.SY = LevelManager.String2Float(value); Save(); }, sca.SY);

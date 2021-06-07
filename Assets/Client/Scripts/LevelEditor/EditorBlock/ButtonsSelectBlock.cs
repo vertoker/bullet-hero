@@ -29,6 +29,7 @@ public class ButtonsSelectBlock
         images = new Image[length];
         for (int i = 0; i < length; i++)
         {
+            images[i] = buttons[i].GetComponent<Image>();
             buttons[i].onClick.AddListener(Activate);
             buttons[i].onClick.AddListener(() => { ReActivate(selectID, i); selectID = i; });
         }

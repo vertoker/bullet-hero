@@ -7,32 +7,17 @@ using TMPro;
 
 public class ColorRGBABlock
 {
-    private readonly Slider sliderR;
-    private readonly Slider sliderG;
-    private readonly Slider sliderB;
-    private readonly Slider sliderA;
-    private readonly TMP_Text textR;
-    private readonly TMP_Text textG;
-    private readonly TMP_Text textB;
-    private readonly TMP_Text textA;
-    private float r = 0;
-    private float g = 0;
-    private float b = 0;
-    private float a = 0;
+    private readonly Slider sliderR, sliderG, sliderB, sliderA;
+    private readonly TMP_Text textR, textG, textB, textA;
+    private UnityAction<float> r, g, b, a;
+    private readonly GameObject[] objects;
 
-    public float R { get { return r; } set { sliderR.value = value; } }
-    public float G { get { return g; } set { sliderG.value = value; } }
-    public float B { get { return b; } set { sliderB.value = value; } }
-    public float A { get { return a; } set { sliderA.value = value; } }
+    public float R { get { return sliderR.value; } set { sliderR.value = value; } }
+    public float G { get { return sliderG.value; } set { sliderG.value = value; } }
+    public float B { get { return sliderB.value; } set { sliderB.value = value; } }
 
-    public ColorRGBABlock(Slider sliderR, Slider sliderG, Slider sliderB, Slider sliderA, 
-        TMP_Text textR, TMP_Text textG, TMP_Text textB, TMP_Text textA,
-        UnityAction<float> r, UnityAction<float> g, UnityAction<float> b, UnityAction<float> a)
+    public ColorRGBABlock(Slider sliderR, Slider sliderG, Slider sliderB, Slider sliderA, TMP_Text textR, TMP_Text textG, TMP_Text textB, TMP_Text textA, GameObject[] objects)
     {
-        sliderR.onValueChanged.AddListener(r);
-        sliderG.onValueChanged.AddListener(g);
-        sliderB.onValueChanged.AddListener(b);
-        sliderB.onValueChanged.AddListener(a);
         sliderR.onValueChanged.AddListener(Red);
         sliderG.onValueChanged.AddListener(Green);
         sliderB.onValueChanged.AddListener(Blue);
@@ -45,10 +30,40 @@ public class ColorRGBABlock
         this.textG = textG;
         this.textB = textB;
         this.textA = textA;
+        this.objects = objects;
     }
 
-    public void Red(float value) { textR.text = value.ToString("0.000"); r = value; }
-    public void Green(float value) { textG.text = value.ToString("0.000"); g = value; }
-    public void Blue(float value) { textB.text = value.ToString("0.000"); b = value; }
-    public void Alpha(float value) { textA.text = value.ToString("0.000"); a = value; }
+    public void Mod(UnityAction<float> r, UnityAction<float> g, UnityAction<float> b, UnityAction<float> a, float rv, float gv, float bv, float ba)
+    {
+        if (this.r != null)
+        {
+            sliderR.onValueChanged.RemoveListener(this.r);
+            sliderG.onValueChanged.RemoveListener(this.g);
+            sliderB.onValueChanged.RemoveListener(this.b);
+            sliderA.onValueChanged.RemoveListener(this.a);
+        }
+        sliderR.onValueChanged.AddListener(r);
+        sliderG.onValueChanged.AddListener(g);
+        sliderB.onValueChanged.AddListener(b);
+        sliderA.onValueChanged.AddListener(a);
+        sliderR.value = rv;
+        sliderG.value = gv;
+        sliderB.value = bv;
+        sliderA.value = ba;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+
+    public void SetActive(bool active)
+    {
+        for (int i = 0; i < objects.Length; i++)
+            objects[i].SetActive(active);
+    }
+
+    public void Red(float value) { textR.text = value.ToString("0.000"); }
+    public void Green(float value) { textG.text = value.ToString("0.000"); }
+    public void Blue(float value) { textB.text = value.ToString("0.000"); }
+    public void Alpha(float value) { textA.text = value.ToString("0.000"); }
 }

@@ -25,7 +25,7 @@ public class EditPosWindow : MonoBehaviour, IWindow
     private Pos pos;
 
     private UnityAction<int> actionEasing;
-    private UnityAction[] actionButs = new UnityAction[5];
+    private UnityAction[] actionButs = new UnityAction[length];
 
     public void Init()
     {
@@ -60,7 +60,6 @@ public class EditPosWindow : MonoBehaviour, IWindow
     public RectTransform Open()
     {
         pos = LevelManager.level.Prefabs[prefabIndex].Pos[posIndex];
-        easingDropdown.onValueChanged.RemoveAllListeners();
         easingDropdown.value = (int)pos.Easing;
 
         for (int i = 0; i < length; i++)
@@ -69,7 +68,8 @@ public class EditPosWindow : MonoBehaviour, IWindow
             typeRandom[i].onClick.AddListener(actionButs[i]);
         }
 
-        easingDropdown.onValueChanged.AddListener((int value) => { pos.Easing = (EasingType)value; Save(); });
+        actionEasing = (int value) => { pos.Easing = (EasingType)value; Save(); };
+        easingDropdown.onValueChanged.AddListener(actionEasing);
         timeBlock.Mod((string value) => { pos.Time = LevelManager.String2Float(value); Save(); }, pos.Time);
         SXBlock.Mod((string value) => { pos.SX = LevelManager.String2Float(value); Save(); }, pos.SX);
         SYBlock.Mod((string value) => { pos.SY = LevelManager.String2Float(value); Save(); }, pos.SY);

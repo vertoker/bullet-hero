@@ -754,7 +754,7 @@ public enum AnchorPresets
     Left_Bottom = 6, Center_Bottom = 7, Right_Bottom = 8
 }
 // Типы рандома для координат
-public enum VectorRandomType
+public enum VectorRandomType//5
 {
     N = 0,// NONE - без рандома (2 числа)
     IMM = 1,// INSTANTMINMAX - рандом (4 числа)
@@ -763,7 +763,7 @@ public enum VectorRandomType
     M = 4 // MULTIPLY - рандомная точка с умножением (2 числа (стартовая позиция) + 2 числа (между ними выбирается число))
 }
 // Типы рандома для числа
-public enum FloatRandomType
+public enum FloatRandomType//4
 {
     N = 0,// NONE - без рандома (1 число)
     IMM = 1,// INSTANTMINMAX - рандом (2 числа)
@@ -771,7 +771,7 @@ public enum FloatRandomType
     M = 3 // MULTIPLY - рандомное умножение (1 число (угол) + 2 числа (рандомная сила))
 }
 // Типы рандома для цвета
-public enum ColorRandomType
+public enum ColorRandomType//3
 {
     N = 0,// NONE - без рандома (4 числа)
     IMM = 1,// INSTANTMINMAX - рандом (8 чисел)

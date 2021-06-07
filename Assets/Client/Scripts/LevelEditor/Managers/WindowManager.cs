@@ -61,10 +61,13 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private EditClrWindow edit_clr;
     [SerializeField] private ListWindow prefab_list;
     [Header("GameEditor")]
+    [SerializeField] private GameObject game_window;
     [SerializeField] private LevelDataWindow level_data_window;
     [SerializeField] private NewLevelWindow new_level_window;
     [SerializeField] private OpenLevelWindow open_level_window;
     [SerializeField] private SaveWindow save_window;
+    [Header("Other and Important")]
+    [SerializeField] private ContentMarkersWindow content_markers_window;
 
     public void Init(bool load_level)
     {
@@ -102,6 +105,7 @@ public class WindowManager : MonoBehaviour
             { "open_level_window", open_level_window },
             { "save_window", save_window }
         };
+        Debug.Log(game_windows["level_data_window"]);
 
         // Windows Init
         object_editor.Init();
@@ -113,6 +117,8 @@ public class WindowManager : MonoBehaviour
 
         edit_pos.Init();
         edit_sca.Init();
+        edit_rot.Init();
+        edit_clr.Init();
     }
 
     private void ListWindowsInit()
@@ -151,8 +157,9 @@ public class WindowManager : MonoBehaviour
         prefab_list.Init(LevelManager.PrefabList(), getParam0, getParamsPrefab, actionPrefab);
     }
 
-    public void GameOpen(string key)
+    public void GameOpen(string key)//Не работает, проверить
     {
+        game_window.SetActive(true);
         if (game_active_window != null)
             game_active_window.Close();
         if (game_windows.TryGetValue(key, out IWindow value))
@@ -182,6 +189,11 @@ public class WindowManager : MonoBehaviour
             editor_right_scroll_rect.content = value.Open();
             editor_right_scroll_rect.verticalScrollbar.value = 1f;
         }
+    }
+    public void GameClose(string key)
+    {
+        game_window.SetActive(false);
+        game_windows[key].Close();
     }
     public void LeftEditorClose(string key)
     {
