@@ -5,15 +5,13 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
+public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
 {
-    [SerializeField] private Button create;
     [SerializeField] private TMP_InputField nameField;
-    [Header("Time")]
+    [SerializeField] private Toggle activeToggle;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
     private FloatBlock timeBlock;
-    [Header("Position")]
     [SerializeField] private Button[] typeRandom;
     [SerializeField] private Button[] SXButs;
     [SerializeField] private Button[] SYButs;
@@ -23,7 +21,7 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
     [SerializeField] private TMP_InputField SXField, SYField, EXField, EYField, IField;
     private FloatBlock SXBlock, SYBlock, EXBlock, EYBlock, IBlock;
 
-    private Checkpoint data;
+    private int checkpointSelect;
     private const int length = 5;
 
     private UnityAction<string> actionName;
@@ -38,45 +36,50 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
         EXBlock = new FloatBlock(EXField, EXButs);
         EYBlock = new FloatBlock(EYField, EYButs);
         IBlock = new FloatBlock(IField, IButs);
+
         typeRandom[0].onClick.AddListener(() => SetActive(false, false));
         typeRandom[1].onClick.AddListener(() => SetActive(true, false));
         typeRandom[2].onClick.AddListener(() => SetActive(true, true));
         typeRandom[3].onClick.AddListener(() => SetActive(true, true));
         typeRandom[4].onClick.AddListener(() => SetActive(true, false));
     }
-    public RectTransform Open()
+    public void CheckpointSelect(int index)
     {
-        data = new Checkpoint();
         if (actionName != null)
         {
             nameField.onValueChanged.RemoveListener(actionName);
+            activeToggle.onValueChanged.RemoveListener(actionActive);
             for (int i = 0; i < length; i++)
                 typeRandom[i].onClick.RemoveListener(actionButs[i]);
         }
+        checkpointSelect = index;
+    }
+    public RectTransform Open()
+    {
+        Checkpoint checkpoint = LevelManager.level.Checkpoints[checkpointSelect];
+        actionName = LevelManager.CheckpointName(checkpointSelect);
+        nameField.onValueChanged.AddListener(actionName);
+        actionActive = LevelManager.CheckpointActive(checkpointSelect);
+        activeToggle.onValueChanged.AddListener(actionActive);
+        timeBlock.Mod(LevelManager.CheckpointTime(checkpointSelect), checkpoint.Time);
+
         for (int i = 0; i < length; i++)
         {
-            actionButs[i] = () => { data.RandomType = (VectorRandomType)i; };
+            actionButs[i] = LevelManager.PrefabSpriteTypeButton(checkpointSelect, i);
             typeRandom[i].onClick.AddListener(actionButs[i]);
         }
 
-        timeBlock.Mod((string value) => { data.Time = LevelManager.String2Float(value); }, 0);
-        SXBlock.Mod((string value) => { data.SX = LevelManager.String2Float(value); }, 0);
-        SYBlock.Mod((string value) => { data.SY = LevelManager.String2Float(value); }, 0);
-        EXBlock.Mod((string value) => { data.EX = LevelManager.String2Float(value); }, 0);
-        EYBlock.Mod((string value) => { data.EY = LevelManager.String2Float(value); }, 0);
-        IBlock.Mod((string value) => { data.Interval = LevelManager.String2Float(value); }, 0);
+        SXBlock.Mod(LevelManager.CheckpointSX(checkpointSelect), checkpoint.SX);
+        SYBlock.Mod(LevelManager.CheckpointSY(checkpointSelect), checkpoint.SY);
+        EXBlock.Mod(LevelManager.CheckpointEX(checkpointSelect), checkpoint.EX);
+        EYBlock.Mod(LevelManager.CheckpointEY(checkpointSelect), checkpoint.EY);
+        IBlock.Mod(LevelManager.CheckpointInterval(checkpointSelect), checkpoint.Interval);
         return GetComponent<RectTransform>();
     }
     public void Close()
     {
         gameObject.SetActive(false);
     }
-    public void Create()
-    {
-        LevelManager.level.Checkpoints.Add(data);
-        Close();
-    }
-
     private void SetActive(bool endBlocks, bool intervalBlock)
     {
         EXBlock.SetActive(endBlocks);

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System.Collections;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -42,6 +43,8 @@ public class WindowManager : MonoBehaviour
     [Header("EditorLeft")]
     [SerializeField] private ScrollRect editor_left_scroll_rect;
     [SerializeField] private ObjectEditorWindow object_editor;
+    [SerializeField] private MarkerEditorWindow marker_editor;
+    [SerializeField] private CheckpointEditorWindow checkpoint_editor;
     [SerializeField] private CreateMarkerWindow create_marker;
     [SerializeField] private CreateCheckpointWindow create_checkpoint;
     [SerializeField] private Window create_prefab;
@@ -50,14 +53,13 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private ListWindow create_prefab_memory;
     [Header("EditorRight")]
     [SerializeField] private ScrollRect editor_right_scroll_rect;
-    [SerializeField] private MarkerObjectWindow marker_object_window;
     [SerializeField] private ListWindow marker_list;
     [SerializeField] private ListWindow checkpoint_list;
     [SerializeField] private EditPosWindow edit_pos;
     [SerializeField] private EditScaWindow edit_sca;
     [SerializeField] private EditRotWindow edit_rot;
     [SerializeField] private EditClrWindow edit_clr;
-    [SerializeField] private ListWindow object_list;
+    [SerializeField] private ListWindow prefab_list;
     [Header("GameEditor")]
     [SerializeField] private LevelDataWindow level_data_window;
     [SerializeField] private NewLevelWindow new_level_window;
@@ -74,6 +76,8 @@ public class WindowManager : MonoBehaviour
         left_windows = new Dictionary<string, IWindow>()
         {
             { "object_editor", object_editor },
+            { "marker_editor", marker_editor },
+            { "checkpoint_editor", checkpoint_editor },
             { "create_marker", create_marker },
             { "create_checkpoint", create_checkpoint },
             { "create_prefab", create_prefab },
@@ -83,14 +87,13 @@ public class WindowManager : MonoBehaviour
         };
         right_windows = new Dictionary<string, IWindow>()
         {
-            { "marker_object_window", marker_object_window },
             { "marker_list", marker_list },
             { "checkpoint_list", checkpoint_list },
             { "edit_pos", edit_pos },
             { "edit_sca", edit_sca },
             { "edit_rot", edit_rot },
             { "edit_clr", edit_clr },
-            { "object_list", object_list }
+            { "prefab_list", prefab_list }
         };
         game_windows = new Dictionary<string, IWindow>()
         {
@@ -102,7 +105,50 @@ public class WindowManager : MonoBehaviour
 
         // Windows Init
         object_editor.Init();
+        marker_editor.Init();
+        checkpoint_editor.Init();
         create_marker.Init();
+        create_checkpoint.Init();
+        ListWindowsInit();
+
+        edit_pos.Init();
+        edit_sca.Init();
+    }
+
+    private void ListWindowsInit()
+    {
+        string getParam0(IData d) { return d.GetParameter(0); }
+        string getParam1(IData d) { return d.GetParameter(1); }
+        string getParam2(IData d) { return d.GetParameter(2); }
+        string getParamTimer2(IData d) { return EditorTimer.Sec2Text(d.GetParameter(2)); }
+
+        GetParameter[] getParamsObject = new GetParameter[] { getParam0, getParam1, getParam2 };
+        GetParameter[] getParamsMarker = new GetParameter[] { getParam0, getParamTimer2 };
+        GetParameter[] getParamsCheckpoint = new GetParameter[] { getParam1, getParamTimer2 };
+        GetParameter[] getParamsPrefab = new GetParameter[] { getParam0, getParam1 };
+
+        void actionEditorPrefabAll(List<Prefab> prefabs)
+        {
+            int length = LevelManager.level.Prefabs.Count;
+            CreateObject.CreateEditorPrefab(prefabs);
+            object_editor.PrefabSelect(length);
+            LeftEditorOpen("object_editor");
+        }
+
+        void actionEditorPrefabStandard(int index) { actionEditorPrefabAll(PrefabStandard.GetPrefabStandard(index).Prefabs); }
+        void actionEditorPrefabLevel(int index) { actionEditorPrefabAll(LevelManager.level.EditorPrefabs[index].Prefabs); }
+        void actionEditorPrefabMemory(int index) { actionEditorPrefabAll(PrefabMemory.GetPrefabMemory(index).Prefabs); }
+
+        void actionMarker(int index) { marker_editor.MarkerSelect(index); LeftEditorOpen("marker_editor"); }
+        void actionCheckpoint(int index) { marker_editor.MarkerSelect(index); LeftEditorOpen("checkpoint_editor"); }
+        void actionPrefab(int index) { object_editor.PrefabSelect(index); LeftEditorOpen("object_editor"); }
+
+        create_prefab_standard.Init(LevelManager.EditorPrefabStandardList(), getParam0, getParamsObject, actionEditorPrefabStandard);
+        create_prefab_level.Init(LevelManager.EditorPrefabLevelList(), getParam0, getParamsObject, actionEditorPrefabLevel);
+        create_prefab_memory.Init(LevelManager.EditorPrefabMemoryList(), getParam0, getParamsObject, actionEditorPrefabMemory);
+        marker_list.Init(LevelManager.MarkerList(), getParam0, getParamsMarker, actionMarker);
+        checkpoint_list.Init(LevelManager.CheckpointList(), getParam1, getParamsCheckpoint, actionCheckpoint);
+        prefab_list.Init(LevelManager.PrefabList(), getParam0, getParamsPrefab, actionPrefab);
     }
 
     public void GameOpen(string key)

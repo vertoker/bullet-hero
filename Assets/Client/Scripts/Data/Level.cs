@@ -286,7 +286,7 @@ public class Prefab : IData
     public string Name { get { return n; } set { n = value; } }
     public bool Active { get { return a; } set { a = value; } }
     public bool Collider { get { return c; } set { c = value; } }
-    public List<Pos> Pos { get { return pos; } set { pos = value; } }
+    public List<Pos> Pos { get { return pos ?? new List<Pos>(); ; } set { pos = value; } }
     public List<Sca> Sca { get { return sca; } set { sca = value; } }
     public List<Rot> Rot { get { return rot; } set { rot = value; } }
     public List<Clr> Clr { get { return clr; } set { clr = value; } }
@@ -345,20 +345,21 @@ public class Prefab : IData
         switch (index)
         {
             case 0: return n.ToString();
-            case 1: return a.ToString();
-            case 2: return c.ToString();
-            case 3: return pos.ToString();
-            case 4: return sca.ToString();
-            case 5: return rot.ToString();
-            case 6: return clr.ToString();
-            case 7: return st.ToString();
-            case 8: return sf.ToString();
-            case 9: return ef.ToString();
-            case 10: return idp.ToString();
-            case 11: return id.ToString();
-            case 12: return a2.ToString();
-            case 13: return h.ToString();
-            case 14: return l.ToString();
+            case 1: return (ef - sf).ToString();
+            case 2: return a.ToString();
+            case 3: return c.ToString();
+            case 4: return pos.ToString();
+            case 5: return sca.ToString();
+            case 6: return rot.ToString();
+            case 7: return clr.ToString();
+            case 8: return st.ToString();
+            case 9: return sf.ToString();
+            case 10: return ef.ToString();
+            case 11: return idp.ToString();
+            case 12: return id.ToString();
+            case 13: return a2.ToString();
+            case 14: return h.ToString();
+            case 15: return l.ToString();
         }
         return null;
     }
@@ -625,7 +626,44 @@ public class EditorPrefab : IData
 
     public string GetParameter(int index)
     {
-        return p.ToString();
+        switch (index)
+        {
+            case 0: return p[0].ToString();
+            case 1: return p.Count.ToString();
+            case 2: return (p[0].EndFrame - p[0].StartFrame).ToString();
+        }
+        return null;
+    }
+}
+
+public class ListEditorPrefab : IData
+{
+    [SerializeField] private List<EditorPrefab> p;
+
+    public List<EditorPrefab> EditorPrefabs { get { return p; } set { p = value; } }
+    public int CountObjects { get { return p.Count; } }
+
+    public ListEditorPrefab(List<EditorPrefab> prefabs)
+    {
+        p = prefabs;
+    }
+
+    public ListEditorPrefab()
+    {
+        p = new List<EditorPrefab>();
+    }
+
+    public void Add(EditorPrefab prefab) { p.Add(prefab); }
+    public void Remove(EditorPrefab prefab) { p.Remove(prefab); }
+    public void RemoveAt(int index) { p.RemoveAt(index); }
+    public string GetParameter(int index)
+    {
+        switch (index)
+        {
+            case 0: return p[0].ToString();
+            case 1: return p.Count.ToString();
+        }
+        return null;
     }
 }
 #endregion
@@ -670,6 +708,22 @@ public class Zoom
         this.t = t;
         this.s = s;
     }
+}
+#endregion
+
+#region Конвертер
+public static class LevelConverter
+{
+    public static Converter<EditorPrefab, IData> EditorPrefabsConverter = 
+        new Converter<EditorPrefab, IData>((EditorPrefab p) => { return p; });
+    public static Converter<ListEditorPrefab, IData> ListEditorPrefabsConverter =
+        new Converter<ListEditorPrefab, IData>((ListEditorPrefab p) => { return p; });
+    public static Converter<Marker, IData> MarkersConverter =
+        new Converter<Marker, IData>((Marker p) => { return p; });
+    public static Converter<Checkpoint, IData> CheckpointsConverter =
+        new Converter<Checkpoint, IData>((Checkpoint p) => { return p; });
+    public static Converter<Prefab, IData> PrefabsConverter =
+        new Converter<Prefab, IData>((Prefab p) => { return p; });
 }
 #endregion
 

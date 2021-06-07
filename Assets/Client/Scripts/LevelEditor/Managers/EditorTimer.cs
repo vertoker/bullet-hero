@@ -89,8 +89,9 @@ public class EditorTimer : MonoBehaviour
     {
         return Mathf.FloorToInt(sec * FRAMES_PER_SECOND);
     }
-    public static string Sec2Text(float sec)
+    public static string Sec2Text(string time)
     {
+        float sec = LevelManager.String2Float(time);
         int min = 0; string timerText = string.Empty;
         int frames = (int)((sec - (int)sec) * 60f);
         while (sec >= 60f) { min++; sec -= 60; }

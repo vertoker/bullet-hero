@@ -25,12 +25,12 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new UnityAction<string>((string value) => { level.Markers[index].Description = value; }); }
     public static UnityAction<string> MarkerTime(int index)
     { return new UnityAction<string>((string value) => { level.Markers[index].Time = String2Int(value); }); }
-    public static UnityAction<string> MarkerColorR(int index)
-    { return new UnityAction<string>((string value) => { level.Markers[index].Red = String2Float(value); }); }
-    public static UnityAction<string> MarkerColorG(int index)
-    { return new UnityAction<string>((string value) => { level.Markers[index].Green = String2Float(value); }); }
-    public static UnityAction<string> MarkerColorB(int index)
-    { return new UnityAction<string>((string value) => { level.Markers[index].Blue = String2Float(value); }); }
+    public static UnityAction<float> MarkerColorR(int index)
+    { return new UnityAction<float>((float value) => { level.Markers[index].Red = value; }); }
+    public static UnityAction<float> MarkerColorG(int index)
+    { return new UnityAction<float>((float value) => { level.Markers[index].Green = value; }); }
+    public static UnityAction<float> MarkerColorB(int index)
+    { return new UnityAction<float>((float value) => { level.Markers[index].Blue = value; }); }
 
     // Checkpoint
     public static UnityAction<bool> CheckpointActive(int index)
@@ -58,97 +58,10 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new UnityAction<bool>((bool value) => { level.Prefabs[index].Active = value; }); }
     public static UnityAction<bool> PrefabCollider(int index)
     { return new UnityAction<bool>((bool value) => { level.Prefabs[index].Collider = value; }); }
-
-    #region Pos
-    public static Pos PrefabPos(int index, int posIndex)
-    { return level.Prefabs[index].Pos[posIndex]; }
-    public static UnityAction<string> PosTime(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.Time = String2Float(value); }); }
-    public static UnityAction<int> PosRandom(Pos pos)
-    { return new UnityAction<int>((int value) => { pos.RandomType = (VectorRandomType)value; }); }
-    public static UnityAction<int> PosEasing(Pos pos)
-    { return new UnityAction<int>((int value) => { pos.Easing = (EasingType)value; }); }
-    public static UnityAction<string> PosSX(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.SX = String2Float(value); }); }
-    public static UnityAction<string> PosSY(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.SY = String2Float(value); }); }
-    public static UnityAction<string> PosEX(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.EX = String2Float(value); }); }
-    public static UnityAction<string> PosEY(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.EY = String2Float(value); }); }
-    public static UnityAction<string> PosInterval(Pos pos)
-    { return new UnityAction<string>((string value) => { pos.Interval = String2Float(value); }); }
-    #endregion
-
-    #region Sca
-    public static Sca PrefabSca(int index, int scaIndex)
-    { return level.Prefabs[index].Sca[scaIndex]; }
-    public static UnityAction<string> ScaTime(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.Time = String2Float(value); }); }
-    public static UnityAction<int> ScaRandom(Sca sca)
-    { return new UnityAction<int>((int value) => { sca.RandomType = (VectorRandomType)value; }); }
-    public static UnityAction<int> ScaEasing(Sca sca)
-    { return new UnityAction<int>((int value) => { sca.Easing = (EasingType)value; }); }
-    public static UnityAction<string> ScaSX(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.SX = String2Float(value); }); }
-    public static UnityAction<string> ScaSY(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.SY = String2Float(value); }); }
-    public static UnityAction<string> ScaEX(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.EX = String2Float(value); }); }
-    public static UnityAction<string> ScaEY(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.EY = String2Float(value); }); }
-    public static UnityAction<string> ScaInterval(Sca sca)
-    { return new UnityAction<string>((string value) => { sca.Interval = String2Float(value); }); }
-    #endregion
-
-    #region Rot
-    public static Rot PrefabRot(int index, int rotIndex)
-    { return level.Prefabs[index].Rot[rotIndex]; }
-    public static UnityAction<string> RotTime(Rot rot)
-    { return new UnityAction<string>((string value) => { rot.Time = String2Float(value); }); }
-    public static UnityAction<int> RotRandom(Rot rot)
-    { return new UnityAction<int>((int value) => { rot.RandomType = (FloatRandomType)value; }); }
-    public static UnityAction<int> RotEasing(Rot rot)
-    { return new UnityAction<int>((int value) => { rot.Easing = (EasingType)value; }); }
-    public static UnityAction<string> RotSA(Rot rot)
-    { return new UnityAction<string>((string value) => { rot.SA = String2Float(value); }); }
-    public static UnityAction<string> RotEA(Rot rot)
-    { return new UnityAction<string>((string value) => { rot.EA = String2Float(value); }); }
-    public static UnityAction<string> RotInterval(Rot rot)
-    { return new UnityAction<string>((string value) => { rot.Interval = String2Float(value); }); }
-    #endregion
-
-    #region Clr
-    public static Clr PrefabClr(int index, int clrIndex)
-    { return level.Prefabs[index].Clr[clrIndex]; }
-    public static UnityAction<string> ClrTime(Clr clr)
-    { return new UnityAction<string>((string value) => { clr.Time = String2Float(value); }); }
-    public static UnityAction<int> ClrRandom(Clr clr)
-    { return new UnityAction<int>((int value) => { clr.RandomType = (ColorRandomType)value; }); }
-    public static UnityAction<int> ClrEasing(Clr clr)
-    { return new UnityAction<int>((int value) => { clr.Easing = (EasingType)value; }); }
-    public static UnityAction<float> ClrSR(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.SR = value; }); }
-    public static UnityAction<float> ClrSG(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.SG = value; }); }
-    public static UnityAction<float> ClrSB(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.SB = value; }); }
-    public static UnityAction<float> ClrSA(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.SA = value; }); }
-    public static UnityAction<float> ClrER(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.ER = value; }); }
-    public static UnityAction<float> ClrEG(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.EG = value; }); }
-    public static UnityAction<float> ClrEB(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.EB = value; }); }
-    public static UnityAction<float> ClrEA(Clr clr)
-    { return new UnityAction<float>((float value) => { clr.EA = value; }); }
-    public static UnityAction<string> ClrInterval(Clr clr)
-    { return new UnityAction<string>((string value) => { clr.Interval = String2Float(value); }); }
-    #endregion
-
     public static UnityAction<int> PrefabSpriteType(int index)
     { return new UnityAction<int>((int value) => { level.Prefabs[index].SpriteType = (SpriteType)value; }); }
+    public static UnityAction PrefabSpriteTypeButton(int index, int idButton)
+    { return () => { level.Prefabs[index].SpriteType = (SpriteType)idButton; }; }
     public static UnityAction<string> PrefabStartFrame(int index)
     { return new UnityAction<string>((string value) => { level.Prefabs[index].StartFrame = String2Int(value); }); }
     public static UnityAction<string> PrefabEndFrame(int index)
@@ -163,6 +76,21 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new UnityAction<string>((string value) => { level.Prefabs[index].Layer = String2Int(value); }); }
     public static UnityAction<string> PrefabHeight(int index)
     { return new UnityAction<string>((string value) => { level.Prefabs[index].Height = String2Int(value); }); }
+    #endregion
+
+    #region GetList
+    public static GetList EditorPrefabStandardList()
+    { return new GetList(() => { return PrefabStandard.GetPrefabStandard().ConvertAll(LevelConverter.EditorPrefabsConverter); }); }
+    public static GetList EditorPrefabLevelList()
+    { return new GetList(() => { return level.EditorPrefabs.ConvertAll(LevelConverter.EditorPrefabsConverter); }); }
+    public static GetList EditorPrefabMemoryList()
+    { return new GetList(() => { return PrefabMemory.GetPrefabMemory().ConvertAll(LevelConverter.EditorPrefabsConverter); }); }
+    public static GetList MarkerList()
+    { return new GetList(() => { return level.Markers.ConvertAll(LevelConverter.MarkersConverter); }); }
+    public static GetList CheckpointList()
+    { return new GetList(() => { return level.Checkpoints.ConvertAll(LevelConverter.CheckpointsConverter); }); }
+    public static GetList PrefabList()
+    { return new GetList(() => { return level.Prefabs.ConvertAll(LevelConverter.PrefabsConverter); }); }
     #endregion
 
     #region Static

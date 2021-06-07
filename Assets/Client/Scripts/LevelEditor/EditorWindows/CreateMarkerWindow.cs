@@ -11,11 +11,9 @@ public class CreateMarkerWindow : MonoBehaviour, IWindow, IInit
     [SerializeField] private Button create;
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private TMP_InputField descriptionField;
-    [Header("Time")]
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
     private FloatBlock timeBlock;
-    [Header("Color")]
     [SerializeField] private Slider sliderR, sliderG, sliderB;
     [SerializeField] private TMP_Text textR, textG, textB;
     [SerializeField] private ColorRGBBlock colorBlock;
