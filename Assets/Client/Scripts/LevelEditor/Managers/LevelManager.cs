@@ -276,7 +276,7 @@ class LevelManager// Convert JSON to Track Animation and reverse
     }
     public static string GetPathLevel(string name)
     {
-        return Application.dataPath + "/levels/" + name + "/level.json";
+        return Path.Combine(Application.dataPath, "levels", name, "level.json");
     }
     #endregion
 }

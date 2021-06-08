@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public delegate void RenderFrameUpdate();
+public delegate void RenderFrameUpdate(float sec, int frame);
+public delegate void RenderStop();
 public class EditorTimer : MonoBehaviour
 {
     private bool isPlay = false;
-    private static float secCurrent = 0;
-    private static int frameCurrent = 0;
+    [SerializeField] private float secCurrent = 0;
+    [SerializeField] private int frameCurrent = 1;
     private float secLength = 0;
     private float timeScale = 1;
+    private int secLengthFrame;
     private Coroutine timer;
 
-    public float TimeScale { get { return timeScale; } set { timeScale = value; } }
-    public static float SecCurrent { get { return secCurrent; } }
-    public static int FrameCurrent { get { return frameCurrent; } }
+    public static float TimeScale { get { return Instance.timeScale; } set { Instance.timeScale = (float)Math.Round(value, 1); } }
+    public static float SecCurrent { get { return Instance.secCurrent; } }
+    public static int FrameCurrent { get { return Instance.frameCurrent; } }
 
     private List<RenderFrameUpdate> updates = new List<RenderFrameUpdate>();
-    private int length = 0;
+    private List<RenderStop> stops = new List<RenderStop>();
+    private int lengthUpdates = 0, lengthStops = 0;
 
-    public static EditorTimer Instance;
+    private static EditorTimer Instance;
     private void Awake()
     {
         Instance = this;
@@ -28,8 +31,8 @@ public class EditorTimer : MonoBehaviour
 
     public void Init(float secLength)
     {
-        this.secLength = secLength;
-        timer = StartCoroutine(Timer());
+        Instance.secLength = secLength;
+        secLengthFrame = Mathf.FloorToInt(secLength * Utils.FRAMES_PER_SECOND);
     }
     public void PlayPause()
     {
@@ -39,32 +42,75 @@ public class EditorTimer : MonoBehaviour
         else
             StopCoroutine(timer);
     }
-
-    public int Add(RenderFrameUpdate update)
+    public void Play()
     {
-        updates.Add(update);
-        length++;
-        return length;
+        isPlay = true;
+        timer = StartCoroutine(Timer());
     }
-    public void RemoveAt(int id)
+    public void Pause()
     {
-        updates.RemoveAt(id);
-        length--;
+        isPlay = false;
+        StopCoroutine(timer);
+    }
+
+    public static void Add(RenderFrameUpdate update)
+    {
+        Instance.updates.Add(update);
+        Instance.lengthUpdates++;
+    }
+    public static void Add(RenderStop stop)
+    {
+        Instance.stops.Add(stop);
+        Instance.lengthStops++;
+    }
+    public static bool Remove(RenderFrameUpdate update)
+    {
+        if (Instance.updates.Remove(update))
+        {
+            Instance.lengthUpdates--;
+            return true;
+        }
+        return false;
+    }
+    public static bool Remove(RenderStop stop)
+    {
+        if (Instance.stops.Remove(stop))
+        {
+            Instance.lengthStops--;
+            return true;
+        }
+        return false;
+    }
+
+    public void MinusScale()
+    {
+        if (timeScale > -3f)
+            TimeScale -= 0.1f;
+    }
+    public void PlusScale()
+    {
+        if (timeScale < 3f)
+            TimeScale += 0.1f;
+    }
+    public void StandardScale()
+    {
+        TimeScale = 1f;
     }
 
     public IEnumerator Timer()
     {
-        for (float i = secCurrent; i <= secLength; i += Time.deltaTime * timeScale)
+        for (float i = secCurrent; true; i += Time.deltaTime * timeScale)
         {
             secCurrent = Mathf.Clamp(i, 0, secLength);
-            frameCurrent = Sec2Frame(secCurrent);
+            frameCurrent = Mathf.Clamp(Utils.Sec2Frame(i), 1, secLengthFrame);
             Render();
+            if (i > secLength || i < 0)
+                break;
             yield return null;
         }
-        
+
         isPlay = false;
-        secCurrent = 0;
-        frameCurrent = 0;
+        Stop();
 
         /*editorBlock.RenderLocalSecMarker();
         timeline.RenderSecLine();
@@ -73,44 +119,12 @@ public class EditorTimer : MonoBehaviour
 
     private void Render()
     {
-        for (int i = 0; i < length; i++)
-        {
-            updates[i].Invoke();
-        }
+        for (int i = 0; i < lengthUpdates; i++)
+            updates[i].Invoke(secCurrent, frameCurrent);
     }
-
-    public const float FRAMES_PER_SECOND = 60;
-    public const int FRAMES_PER_SECOND_INT = 60;
-    public static float Frame2Sec(int frame)
+    private void Stop()
     {
-        return frame / FRAMES_PER_SECOND;
-    }
-    public static int Sec2Frame(float sec)
-    {
-        return Mathf.FloorToInt(sec * FRAMES_PER_SECOND);
-    }
-    public static string Sec2Text(string time)
-    {
-        float sec = LevelManager.String2Float(time);
-        int min = 0; string timerText = string.Empty;
-        int frames = (int)((sec - (int)sec) * 60f);
-        while (sec >= 60f) { min++; sec -= 60; }
-
-        sec = (int)sec; if (frames < 0)
-        { frames = 60 + frames; sec -= 1; }
-
-        if (min < 10) { timerText += "0" + min + ":"; }
-        else { timerText += min + ":"; }
-
-        if (sec < 10f) { timerText += "0" + sec.ToString("0"); }
-        else { timerText += sec.ToString("0"); }
-
-        if (frames < 10) { timerText += ".0" + frames; }
-        else { timerText += "." + frames; }
-
-        return timerText;
-        /*timerTimeLine.text = timerText;
-        timerMarkers.text = timerText;
-        timerSecMarkers.text = sec + "." + frames;*/
+        for (int i = 0; i < lengthStops; i++)
+            stops[i].Invoke();
     }
 }

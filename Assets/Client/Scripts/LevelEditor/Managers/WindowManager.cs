@@ -26,8 +26,6 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private WindowFocus selectWindow = WindowFocus.None;
     [SerializeField] private GraphicRaycaster raycaster;
     [SerializeField] private EventSystem eventSystem;
-    [Header("Camera")]
-    [SerializeField] private Camera cam;
     private Vector2 halfScreen;
     private float camAspect;
 
@@ -73,7 +71,6 @@ public class WindowManager : MonoBehaviour
     {
         halfScreen = new Vector2(Screen.width, Screen.height) / 2f;
         camAspect = cam.aspect;
-        LevelManager.Load("0 demo level");
 
         // Windows Dictionarys
         left_windows = new Dictionary<string, IWindow>()
@@ -105,7 +102,6 @@ public class WindowManager : MonoBehaviour
             { "open_level_window", open_level_window },
             { "save_window", save_window }
         };
-        Debug.Log(game_windows["level_data_window"]);
 
         // Windows Init
         object_editor.Init();
@@ -126,7 +122,7 @@ public class WindowManager : MonoBehaviour
         string getParam0(IData d) { return d.GetParameter(0); }
         string getParam1(IData d) { return d.GetParameter(1); }
         string getParam2(IData d) { return d.GetParameter(2); }
-        string getParamTimer2(IData d) { return EditorTimer.Sec2Text(d.GetParameter(2)); }
+        string getParamTimer2(IData d) { return Utils.Sec2Text(d.GetParameter(2)); }
 
         GetParameter[] getParamsObject = new GetParameter[] { getParam0, getParam1, getParam2 };
         GetParameter[] getParamsMarker = new GetParameter[] { getParam0, getParamTimer2 };

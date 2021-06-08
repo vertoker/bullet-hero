@@ -13,7 +13,7 @@ public class SaveWindow : MonoBehaviour, IWindow
     public RectTransform Open()
     {
         LevelManager.Save();
-        Localize.Instance.TranslateRandomText(0);
+        //Localize.Instance.TranslateRandomText(0);
         return GetComponent<RectTransform>();
     }
     public void Close()

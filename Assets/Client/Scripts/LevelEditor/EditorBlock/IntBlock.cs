@@ -30,8 +30,8 @@ public class IntBlock
         this.modBlock = modBlock;
     }
 
-    private const int but_1_0 = EditorTimer.FRAMES_PER_SECOND_INT;
-    private const int but_0_1 = EditorTimer.FRAMES_PER_SECOND_INT / 10;
+    private const int but_1_0 = Utils.FRAMES_PER_SECOND_INT;
+    private const int but_0_1 = Utils.FRAMES_PER_SECOND_INT / 10;
     private void But1() { CurrentValue = int.Parse(block.text) - but_1_0; }
     private void But2() { CurrentValue = int.Parse(block.text) - but_0_1; }
     private void But3() { CurrentValue = EditorTimer.FrameCurrent; }

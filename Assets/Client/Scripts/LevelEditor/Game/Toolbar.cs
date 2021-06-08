@@ -8,6 +8,7 @@ using TMPro;
 public class Toolbar : MonoBehaviour
 {
     [SerializeField] private Transform parent;
+    [SerializeField] private TMP_Text textTimer, textTimeScale;
     private Dictionary<string, ButtonToolbar> toolbarButtons;
 
     private void Start()
@@ -33,6 +34,15 @@ public class Toolbar : MonoBehaviour
             { "save", new ButtonToolbar(GetBackground(14), GetButtonsStandard(14), true) },
             { "lvl_manager", new ButtonToolbar(GetBackground(15), GetButtonsStandard(15), true) }
         };
+        void actionTimerText(float sec, int frame) 
+        { textTimer.text = Utils.Sec2Text(sec); }
+        EditorTimer.Add(actionTimerText);
+        EditorTimer.Add(() => { SpriteChanger.Instance.SpriteNext(0); });
+    }
+
+    public void UpdateTextScale()
+    {
+        textTimeScale.text = EditorTimer.TimeScale.ToString("0.0");
     }
 
     public void Enable(string name)

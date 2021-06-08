@@ -9,15 +9,19 @@ using UnityEditor;
 public class GameEditor : MonoBehaviour
 {
     private WindowManager windowManager;
+    private EditorTimer editorTimer;
 
     private void Awake()
     {
         windowManager = GetComponent<WindowManager>();
+        editorTimer = GetComponent<EditorTimer>();
     }
 
     private void Start()
     {
+        LevelManager.Load("0 demo level");
         windowManager.Init(LevelManager.Load());
+        editorTimer.Init(LevelManager.level.LevelData.EndFadeOut);
     }
 
     public void Quit()
