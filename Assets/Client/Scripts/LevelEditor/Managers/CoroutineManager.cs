@@ -3,36 +3,42 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
 
-public class CoroutineManager : MonoBehaviour
+public static class CoroutineManager
 {
-    public static CoroutineManager Instance;
-    private readonly List<Coroutine> coroutines = new List<Coroutine>();
+    private static readonly List<Coroutine> coroutines = new List<Coroutine>();
+    private static MonoBehaviour monoBehaviour;
 
-    private void Awake()
+    public static void Init(MonoBehaviour monoBehaviour)
     {
-        Instance = this;
+        CoroutineManager.monoBehaviour = monoBehaviour;
     }
 
-    public Coroutine StartArray(int length, UnityAction<int> action)
+    public static Coroutine Start(IEnumerator enumerator)
     {
-        Coroutine coroutine = StartCoroutine(TaskSolve(length, action));
+        Coroutine coroutine = monoBehaviour.StartCoroutine(enumerator);
         coroutines.Add(coroutine);
         return coroutine;
     }
-    public Coroutine StartArray<T1>(T1 param1, int length, UnityAction<T1, int> action)
+    public static Coroutine StartArray(int length, UnityAction<int> action)
     {
-        Coroutine coroutine = StartCoroutine(TaskSolve(param1, length, action));
+        Coroutine coroutine = monoBehaviour.StartCoroutine(TaskSolve(length, action));
+        coroutines.Add(coroutine);
+        return coroutine;
+    }
+    public static Coroutine StartArray<T1>(T1 param1, int length, UnityAction<T1, int> action)
+    {
+        Coroutine coroutine = monoBehaviour.StartCoroutine(TaskSolve(param1, length, action));
         coroutines.Add(coroutine);
         return coroutine;
     }
 
-    public void Stop(Coroutine coroutine)
+    public static void Stop(Coroutine coroutine)
     {
         if (coroutines.Remove(coroutine))
-            StopCoroutine(coroutine);
+            monoBehaviour.StopCoroutine(coroutine);
     }
 
-    private IEnumerator TaskSolve(int length, UnityAction<int> action)
+    private static IEnumerator TaskSolve(int length, UnityAction<int> action)
     {
         for (int i = 0; i < length; i++)
         {
@@ -40,7 +46,7 @@ public class CoroutineManager : MonoBehaviour
             yield return null;
         }
     }
-    private IEnumerator TaskSolve<T1>(T1 parameter, int length, UnityAction<T1, int> action)
+    private static IEnumerator TaskSolve<T1>(T1 parameter, int length, UnityAction<T1, int> action)
     {
         for (int i = 0; i < length; i++)
         {

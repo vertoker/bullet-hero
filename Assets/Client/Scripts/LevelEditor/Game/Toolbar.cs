@@ -34,7 +34,7 @@ public class Toolbar : MonoBehaviour
             { "save", new ButtonToolbar(GetBackground(14), GetButtonsStandard(14), true) },
             { "lvl_manager", new ButtonToolbar(GetBackground(15), GetButtonsStandard(15), true) }
         };
-        void actionTimerText(float sec, int frame) 
+        void actionTimerText(float sec) 
         { textTimer.text = Utils.Sec2Text(sec); }
         EditorTimer.Add(actionTimerText);
         EditorTimer.Add(() => { SpriteChanger.Instance.SpriteNext(0); });

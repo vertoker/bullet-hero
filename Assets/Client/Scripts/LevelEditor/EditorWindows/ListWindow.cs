@@ -51,13 +51,13 @@ public class ListWindow : MonoBehaviour, IWindow
     public void StartSearch(string search_source)
     {
         StopSearch();
-        CoroutineManager.Instance.StartArray(search_source, lengthList, new UnityAction<string, int>(SearchProcess));
+        CoroutineManager.StartArray(search_source, lengthList, new UnityAction<string, int>(SearchProcess));
     }
     public void StopSearch()
     {
         if (process != null)
         {
-            CoroutineManager.Instance.Stop(process);
+            CoroutineManager.Stop(process);
             ClearUI();
         }
     }

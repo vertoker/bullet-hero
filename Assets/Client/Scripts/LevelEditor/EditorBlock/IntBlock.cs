@@ -34,7 +34,7 @@ public class IntBlock
     private const int but_0_1 = Utils.FRAMES_PER_SECOND_INT / 10;
     private void But1() { CurrentValue = int.Parse(block.text) - but_1_0; }
     private void But2() { CurrentValue = int.Parse(block.text) - but_0_1; }
-    private void But3() { CurrentValue = EditorTimer.FrameCurrent; }
+    private void But3() { CurrentValue = Utils.Sec2Frame(EditorTimer.SecCurrent); }
     private void But4() { CurrentValue = int.Parse(block.text) + but_0_1; }
     private void But5() { CurrentValue = int.Parse(block.text) + but_1_0; }
 }

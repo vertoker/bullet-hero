@@ -8,20 +8,24 @@ using UnityEditor;
 
 public class GameEditor : MonoBehaviour
 {
+    private TimelineWindow timelineWindow;
     private WindowManager windowManager;
-    private EditorTimer editorTimer;
 
     private void Awake()
     {
+        timelineWindow = GetComponent<TimelineWindow>();
         windowManager = GetComponent<WindowManager>();
-        editorTimer = GetComponent<EditorTimer>();
     }
 
     private void Start()
     {
         LevelManager.Load("0 demo level");
         windowManager.Init(LevelManager.Load());
-        editorTimer.Init(LevelManager.level.LevelData.EndFadeOut);
+
+        float length = LevelManager.level.LevelData.EndFadeOut;
+        timelineWindow.Init(length);
+        CoroutineManager.Init(this);
+        EditorTimer.Init(length);
     }
 
     public void Quit()
@@ -44,6 +48,8 @@ public class CustomButtons : Editor
         {
             LevelManager.CreateTestLevel();
         }
+        GUILayout.TextField("Second current: " + EditorTimer.SecCurrent.ToString());
+        GUILayout.TextField("Frame current: " + Utils.Sec2Frame(EditorTimer.SecCurrent).ToString());
     }
 }
 #endif

@@ -27,7 +27,6 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private GraphicRaycaster raycaster;
     [SerializeField] private EventSystem eventSystem;
     private Vector2 halfScreen;
-    private float camAspect;
 
     public static Color butEnableBG = new Color(1f, 1f, 1f);
     public static Color butNotSelectBG = new Color(0.85f, 0.85f, 0.85f);
@@ -70,7 +69,6 @@ public class WindowManager : MonoBehaviour
     public void Init(bool load_level)
     {
         halfScreen = new Vector2(Screen.width, Screen.height) / 2f;
-        camAspect = cam.aspect;
 
         // Windows Dictionarys
         left_windows = new Dictionary<string, IWindow>()
@@ -242,7 +240,7 @@ public class WindowManager : MonoBehaviour
                 }*/
             }
         }
-        return WindowFocus.None;
+        //return WindowFocus.None;
     }
 
     private void Raycaster()

@@ -20,6 +20,10 @@ public class SpriteChanger : MonoBehaviour
         spriters[index].Next();
         spriters[index].Activate();
     }
+    public static void SpriteMod(int index, int indexSprite)
+    {
+        Instance.spriters[index].Activate(indexSprite);
+    }
 
     [System.Serializable]
     private class Spriter
@@ -32,7 +36,10 @@ public class SpriteChanger : MonoBehaviour
         {
             image.sprite = sprites[activeSprite];
         }
-
+        public void Activate(int index)
+        {
+            image.sprite = sprites[index];
+        }
         public void Next()
         {
             activeSprite++;
