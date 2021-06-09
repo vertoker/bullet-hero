@@ -39,10 +39,10 @@ public static class EditorTimer
         if (!play)
         {
             play = true;
-            SpriteChanger.SpriteMod(0, 1);
-            if (secCurrent == secLength && timeScale >= 0)
+            if (secCurrent == secLength && timeScale > 0)
                 secCurrent = 0;
             timer = CoroutineManager.Start(Timer());
+            SpriteChanger.SpriteMod(0, 1);
         }
     }
     public static void Pause()
@@ -50,8 +50,8 @@ public static class EditorTimer
         if (play)
         {
             play = false;
-            SpriteChanger.SpriteMod(0, 0);
             CoroutineManager.Stop(timer);
+            SpriteChanger.SpriteMod(0, 0);
         }
     }
 

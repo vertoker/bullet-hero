@@ -9,6 +9,7 @@ public class TimelineWindow : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private Transform contentSeconds;
     [SerializeField] private Transform contentTimeline;
+    private RectTransform contentTimelineRect;
 
     [SerializeField] private Scrollbar scrollbarHorizontal;
     [SerializeField] private RectTransform scrollView;
@@ -37,6 +38,7 @@ public class TimelineWindow : MonoBehaviour
         //Aspect Update
         //scrollView.sizeDelta = new Vector2(width, 440f);
 
+        contentTimelineRect = contentTimeline.GetComponent<RectTransform>();
         secondsPool = new SpawnPool(30, secondInstance, contentSeconds);
         prefabsPool = new SpawnPool(150, prefabInstance, contentTimeline);
     }
@@ -61,6 +63,7 @@ public class TimelineWindow : MonoBehaviour
         float posTimeline = start + posX_01 * width;
         secCurrent = posTimeline / timelineLength * secLength;
         Debug.Log(secCurrent * 100 - timelineLength * scrollbarHorizontal.value);*/
+        secCurrent = sec;
         secMarker.localPosition = new Vector2(sec * 100f - timelineLength * scrollbarHorizontal.value, -25);
         secMarkerScrollbar.localPosition = new Vector2(sec / secLength * width - 540f * camAspect, -390f);
         secLineMarker.position = new Vector2(secMarker.position.x, 0f);
@@ -70,10 +73,21 @@ public class TimelineWindow : MonoBehaviour
         secLine.pivot = new Vector2(scrollbarHorizontal.value, 1f);
         secLine.localPosition = new Vector2(width * scrollbarHorizontal.value - width / 2f, 0f);
         secLineMarker.position = new Vector2(secMarker.position.x, 0f);
+        UpdateSecLineMarker(secCurrent);
+
         //RenderTimeline();
     }
-    public void RenderTimeline(int startFrame, int endFrame, int startHeigth, int endHeigth)
+    public void RenderTimeline()
     {
+        Vector2 contentStart = Vector2.zero;
+        Vector2 contentEnd = contentTimelineRect.sizeDelta;
+        Vector2 viewportStart = -contentTimelineRect.localPosition;
+        Vector2 viewportEnd = viewportStart + scrollView.sizeDelta;
+
+        Utils.RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
+            contentStart, contentEnd, viewportStart, viewportEnd);
+
+        Debug.Log(string.Join(" - ", startFrame, endFrame, startHeigth, endHeigth));
         secondsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
         prefabsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
     }
@@ -113,19 +127,10 @@ public class TimelineWindow : MonoBehaviour
         if (isPlay)
             EditorTimer.Play();
     }
-    public bool WatchedSecMarker()
+    public void WatchSecondMarker()
     {
-        float secStart = (secLength - secWidth) * scrollbarHorizontal.value;
-        if (secStart < 0f) { secStart = 0f; }
-        float secEnd = secStart + secWidth;
-        if (secEnd > secLength) { secEnd = secLength; }
-        return secCurrent < secStart || secCurrent > secEnd;
-    }
-    public void WatchSecMarker()
-    {
-        float time = secCurrent / secLength;
-        scrollbarHorizontal.value = time + time / timelineLength * width;
-        if (scrollbarHorizontal.value > 1f) { scrollbarHorizontal.value = 1f; }
+        //float timeTarget = secCurrent - secWidth / 2 + secWidth * secCurrent;
+        scrollbarHorizontal.value = Mathf.Clamp01(secCurrent / secLength);
     }
 }
 public class SpawnPool

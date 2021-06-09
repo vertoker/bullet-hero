@@ -44,4 +44,9 @@ public static class Utils
             return max;
         return min;
     }
+    public static void RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
+        Vector2 contentStart, Vector2 contentEnd, Vector2 viewportStart, Vector2 viewportEnd)//Доделать
+    {
+        startFrame = endFrame = startHeigth = endHeigth = 0;
+    }
 }

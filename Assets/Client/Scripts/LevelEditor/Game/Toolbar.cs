@@ -44,7 +44,6 @@ public class Toolbar : MonoBehaviour
     {
         textTimeScale.text = EditorTimer.TimeScale.ToString("0.0");
     }
-
     public void Enable(string name)
     {
         toolbarButtons[name].SetActive(true);
