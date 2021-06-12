@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.Events;
 using UnityEngine;
 using System;
 
@@ -9,11 +10,11 @@ using System;
 /// </summary>
 public interface IData
 {
-    public string GetParameter(int index);
+    public string GetParameter(byte index);
 }
 #endregion
 
-#region Основной класс сохранения
+#region Level
 /// Это класс нужно сохранять в JSON
 /// Основной класс, хранящиц всю информацию об уровне
 [Serializable]
@@ -55,7 +56,7 @@ public class Level : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -116,7 +117,7 @@ public class LevelData : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -173,7 +174,7 @@ public class Marker : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -242,7 +243,7 @@ public class Checkpoint : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -340,7 +341,7 @@ public class Prefab : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -411,7 +412,7 @@ public struct Pos : MarkerData, IData
         this.i = i;
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -467,7 +468,7 @@ public struct Sca : MarkerData, IData
         this.i = i;
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -516,7 +517,7 @@ public struct Rot : MarkerData, IData
         this.i = i;
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -582,7 +583,7 @@ public struct Clr : MarkerData, IData
         this.i = i;
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -624,7 +625,7 @@ public class EditorPrefab : IData
 
     }
 
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -656,7 +657,7 @@ public class ListEditorPrefab : IData
     public void Add(EditorPrefab prefab) { p.Add(prefab); }
     public void Remove(EditorPrefab prefab) { p.Remove(prefab); }
     public void RemoveAt(int index) { p.RemoveAt(index); }
-    public string GetParameter(int index)
+    public string GetParameter(byte index)
     {
         switch (index)
         {
@@ -790,5 +791,24 @@ public enum EasingType
     InCirc = 20, OutCirc = 21, InOutCirc = 22,// круговые функции
     InBack = 23, OutBack = 24, InOutBack = 25,// инерциальные функции
     InElastic = 26, OutElastic = 27, InOutElastic = 28// эластичные функции
+}
+#endregion
+
+#region Остальное
+public class Second : IData
+{
+    private float s;//Секунда
+
+    public float Seconds { get { return s; } set { s = value; } }
+
+    public Second(float seconds)
+    {
+        s = seconds;
+    }
+
+    public string GetParameter(byte index)
+    {
+        return s.ToString();
+    }
 }
 #endregion

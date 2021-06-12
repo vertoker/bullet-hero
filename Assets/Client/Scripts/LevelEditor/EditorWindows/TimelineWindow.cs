@@ -12,6 +12,7 @@ public class TimelineWindow : MonoBehaviour
     private RectTransform contentTimelineRect;
 
     [SerializeField] private Scrollbar scrollbarHorizontal;
+    [SerializeField] private RectTransform timelineRect;
     [SerializeField] private RectTransform scrollView;
     [SerializeField] private RectTransform secLine;
     [SerializeField] private RectTransform secMarker;
@@ -19,8 +20,8 @@ public class TimelineWindow : MonoBehaviour
     [SerializeField] private RectTransform secMarkerScrollbar;
     [SerializeField] private RectTransform content;
     [Header("Pools")]
-    [SerializeField] private GameObject secondInstance;
-    [SerializeField] private GameObject prefabInstance;
+    [SerializeField] private RectTransform secondInstance;
+    [SerializeField] private RectTransform prefabInstance;
     private SpawnPool secondsPool;
     private SpawnPool prefabsPool;
 
@@ -28,6 +29,37 @@ public class TimelineWindow : MonoBehaviour
     private float timelineLength, camAspect;
     private float secWidth, width, secLength;
     private float secCurrent = 0;
+
+    private Vector2 viewportSizeDelta;
+    private Vector2 contentSizeDelta;
+
+    #region Pool Delegates
+    private GetListRender secondsList = (int startFrame, int endFrame, int startHeigth, int endHeigth) =>
+    {
+        int startSec = Mathf.FloorToInt(startFrame / Utils.FRAMES_PER_SECOND);
+        int endSec = Mathf.FloorToInt(endFrame / Utils.FRAMES_PER_SECOND) + 1;
+        List<IData> data = new List<IData>();
+        for (int i = startSec; i <= endSec; i++)
+        {
+            data.Add(new Second(i));
+        }
+        return data;
+    };
+    private void CustomizeSeconds(RectTransform tr, IData data)
+    {
+        float seconds = float.Parse(data.GetParameter(0));
+        tr.localPosition = new Vector2(seconds * Utils.SecondLength, 0);
+    }
+    private void CustomizePrefab(RectTransform tr, IData data)
+    {
+        int startFrame = int.Parse(data.GetParameter(9));
+        int offsetFrame = int.Parse(data.GetParameter(1));
+        int heigth = int.Parse(data.GetParameter(14));
+        tr.localPosition = new Vector2(startFrame / Utils.FRAMES_PER_SECOND * Utils.SecondLength, heigth * Utils.LayerLength);
+        tr.sizeDelta = new Vector2(offsetFrame * Utils.SecondLength, Utils.LayerLength);
+        tr.GetChild(0).GetComponent<TMP_Text>().text = data.GetParameter(0);
+    }
+    #endregion
 
     private void Awake()
     {
@@ -39,16 +71,20 @@ public class TimelineWindow : MonoBehaviour
         //scrollView.sizeDelta = new Vector2(width, 440f);
 
         contentTimelineRect = contentTimeline.GetComponent<RectTransform>();
-        secondsPool = new SpawnPool(30, secondInstance, contentSeconds);
-        prefabsPool = new SpawnPool(150, prefabInstance, contentTimeline);
+        secondsPool = new SpawnPool(0, 30, secondInstance, contentSeconds, secondsList, CustomizeSeconds);
+        prefabsPool = new SpawnPool(100, 50, prefabInstance, contentTimeline, StaticSearchPrefabsEditor.searchPrefabsEditor, CustomizePrefab);
+
+        viewportSizeDelta = timelineRect.sizeDelta + scrollView.sizeDelta;
+        viewportSizeDelta = new Vector2(viewportSizeDelta.x, -viewportSizeDelta.y);
     }
 
     public void Init(float length)
     {
         secLength = length;
         timelineLength = 100f * secLength;
-        secLine.sizeDelta = new Vector2(timelineLength, 50f);
+        secLine.sizeDelta = new Vector2(timelineLength, Utils.LayerLength);
         content.sizeDelta = new Vector2(timelineLength, 1000f);
+        contentSizeDelta = new Vector2(timelineLength, -1000f);
 
         EditorTimer.Add(UpdateSecLineMarker);
         UpdateSecLineMarker(secCurrent);
@@ -75,14 +111,15 @@ public class TimelineWindow : MonoBehaviour
         secLineMarker.position = new Vector2(secMarker.position.x, 0f);
         UpdateSecLineMarker(secCurrent);
 
-        //RenderTimeline();
+        RenderTimeline();
     }
     public void RenderTimeline()
     {
         Vector2 contentStart = Vector2.zero;
-        Vector2 contentEnd = contentTimelineRect.sizeDelta;
+        Vector2 contentEnd = contentSizeDelta;
         Vector2 viewportStart = -contentTimelineRect.localPosition;
-        Vector2 viewportEnd = viewportStart + scrollView.sizeDelta;
+        Vector2 viewportEnd = viewportStart + viewportSizeDelta;
+        //Debug.Log(string.Join(" - ", contentStart, contentEnd, viewportStart, viewportEnd));
 
         Utils.RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
             contentStart, contentEnd, viewportStart, viewportEnd);
@@ -133,28 +170,76 @@ public class TimelineWindow : MonoBehaviour
         scrollbarHorizontal.value = Mathf.Clamp01(secCurrent / secLength);
     }
 }
+public delegate List<IData> GetListRender(int startFrame, int endFrame, int startHeigth, int endHeigth);
+public delegate void CustomizeObjectTimeline(RectTransform tr, IData data);
 public class SpawnPool
 {
-    private readonly int startCapacity;
-    private readonly GameObject objectInstance;
-    private readonly Queue<GameObject> objectsEnable;
-    private readonly Queue<GameObject> objectsDisable;
+    private readonly Transform parent;
+    private readonly RectTransform objectInstance;
+    private readonly List<RectTransform> objectsEnable;
+    private readonly Queue<RectTransform> objectsDisable;
 
-    public SpawnPool(int startCapacity, GameObject objectInstance, Transform parent)
+    private GetListRender getList;
+    private CustomizeObjectTimeline customization;
+
+    public SpawnPool(int initDisable, int initEnable, RectTransform objectInstance, Transform parent, GetListRender getList, CustomizeObjectTimeline customization)
     {
-        this.startCapacity = startCapacity;
+        this.parent = parent;
+        this.getList = getList;
+        this.customization = customization;
         this.objectInstance = objectInstance;
-        objectsEnable = new Queue<GameObject>();
-        objectsDisable = new Queue<GameObject>();
-        for (int i = 0; i < startCapacity; i++)
-        {
-            GameObject obj = Object.Instantiate(objectInstance, parent);
-            objectsDisable.Enqueue(obj);
-        }
+        objectsEnable = new List<RectTransform>();
+        objectsDisable = new Queue<RectTransform>();
+        FillPool(initDisable + initEnable);
+        EnableObjects(initEnable);
     }
 
     public void Render(int startFrame, int endFrame, int startHeigth, int endHeigth)
     {
+        List<IData> objects = getList.Invoke(startFrame, endFrame, startHeigth, endHeigth);
+        int length = objects.Count;
 
+        if (length < objectsEnable.Count)
+        {
+            DisableObjects(objectsEnable.Count - length);
+        }
+        else if (length > objectsEnable.Count)
+        {
+            int offset = length - objectsEnable.Count;
+            if (offset > objectsDisable.Count)
+                FillPool(offset - objectsDisable.Count);
+            EnableObjects(offset);
+        }
+
+        for (int i = 0; i < objects.Count; i++)
+            customization.Invoke(objectsEnable[i], objects[i]);
+    }
+
+    private void FillPool(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            RectTransform tr = Object.Instantiate(objectInstance, parent);
+            objectsDisable.Enqueue(tr);
+        }
+    }
+
+    private void DisableObjects(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            objectsEnable[i].gameObject.SetActive(false);
+            objectsDisable.Enqueue(objectsEnable[i]);
+        }
+        objectsEnable.RemoveRange(0, count);
+    }
+    private void EnableObjects(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            RectTransform tr = objectsDisable.Dequeue();
+            tr.gameObject.SetActive(true);
+            objectsEnable.Add(tr);
+        }
     }
 }

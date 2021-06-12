@@ -72,7 +72,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { clr.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { clr.Time = LevelManager.String2Float(value); Save(); }, clr.Time);
+        timeBlock.Mod((string value) => { clr.Time = Utils.String2Float(value); Save(); }, clr.Time);
         void sr(float value) { clr.SR = value; Save(); };
         void sg(float value) { clr.SG = value; Save(); };
         void sb(float value) { clr.SB = value; Save(); };
@@ -83,7 +83,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
         void ea(float value) { clr.EA = value; Save(); };
         colorStartBlock.Mod(sr, sg, sb, sa, clr.SR, clr.SG, clr.SB, clr.SA);
         colorEndBlock.Mod(er, eg, eb, ea, clr.ER, clr.EG, clr.EB, clr.EA);
-        IBlock.Mod((string value) => { clr.Interval = LevelManager.String2Float(value); Save(); }, clr.Interval);
+        IBlock.Mod((string value) => { clr.Interval = Utils.String2Float(value); Save(); }, clr.Interval);
         return GetComponent<RectTransform>();
     }
     public void Close()

@@ -65,10 +65,10 @@ public class EditRotWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { rot.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { rot.Time = LevelManager.String2Float(value); Save(); }, rot.Time);
-        SABlock.Mod((string value) => { rot.SA = LevelManager.String2Float(value); Save(); }, rot.SA);
-        EABlock.Mod((string value) => { rot.EA = LevelManager.String2Float(value); Save(); }, rot.EA);
-        IBlock.Mod((string value) => { rot.Interval = LevelManager.String2Float(value); Save(); }, rot.Interval);
+        timeBlock.Mod((string value) => { rot.Time = Utils.String2Float(value); Save(); }, rot.Time);
+        SABlock.Mod((string value) => { rot.SA = Utils.String2Float(value); Save(); }, rot.SA);
+        EABlock.Mod((string value) => { rot.EA = Utils.String2Float(value); Save(); }, rot.EA);
+        IBlock.Mod((string value) => { rot.Interval = Utils.String2Float(value); Save(); }, rot.Interval);
         return GetComponent<RectTransform>();
     }
     public void Close()

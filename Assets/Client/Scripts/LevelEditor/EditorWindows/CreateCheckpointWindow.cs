@@ -59,12 +59,12 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
             typeRandom[i].onClick.AddListener(actionButs[i]);
         }
 
-        timeBlock.Mod((string value) => { data.Time = LevelManager.String2Float(value); }, 0);
-        SXBlock.Mod((string value) => { data.SX = LevelManager.String2Float(value); }, 0);
-        SYBlock.Mod((string value) => { data.SY = LevelManager.String2Float(value); }, 0);
-        EXBlock.Mod((string value) => { data.EX = LevelManager.String2Float(value); }, 0);
-        EYBlock.Mod((string value) => { data.EY = LevelManager.String2Float(value); }, 0);
-        IBlock.Mod((string value) => { data.Interval = LevelManager.String2Float(value); }, 0);
+        timeBlock.Mod((string value) => { data.Time = Utils.String2Float(value); }, 0);
+        SXBlock.Mod((string value) => { data.SX = Utils.String2Float(value); }, 0);
+        SYBlock.Mod((string value) => { data.SY = Utils.String2Float(value); }, 0);
+        EXBlock.Mod((string value) => { data.EX = Utils.String2Float(value); }, 0);
+        EYBlock.Mod((string value) => { data.EY = Utils.String2Float(value); }, 0);
+        IBlock.Mod((string value) => { data.Interval = Utils.String2Float(value); }, 0);
         return GetComponent<RectTransform>();
     }
     public void Close()

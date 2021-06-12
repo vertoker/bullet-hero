@@ -16104,14 +16104,15 @@ MonoBehaviour:
   contentSeconds: {fileID: 1822570157}
   contentTimeline: {fileID: 1523142963}
   scrollbarHorizontal: {fileID: 1950573874}
+  timelineRect: {fileID: 609557150}
   scrollView: {fileID: 1438588922}
   secLine: {fileID: 725635281}
   secMarker: {fileID: 1812686744}
   secLineMarker: {fileID: 437553131}
   secMarkerScrollbar: {fileID: 1235998174}
   content: {fileID: 1523142963}
-  secondInstance: {fileID: 5679160502799422018, guid: b46318c5ce0f82a418428e702ac1e500, type: 3}
-  prefabInstance: {fileID: 5383953082313942608, guid: b75c304ceb39d784eb3e0742a74b0e2f, type: 3}
+  secondInstance: {fileID: 5153637550541480411, guid: b46318c5ce0f82a418428e702ac1e500, type: 3}
+  prefabInstance: {fileID: 5383953082313942609, guid: b75c304ceb39d784eb3e0742a74b0e2f, type: 3}
 --- !u!114 &320908839
 MonoBehaviour:
   m_ObjectHideFlags: 0

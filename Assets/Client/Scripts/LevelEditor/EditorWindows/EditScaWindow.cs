@@ -70,12 +70,12 @@ public class EditScaWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { sca.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { sca.Time = LevelManager.String2Float(value); Save(); }, sca.Time);
-        SXBlock.Mod((string value) => { sca.SX = LevelManager.String2Float(value); Save(); }, sca.SX);
-        SYBlock.Mod((string value) => { sca.SY = LevelManager.String2Float(value); Save(); }, sca.SY);
-        EXBlock.Mod((string value) => { sca.EX = LevelManager.String2Float(value); Save(); }, sca.EX);
-        EYBlock.Mod((string value) => { sca.EY = LevelManager.String2Float(value); Save(); }, sca.EY);
-        IBlock.Mod((string value) => { sca.Interval = LevelManager.String2Float(value); Save(); }, sca.Interval);
+        timeBlock.Mod((string value) => { sca.Time = Utils.String2Float(value); Save(); }, sca.Time);
+        SXBlock.Mod((string value) => { sca.SX = Utils.String2Float(value); Save(); }, sca.SX);
+        SYBlock.Mod((string value) => { sca.SY = Utils.String2Float(value); Save(); }, sca.SY);
+        EXBlock.Mod((string value) => { sca.EX = Utils.String2Float(value); Save(); }, sca.EX);
+        EYBlock.Mod((string value) => { sca.EY = Utils.String2Float(value); Save(); }, sca.EY);
+        IBlock.Mod((string value) => { sca.Interval = Utils.String2Float(value); Save(); }, sca.Interval);
         return GetComponent<RectTransform>();
     }
     public void Close()

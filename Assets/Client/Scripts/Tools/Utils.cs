@@ -7,13 +7,29 @@ public static class Utils
     public const float FRAMES_PER_SECOND = 60;
     public const int FRAMES_PER_SECOND_INT = 60;
     private const float OFFSET_FRAMES_CONVERT = 1 / FRAMES_PER_SECOND / 2;
+    public static int String2Int(string value)
+    {
+        if (int.TryParse(value, out int result))
+            return result;
+        return 0;
+    }
+    public static float String2Float(string value)
+    {
+        if (float.TryParse(value, out float result))
+            return result;
+        return 0;
+    }
     public static int Sec2Frame(float sec)
     {
         return Mathf.FloorToInt((sec + OFFSET_FRAMES_CONVERT) * FRAMES_PER_SECOND);
     }
+    public static float Frame2Sec(int frame)
+    {
+        return frame / FRAMES_PER_SECOND - OFFSET_FRAMES_CONVERT;
+    }
     public static string Sec2Text(string time)
     {
-        return Sec2Text(LevelManager.String2Float(time));
+        return Sec2Text(String2Float(time));
     }
     public static string Sec2Text(float sec)
     {
@@ -44,9 +60,34 @@ public static class Utils
             return max;
         return min;
     }
+    public const float SecondLength = 100f;
+    public const float LayerLength = 50f;
     public static void RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
         Vector2 contentStart, Vector2 contentEnd, Vector2 viewportStart, Vector2 viewportEnd)//Доделать
     {
-        startFrame = endFrame = startHeigth = endHeigth = 0;
+        if (viewportStart.x < contentStart.x)
+            startFrame = Sec2Frame(0);
+        else
+            startFrame = Sec2Frame(viewportStart.x / SecondLength);
+
+        if (viewportEnd.x > contentEnd.x)
+            endFrame = Sec2Frame(contentEnd.x / SecondLength);
+        else
+            endFrame = Sec2Frame(viewportEnd.x / SecondLength);
+
+        if (viewportStart.y > contentStart.y)
+            startHeigth = 0;
+        else
+            startHeigth = Mathf.FloorToInt(-viewportStart.y / LayerLength);
+
+        if (viewportEnd.y < contentEnd.y)
+            endHeigth = -(int)(contentEnd.y / LayerLength);
+        else
+            endHeigth = Mathf.FloorToInt(-viewportEnd.y / LayerLength) + 1;
+
+        /*float lengthViewport = viewportStart.y - viewportEnd.y;
+        endHeigth = startHeigth + Mathf.FloorToInt(lengthViewport) + 1;
+        if (endHeigth > heigthCount)
+            endHeigth = heigthCount;*/
     }
 }

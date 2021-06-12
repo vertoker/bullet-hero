@@ -11,12 +11,12 @@ class LevelManager// Convert JSON to Track Animation and reverse
     #region Static Delegates
     // Level Data
     public static UnityAction<string> LevelName = new UnityAction<string>((string value) => { level.LevelData.LevelName = value; });
-    public static UnityAction<string> EditorVersion = new UnityAction<string>((string value) => { level.LevelData.EditorVersion = String2Int(value); });
+    public static UnityAction<string> EditorVersion = new UnityAction<string>((string value) => { level.LevelData.EditorVersion = Utils.String2Int(value); });
     public static UnityAction<string> MusicTitle = new UnityAction<string>((string value) => { level.LevelData.MusicTitle = value; });
     public static UnityAction<string> MusicAuthor = new UnityAction<string>((string value) => { level.LevelData.MusicAuthor = value; });
     public static UnityAction<string> LevelAuthor = new UnityAction<string>((string value) => { level.LevelData.LevelAuthor = value; });
-    public static UnityAction<string> StartFadeOut = new UnityAction<string>((string value) => { level.LevelData.StartFadeOut = String2Float(value); });
-    public static UnityAction<string> EndFadeOut = new UnityAction<string>((string value) => { level.LevelData.EndFadeOut = String2Float(value); });
+    public static UnityAction<string> StartFadeOut = new UnityAction<string>((string value) => { level.LevelData.StartFadeOut = Utils.String2Float(value); });
+    public static UnityAction<string> EndFadeOut = new UnityAction<string>((string value) => { level.LevelData.EndFadeOut = Utils.String2Float(value); });
 
     // Markers
     public static UnityAction<string> MarkerName(int index)
@@ -24,7 +24,7 @@ class LevelManager// Convert JSON to Track Animation and reverse
     public static UnityAction<string> MarkerDescription(int index)
     { return new UnityAction<string>((string value) => { level.Markers[index].Description = value; }); }
     public static UnityAction<string> MarkerTime(int index)
-    { return new UnityAction<string>((string value) => { level.Markers[index].Time = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Markers[index].Time = Utils.String2Int(value); }); }
     public static UnityAction<float> MarkerColorR(int index)
     { return new UnityAction<float>((float value) => { level.Markers[index].Red = value; }); }
     public static UnityAction<float> MarkerColorG(int index)
@@ -38,19 +38,19 @@ class LevelManager// Convert JSON to Track Animation and reverse
     public static UnityAction<string> CheckpointName(int index)
     { return new UnityAction<string>((string value) => { level.Checkpoints[index].Name = value; }); }
     public static UnityAction<string> CheckpointTime(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Time = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Time = Utils.String2Float(value); }); }
     public static UnityAction<int> CheckpointRandom(int index)
     { return new UnityAction<int>((int value) => { level.Checkpoints[index].RandomType = (VectorRandomType)value; }); }
     public static UnityAction<string> CheckpointSX(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].SX = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].SX = Utils.String2Float(value); }); }
     public static UnityAction<string> CheckpointSY(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].SY = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].SY = Utils.String2Float(value); }); }
     public static UnityAction<string> CheckpointEX(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].EX = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].EX = Utils.String2Float(value); }); }
     public static UnityAction<string> CheckpointEY(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].EY = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].EY = Utils.String2Float(value); }); }
     public static UnityAction<string> CheckpointInterval(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Interval = String2Float(value); }); }
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Interval = Utils.String2Float(value); }); }
     // Prefabs
     public static UnityAction<string> PrefabName(int index)
     { return new UnityAction<string>((string value) => { level.Prefabs[index].Name = value; }); }
@@ -63,19 +63,19 @@ class LevelManager// Convert JSON to Track Animation and reverse
     public static UnityAction PrefabSpriteTypeButton(int index, int idButton)
     { return () => { level.Prefabs[index].SpriteType = (SpriteType)idButton; }; }
     public static UnityAction<string> PrefabStartFrame(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].StartFrame = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].StartFrame = Utils.String2Int(value); }); }
     public static UnityAction<string> PrefabEndFrame(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].EndFrame = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].EndFrame = Utils.String2Int(value); }); }
     public static UnityAction<int> PrefabAnchorPresets(int index)
     { return new UnityAction<int>((int value) => { level.Prefabs[index].Anchor = (AnchorPresets)value; }); }
     public static UnityAction<string> PrefabID(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].ID = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].ID = Utils.String2Int(value); }); }
     public static UnityAction<string> PrefabParentID(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].ParentID = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].ParentID = Utils.String2Int(value); }); }
     public static UnityAction<string> PrefabLayer(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].Layer = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].Layer = Utils.String2Int(value); }); }
     public static UnityAction<string> PrefabHeight(int index)
-    { return new UnityAction<string>((string value) => { level.Prefabs[index].Height = String2Int(value); }); }
+    { return new UnityAction<string>((string value) => { level.Prefabs[index].Height = Utils.String2Int(value); }); }
     #endregion
 
     #region GetList
@@ -91,21 +91,6 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new GetList(() => { return level.Checkpoints.ConvertAll(LevelConverter.CheckpointsConverter); }); }
     public static GetList PrefabList()
     { return new GetList(() => { return level.Prefabs.ConvertAll(LevelConverter.PrefabsConverter); }); }
-    #endregion
-
-    #region Static
-    public static int String2Int(string value)
-    {
-        if (int.TryParse(value, out int result))
-            return result;
-        return 0;
-    }
-    public static float String2Float(string value)
-    {
-        if (float.TryParse(value, out float result))
-            return result;
-        return 0;
-    }
     #endregion
 
     #region Save/Load

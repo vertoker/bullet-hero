@@ -70,12 +70,12 @@ public class EditPosWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { pos.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { pos.Time = LevelManager.String2Float(value); Save(); }, pos.Time);
-        SXBlock.Mod((string value) => { pos.SX = LevelManager.String2Float(value); Save(); }, pos.SX);
-        SYBlock.Mod((string value) => { pos.SY = LevelManager.String2Float(value); Save(); }, pos.SY);
-        EXBlock.Mod((string value) => { pos.EX = LevelManager.String2Float(value); Save(); }, pos.EX);
-        EYBlock.Mod((string value) => { pos.EY = LevelManager.String2Float(value); Save(); }, pos.EY);
-        IBlock.Mod((string value) => { pos.Interval = LevelManager.String2Float(value); Save(); }, pos.Interval);
+        timeBlock.Mod((string value) => { pos.Time = Utils.String2Float(value); Save(); }, pos.Time);
+        SXBlock.Mod((string value) => { pos.SX = Utils.String2Float(value); Save(); }, pos.SX);
+        SYBlock.Mod((string value) => { pos.SY = Utils.String2Float(value); Save(); }, pos.SY);
+        EXBlock.Mod((string value) => { pos.EX = Utils.String2Float(value); Save(); }, pos.EX);
+        EYBlock.Mod((string value) => { pos.EY = Utils.String2Float(value); Save(); }, pos.EY);
+        IBlock.Mod((string value) => { pos.Interval = Utils.String2Float(value); Save(); }, pos.Interval);
         return GetComponent<RectTransform>();
     }
     public void Close()

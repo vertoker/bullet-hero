@@ -33,7 +33,7 @@ public class CreateMarkerWindow : MonoBehaviour, IWindow, IInit
         data = new Marker();
         nameField.text = string.Empty;
         descriptionField.text = string.Empty;
-        timeBlock.Mod((string value) => { data.Time = LevelManager.String2Float(value); }, 0);
+        timeBlock.Mod((string value) => { data.Time = Utils.String2Float(value); }, 0);
         colorBlock.Mod((float value) => { data.Red = value; }, (float value) => { data.Green = value; }, (float value) => { data.Blue = value; }, 0.5f, 0.3f, 1);
         return GetComponent<RectTransform>();
     }
