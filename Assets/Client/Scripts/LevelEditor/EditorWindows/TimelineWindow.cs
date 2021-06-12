@@ -37,26 +37,26 @@ public class TimelineWindow : MonoBehaviour
     private GetListRender secondsList = (int startFrame, int endFrame, int startHeigth, int endHeigth) =>
     {
         int startSec = Mathf.FloorToInt(startFrame / Utils.FRAMES_PER_SECOND);
-        int endSec = Mathf.FloorToInt(endFrame / Utils.FRAMES_PER_SECOND) + 1;
-        List<IData> data = new List<IData>();
-        for (int i = startSec; i <= endSec; i++)
-        {
-            data.Add(new Second(i));
-        }
+        int endSec = Mathf.FloorToInt(endFrame / Utils.FRAMES_PER_SECOND);
+        int length = endSec - startSec + 1;
+
+        IData[] data = new IData[length];
+        for (int i = 0; i < length; i++)
+            data[i] = new Second(startSec + i);
         return data;
     };
     private void CustomizeSeconds(RectTransform tr, IData data)
     {
         float seconds = float.Parse(data.GetParameter(0));
-        tr.localPosition = new Vector2(seconds * Utils.SecondLength, 0);
+        tr.localPosition = new Vector2(seconds * Utils.SecondLength - timelineLength / 2f, 0);
     }
     private void CustomizePrefab(RectTransform tr, IData data)
     {
         int startFrame = int.Parse(data.GetParameter(9));
         int offsetFrame = int.Parse(data.GetParameter(1));
         int heigth = int.Parse(data.GetParameter(14));
-        tr.localPosition = new Vector2(startFrame / Utils.FRAMES_PER_SECOND * Utils.SecondLength, heigth * Utils.LayerLength);
-        tr.sizeDelta = new Vector2(offsetFrame * Utils.SecondLength, Utils.LayerLength);
+        tr.localPosition = new Vector2(startFrame / Utils.FRAMES_PER_SECOND * Utils.SecondLength, heigth * -Utils.LayerLength);
+        tr.sizeDelta = new Vector2(Utils.Frame2Sec(offsetFrame) * Utils.SecondLength, Utils.LayerLength);
         tr.GetChild(0).GetComponent<TMP_Text>().text = data.GetParameter(0);
     }
     #endregion
@@ -124,7 +124,7 @@ public class TimelineWindow : MonoBehaviour
         Utils.RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
             contentStart, contentEnd, viewportStart, viewportEnd);
 
-        Debug.Log(string.Join(" - ", startFrame, endFrame, startHeigth, endHeigth));
+        //Debug.Log(string.Join(" - ", startFrame, endFrame, startHeigth, endHeigth));
         secondsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
         prefabsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
     }
@@ -170,7 +170,7 @@ public class TimelineWindow : MonoBehaviour
         scrollbarHorizontal.value = Mathf.Clamp01(secCurrent / secLength);
     }
 }
-public delegate List<IData> GetListRender(int startFrame, int endFrame, int startHeigth, int endHeigth);
+public delegate IData[] GetListRender(int startFrame, int endFrame, int startHeigth, int endHeigth);
 public delegate void CustomizeObjectTimeline(RectTransform tr, IData data);
 public class SpawnPool
 {
@@ -196,8 +196,8 @@ public class SpawnPool
 
     public void Render(int startFrame, int endFrame, int startHeigth, int endHeigth)
     {
-        List<IData> objects = getList.Invoke(startFrame, endFrame, startHeigth, endHeigth);
-        int length = objects.Count;
+        IData[] objects = getList.Invoke(startFrame, endFrame, startHeigth, endHeigth);
+        int length = objects.Length;
 
         if (length < objectsEnable.Count)
         {
@@ -211,7 +211,7 @@ public class SpawnPool
             EnableObjects(offset);
         }
 
-        for (int i = 0; i < objects.Count; i++)
+        for (int i = 0; i < length; i++)
             customization.Invoke(objectsEnable[i], objects[i]);
     }
 
