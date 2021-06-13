@@ -7,6 +7,7 @@ using TMPro;
 
 public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private Button create;
     [SerializeField] private TMP_InputField nameField;
     [Header("Time")]
@@ -46,6 +47,7 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
     }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         data = new Checkpoint();
         if (actionName != null)
         {
@@ -65,11 +67,11 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
         EXBlock.Mod((string value) => { data.EX = Utils.String2Float(value); }, 0);
         EYBlock.Mod((string value) => { data.EY = Utils.String2Float(value); }, 0);
         IBlock.Mod((string value) => { data.Interval = Utils.String2Float(value); }, 0);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
     public void Create()
     {

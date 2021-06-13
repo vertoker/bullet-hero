@@ -7,6 +7,7 @@ using TMPro;
 
 public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private Toggle activeToggle;
     [SerializeField] private TMP_InputField timeField;
@@ -56,6 +57,7 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
     }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         Checkpoint checkpoint = LevelManager.level.Checkpoints[checkpointSelect];
         actionName = LevelManager.CheckpointName(checkpointSelect);
         nameField.onValueChanged.AddListener(actionName);
@@ -74,11 +76,11 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
         EXBlock.Mod(LevelManager.CheckpointEX(checkpointSelect), checkpoint.EX);
         EYBlock.Mod(LevelManager.CheckpointEY(checkpointSelect), checkpoint.EY);
         IBlock.Mod(LevelManager.CheckpointInterval(checkpointSelect), checkpoint.Interval);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
     private void SetActive(bool endBlocks, bool intervalBlock)
     {

@@ -7,6 +7,7 @@ using TMPro;
 
 public class EditPosWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
@@ -59,6 +60,7 @@ public class EditPosWindow : MonoBehaviour, IWindow
     { LevelManager.level.Prefabs[prefabIndex].Pos[posIndex] = pos; }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         pos = LevelManager.level.Prefabs[prefabIndex].Pos[posIndex];
         easingDropdown.value = (int)pos.Easing;
 
@@ -76,11 +78,11 @@ public class EditPosWindow : MonoBehaviour, IWindow
         EXBlock.Mod((string value) => { pos.EX = Utils.String2Float(value); Save(); }, pos.EX);
         EYBlock.Mod((string value) => { pos.EY = Utils.String2Float(value); Save(); }, pos.EY);
         IBlock.Mod((string value) => { pos.Interval = Utils.String2Float(value); Save(); }, pos.Interval);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
     private void SetActive(bool endBlocks, bool intervalBlock)
     {

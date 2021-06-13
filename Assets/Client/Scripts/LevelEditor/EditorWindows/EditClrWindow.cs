@@ -7,6 +7,7 @@ using TMPro;
 
 public class EditClrWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
@@ -61,6 +62,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
     { LevelManager.level.Prefabs[prefabIndex].Clr[clrIndex] = clr; }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         clr = LevelManager.level.Prefabs[prefabIndex].Clr[clrIndex];
         easingDropdown.value = (int)clr.Easing;
 
@@ -84,11 +86,11 @@ public class EditClrWindow : MonoBehaviour, IWindow
         colorStartBlock.Mod(sr, sg, sb, sa, clr.SR, clr.SG, clr.SB, clr.SA);
         colorEndBlock.Mod(er, eg, eb, ea, clr.ER, clr.EG, clr.EB, clr.EA);
         IBlock.Mod((string value) => { clr.Interval = Utils.String2Float(value); Save(); }, clr.Interval);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
     private void SetActive(bool endBlocks, bool intervalBlock)
     {

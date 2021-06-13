@@ -7,6 +7,7 @@ using TMPro;
 
 public class LevelDataWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_InputField levelNameField;
     [SerializeField] private TMP_InputField musicTitleField;
     [SerializeField] private TMP_InputField musicAuthorField;
@@ -23,10 +24,11 @@ public class LevelDataWindow : MonoBehaviour, IWindow
     }
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-
+        parent.gameObject.SetActive(false);
     }
 }

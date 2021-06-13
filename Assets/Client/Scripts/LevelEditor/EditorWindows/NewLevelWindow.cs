@@ -9,9 +9,9 @@ using TMPro;
 
 public class NewLevelWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_InputField levelNameField;
     [SerializeField] private TMP_InputField musicLinkField;
-
 
     public void Init()
     {
@@ -19,11 +19,12 @@ public class NewLevelWindow : MonoBehaviour, IWindow
     }
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-
+        parent.gameObject.SetActive(false);
     }
     public void Create()
     {

@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class OpenLevelWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-        throw new System.NotImplementedException();
+        parent.gameObject.SetActive(false);
     }
 }

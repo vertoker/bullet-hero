@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class Window : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
+
     public void Init()
     {
 
     }
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
 }

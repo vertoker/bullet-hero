@@ -34,27 +34,32 @@ public class TimelineWindow : MonoBehaviour
     private Vector2 contentSizeDelta;
 
     #region Pool Delegates
-    private GetListRender secondsList = (int startFrame, int endFrame, int startHeigth, int endHeigth) =>
+    private GetListRender secondsList = (int startFrame, int endFrame, int startHeigth, int endHeigth, out int[] indexes) =>
     {
         int startSec = Mathf.FloorToInt(startFrame / Utils.FRAMES_PER_SECOND);
         int endSec = Mathf.FloorToInt(endFrame / Utils.FRAMES_PER_SECOND);
         int length = endSec - startSec + 1;
 
         IData[] data = new IData[length];
+        indexes = new int[length];
         for (int i = 0; i < length; i++)
+        {
             data[i] = new Second(startSec + i);
+            indexes[i] = i;
+        }
         return data;
     };
-    private void CustomizeSeconds(RectTransform tr, IData data)
+    private void CustomizeSeconds(RectTransform tr, IData data, int index)
     {
         float seconds = float.Parse(data.GetParameter(0));
         tr.localPosition = new Vector2(seconds * Utils.SecondLength - timelineLength / 2f, 0);
     }
-    private void CustomizePrefab(RectTransform tr, IData data)
+    private void CustomizePrefab(RectTransform tr, IData data, int index)
     {
         int startFrame = int.Parse(data.GetParameter(9));
         int offsetFrame = int.Parse(data.GetParameter(1));
         int heigth = int.Parse(data.GetParameter(14));
+        tr.gameObject.name = index.ToString();
         tr.localPosition = new Vector2(startFrame / Utils.FRAMES_PER_SECOND * Utils.SecondLength, heigth * -Utils.LayerLength);
         tr.sizeDelta = new Vector2(Utils.Frame2Sec(offsetFrame) * Utils.SecondLength, Utils.LayerLength);
         tr.GetChild(0).GetComponent<TMP_Text>().text = data.GetParameter(0);
@@ -170,8 +175,8 @@ public class TimelineWindow : MonoBehaviour
         scrollbarHorizontal.value = Mathf.Clamp01(secCurrent / secLength);
     }
 }
-public delegate IData[] GetListRender(int startFrame, int endFrame, int startHeigth, int endHeigth);
-public delegate void CustomizeObjectTimeline(RectTransform tr, IData data);
+public delegate IData[] GetListRender(int startFrame, int endFrame, int startHeigth, int endHeigth, out int[] indexes);
+public delegate void CustomizeObjectTimeline(RectTransform tr, IData data, int index);
 public class SpawnPool
 {
     private readonly Transform parent;
@@ -196,7 +201,7 @@ public class SpawnPool
 
     public void Render(int startFrame, int endFrame, int startHeigth, int endHeigth)
     {
-        IData[] objects = getList.Invoke(startFrame, endFrame, startHeigth, endHeigth);
+        IData[] objects = getList.Invoke(startFrame, endFrame, startHeigth, endHeigth, out int[] indexes);
         int length = objects.Length;
 
         if (length < objectsEnable.Count)
@@ -212,7 +217,7 @@ public class SpawnPool
         }
 
         for (int i = 0; i < length; i++)
-            customization.Invoke(objectsEnable[i], objects[i]);
+            customization.Invoke(objectsEnable[i], objects[i], indexes[i]);
     }
 
     private void FillPool(int count)

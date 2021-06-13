@@ -7,12 +7,15 @@ using TMPro;
 
 public class AudioFileWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
+
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-
+        parent.gameObject.SetActive(false);
     }
 }

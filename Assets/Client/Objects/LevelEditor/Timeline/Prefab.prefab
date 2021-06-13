@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 5383953082313942609}
   - component: {fileID: 5383953082313942607}
   - component: {fileID: 5383953082313942606}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Prefab
-  m_TagString: Untagged
+  m_TagString: PrefabTimeline
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5383953083464718441}
   - component: {fileID: 5383953083464718439}
   - component: {fileID: 5383953083464718438}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}

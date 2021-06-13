@@ -5,11 +5,6 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
 
-public enum WindowFocus
-{
-    None = 0, EditorLeft = 1, EditorRight = 2, EditorDown = 3,
-    Timeline = 4, Toolbar = 5, GameStream = 6
-}
 public interface IWindow
 {
     public RectTransform Open();
@@ -19,15 +14,12 @@ public interface IInit
 {
     public void Init();
 }
-
+public enum EditorRenderType
+{
+    None = 0, EditorLR = 1, EditorLRD = 2
+}
 public class WindowManager : MonoBehaviour
 {
-    [Header("Basic")]
-    [SerializeField] private WindowFocus selectWindow = WindowFocus.None;
-    [SerializeField] private GraphicRaycaster raycaster;
-    [SerializeField] private EventSystem eventSystem;
-    private Vector2 halfScreen;
-
     public static Color butEnableBG = new Color(1f, 1f, 1f);
     public static Color butNotSelectBG = new Color(0.85f, 0.85f, 0.85f);
     public static Color butDisableBG = new Color(0.7f, 0.7f, 0.7f);
@@ -39,6 +31,9 @@ public class WindowManager : MonoBehaviour
 
     [Header("EditorLeft")]
     [SerializeField] private ScrollRect editor_left_scroll_rect;
+    [SerializeField] private RectTransform editor_left_rect_null;
+    private RectTransform editor_left_rect;
+
     [SerializeField] private ObjectEditorWindow object_editor;
     [SerializeField] private MarkerEditorWindow marker_editor;
     [SerializeField] private CheckpointEditorWindow checkpoint_editor;
@@ -48,8 +43,12 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private ListWindow create_prefab_standard;
     [SerializeField] private ListWindow create_prefab_level;
     [SerializeField] private ListWindow create_prefab_memory;
+
     [Header("EditorRight")]
     [SerializeField] private ScrollRect editor_right_scroll_rect;
+    [SerializeField] private RectTransform editor_right_rect_null;
+    private RectTransform editor_right_rect;
+
     [SerializeField] private ListWindow marker_list;
     [SerializeField] private ListWindow checkpoint_list;
     [SerializeField] private EditPosWindow edit_pos;
@@ -65,11 +64,37 @@ public class WindowManager : MonoBehaviour
     [SerializeField] private SaveWindow save_window;
     [Header("Other and Important")]
     [SerializeField] private ContentMarkersWindow content_markers_window;
+    private EditorRenderType renderType = EditorRenderType.None;
+
+    private static WindowManager Instance;
+    private void Awake() { Instance = this; }
+    public static EditorRenderType RenderType 
+    {
+        get { return Instance.renderType; }
+        set
+        {
+            Instance.renderType = value;
+            switch (value)
+            {
+                case EditorRenderType.None:
+                    Debug.Log("Nothing");
+                    break;
+                case EditorRenderType.EditorLR:
+                    Instance.editor_left_rect.sizeDelta = new Vector2(480, 640);
+                    Instance.editor_right_rect.sizeDelta = new Vector2(480, 640);
+                    Instance.content_markers_window.Close();
+                    break;
+                case EditorRenderType.EditorLRD:
+                    Instance.editor_left_rect.sizeDelta = new Vector2(480, 390);
+                    Instance.editor_right_rect.sizeDelta = new Vector2(480, 390);
+                    Instance.content_markers_window.Open();
+                    break;
+            }
+        }
+    }
 
     public void Init(bool load_level)
     {
-        halfScreen = new Vector2(Screen.width, Screen.height) / 2f;
-
         // Windows Dictionarys
         left_windows = new Dictionary<string, IWindow>()
         {
@@ -101,6 +126,9 @@ public class WindowManager : MonoBehaviour
             { "save_window", save_window }
         };
 
+        editor_left_rect = editor_left_scroll_rect.GetComponent<RectTransform>();
+        editor_right_rect = editor_right_scroll_rect.GetComponent<RectTransform>();
+
         // Windows Init
         object_editor.Init();
         marker_editor.Init();
@@ -113,6 +141,8 @@ public class WindowManager : MonoBehaviour
         edit_sca.Init();
         edit_rot.Init();
         edit_clr.Init();
+
+        content_markers_window.Init();
     }
 
     private void ListWindowsInit()
@@ -131,7 +161,7 @@ public class WindowManager : MonoBehaviour
         {
             int length = LevelManager.level.Prefabs.Count;
             CreateObject.CreateEditorPrefab(prefabs);
-            object_editor.PrefabSelect(length);
+            ObjectEditorWindow.PrefabSelect(length);
             LeftEditorOpen("object_editor");
         }
 
@@ -141,7 +171,7 @@ public class WindowManager : MonoBehaviour
 
         void actionMarker(int index) { marker_editor.MarkerSelect(index); LeftEditorOpen("marker_editor"); }
         void actionCheckpoint(int index) { marker_editor.MarkerSelect(index); LeftEditorOpen("checkpoint_editor"); }
-        void actionPrefab(int index) { object_editor.PrefabSelect(index); LeftEditorOpen("object_editor"); }
+        void actionPrefab(int index) { ObjectEditorWindow.PrefabSelect(index); LeftEditorOpen("object_editor"); }
 
         create_prefab_standard.Init(LevelManager.EditorPrefabStandardList(), getParam0, getParamsObject, actionEditorPrefabStandard);
         create_prefab_level.Init(LevelManager.EditorPrefabLevelList(), getParam0, getParamsObject, actionEditorPrefabLevel);
@@ -158,6 +188,11 @@ public class WindowManager : MonoBehaviour
             game_active_window.Close();
         if (game_windows.TryGetValue(key, out IWindow value))
         {
+            if (game_active_window != null)
+            {
+                GameClose();
+                return;
+            }
             game_active_window = value;
             value.Open();
         }
@@ -184,84 +219,30 @@ public class WindowManager : MonoBehaviour
             editor_right_scroll_rect.verticalScrollbar.value = 1f;
         }
     }
-    public void GameClose(string key)
+    public void GameClose()
     {
-        game_window.SetActive(false);
-        game_windows[key].Close();
-    }
-    public void LeftEditorClose(string key)
-    {
-        left_windows[key].Close();
-        editor_left_scroll_rect.content = null;
-    }
-    public void RightEditorClose(string key)
-    {
-        right_windows[key].Close();
-        editor_right_scroll_rect.content = null;
-    }
-
-    private void Update()
-    {
-        selectWindow = FingerFocusScreen();
-        if (selectWindow == WindowFocus.Timeline && Input.GetKey(KeyCode.Mouse0))
-            Raycaster();
-    }
-
-    private WindowFocus FingerFocusScreen()
-    {
-        Vector2 pos = ((Vector2)Input.mousePosition - halfScreen) / halfScreen;
-        if (pos.y < -0.2f) { return WindowFocus.Timeline; } // -100
-        else
+        if (game_active_window != null)
         {
-            if (pos.x < 0f)
-            {
-                if (pos.y <= 0) { return WindowFocus.Toolbar; }
-                else { return WindowFocus.GameStream; }
-            }
-            else
-            {
-                return WindowFocus.None;
-                /*switch (downRender)
-                {
-                    case EditorRenderType.None:
-                        return WindowFocus.None;
-
-                    case EditorRenderType.EditorLR:
-                        if (pos.x < 0.5f) // 480
-                        { return WindowFocus.EditorLeft; }
-                        return WindowFocus.EditorRight;
-
-                    case EditorRenderType.EditorLRD:
-                        if (pos.y < 0.3125f) // 150 
-                        { return WindowFocus.EditorDown; }
-                        if (pos.x < 0.5f) // 480
-                        { return WindowFocus.EditorLeft; }
-                        return WindowFocus.EditorRight;
-                }*/
-            }
+            game_active_window.Close();
+            game_active_window = null;
         }
-        //return WindowFocus.None;
     }
-
-    private void Raycaster()
+    public void LeftEditorClose()
     {
-        PointerEventData m_PointerEventData = new PointerEventData(eventSystem)
-        { position = Input.mousePosition };
-        List<RaycastResult> results = new List<RaycastResult>();
-        raycaster.Raycast(m_PointerEventData, results);
-
-        if (results.Count > 0)
+        if (left_active_window != null)
         {
-            switch (results[0].gameObject.tag)
-            {
-                case "MarkerUI":
-                    string name = results[0].gameObject.name;
-                    string type = name.Substring(0, name.Length - (name.Length - 3));
-                    int id = int.Parse(name.Substring(3, name.Length - 3));
-                    break;
-                case "ObjectUI":
-                    break;
-            }
+            left_active_window.Close();
+            left_active_window = null;
+            editor_left_scroll_rect.content = editor_left_rect_null;
+        }
+    }
+    public void RightEditorClose()
+    {
+        if (right_active_window != null)
+        {
+            right_active_window.Close();
+            right_active_window = null;
+            editor_right_scroll_rect.content = editor_right_rect_null;
         }
     }
 }

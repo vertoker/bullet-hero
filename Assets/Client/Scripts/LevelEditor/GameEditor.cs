@@ -10,19 +10,22 @@ public class GameEditor : MonoBehaviour
 {
     private TimelineWindow timelineWindow;
     private WindowManager windowManager;
+    private Raycaster raycaster;
 
     private void Awake()
     {
         timelineWindow = GetComponent<TimelineWindow>();
         windowManager = GetComponent<WindowManager>();
+        raycaster = GetComponent<Raycaster>(); 
     }
 
     private void Start()
     {
         LevelManager.Load("0 demo level");
         windowManager.Init(LevelManager.Load());
-
         float length = LevelManager.level.LevelData.EndFadeOut;
+
+        raycaster.Init(windowManager);
         timelineWindow.Init(length);
         CoroutineManager.Init(this);
         EditorTimer.Init(length);

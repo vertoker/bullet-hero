@@ -40,10 +40,12 @@ public class ListWindow : MonoBehaviour, IWindow
     }
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent.GetComponent<RectTransform>();
     }
     public void Close()
     {
+        parent.gameObject.SetActive(false);
         StopSearch();
         ClearUI();
     }

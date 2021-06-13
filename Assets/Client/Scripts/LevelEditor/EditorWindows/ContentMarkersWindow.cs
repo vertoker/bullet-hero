@@ -8,15 +8,19 @@ using TMPro;
 
 public class ContentMarkersWindow : MonoBehaviour, IWindow
 {
-    [SerializeField] private RectTransform editor_left_rect;
-    [SerializeField] private RectTransform editor_right_rect;
+    [SerializeField] private RectTransform parent;
 
+    public void Init()
+    {
+
+    }
     public RectTransform Open()
     {
-        return GetComponent<RectTransform>();
+        parent.gameObject.SetActive(true);
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
 }

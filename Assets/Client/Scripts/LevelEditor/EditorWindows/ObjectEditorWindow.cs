@@ -7,6 +7,8 @@ using TMPro;
 
 public class ObjectEditorWindow : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
+
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private Toggle activeToggle;
     [SerializeField] private Toggle colliderToggle;
@@ -32,6 +34,8 @@ public class ObjectEditorWindow : MonoBehaviour, IWindow, IInit
     private ButtonsSelectBlock shapes;
 
     private int prefabSelect;
+    private static ObjectEditorWindow Instance;
+    private void Awake() { Instance = this; }
 
     public void Init()
     {
@@ -40,12 +44,14 @@ public class ObjectEditorWindow : MonoBehaviour, IWindow, IInit
         anchors = new ButtonsSelectBlock(anchorButtons, WindowManager.butEnable, WindowManager.butDisable);
         shapes = new ButtonsSelectBlock(shapeButtons, WindowManager.butEnable, WindowManager.butDisable);
     }
-    public void PrefabSelect(int index)
+    public static void PrefabSelect(int index)
     {
-        prefabSelect = index;
+        Instance.prefabSelect = index;
     }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
+        WindowManager.RenderType = EditorRenderType.EditorLRD;
         Prefab prefab = LevelManager.level.Prefabs[prefabSelect];
         nameFieldAction = LevelManager.PrefabName(prefabSelect);
         activeToggleAction = LevelManager.PrefabActive(prefabSelect);
@@ -60,10 +66,12 @@ public class ObjectEditorWindow : MonoBehaviour, IWindow, IInit
 
         anchors.Mod(LevelManager.PrefabAnchorPresets(prefabSelect), (int)prefab.Anchor);
         shapes.Mod(LevelManager.PrefabSpriteType(prefabSelect), (int)prefab.SpriteType);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
+        parent.gameObject.SetActive(false);
+        WindowManager.RenderType = EditorRenderType.EditorLR;
         if (nameFieldAction != null)
         {
             nameField.onValueChanged.RemoveListener(nameFieldAction);

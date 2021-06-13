@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class SaveWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     public static SaveWindow Instance;
 
     private void Awake()
@@ -12,12 +13,13 @@ public class SaveWindow : MonoBehaviour, IWindow
 
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         LevelManager.Save();
         //Localize.Instance.TranslateRandomText(0);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
 }

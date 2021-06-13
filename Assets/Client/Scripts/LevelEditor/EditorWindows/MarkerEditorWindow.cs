@@ -7,6 +7,7 @@ using TMPro;
 
 public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private TMP_InputField descriptionField;
     [SerializeField] private TMP_InputField timeField;
@@ -37,6 +38,7 @@ public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
     }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         Marker marker = LevelManager.level.Markers[markerSelect];
         actionName = LevelManager.MarkerName(markerSelect);
         nameField.onValueChanged.AddListener(actionName);
@@ -48,10 +50,10 @@ public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
             LevelManager.MarkerColorG(markerSelect),
             LevelManager.MarkerColorB(markerSelect),
             marker.Red, marker.Green, marker.Blue);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
 }

@@ -7,6 +7,7 @@ using TMPro;
 
 public class EditScaWindow : MonoBehaviour, IWindow
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
@@ -59,6 +60,7 @@ public class EditScaWindow : MonoBehaviour, IWindow
     { LevelManager.level.Prefabs[prefabIndex].Sca[scaIndex] = sca; }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         sca = LevelManager.level.Prefabs[prefabIndex].Sca[scaIndex];
         easingDropdown.value = (int)sca.Easing;
 
@@ -76,11 +78,11 @@ public class EditScaWindow : MonoBehaviour, IWindow
         EXBlock.Mod((string value) => { sca.EX = Utils.String2Float(value); Save(); }, sca.EX);
         EYBlock.Mod((string value) => { sca.EY = Utils.String2Float(value); Save(); }, sca.EY);
         IBlock.Mod((string value) => { sca.Interval = Utils.String2Float(value); Save(); }, sca.Interval);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
     private void SetActive(bool endBlocks, bool intervalBlock)
     {

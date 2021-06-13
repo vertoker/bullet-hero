@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-
 public class CreateMarkerWindow : MonoBehaviour, IWindow, IInit
 {
+    [SerializeField] private RectTransform parent;
     [SerializeField] private Button create;
     [SerializeField] private TMP_InputField nameField;
     [SerializeField] private TMP_InputField descriptionField;
@@ -30,16 +30,17 @@ public class CreateMarkerWindow : MonoBehaviour, IWindow, IInit
     }
     public RectTransform Open()
     {
+        parent.gameObject.SetActive(true);
         data = new Marker();
         nameField.text = string.Empty;
         descriptionField.text = string.Empty;
         timeBlock.Mod((string value) => { data.Time = Utils.String2Float(value); }, 0);
         colorBlock.Mod((float value) => { data.Red = value; }, (float value) => { data.Green = value; }, (float value) => { data.Blue = value; }, 0.5f, 0.3f, 1);
-        return GetComponent<RectTransform>();
+        return parent;
     }
     public void Close()
     {
-        gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
     }
 
     public void Create()
