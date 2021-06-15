@@ -12,7 +12,7 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
     [SerializeField] private Toggle activeToggle;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [SerializeField] private Button[] typeRandom;
     [SerializeField] private Button[] SXButs;
     [SerializeField] private Button[] SYButs;
@@ -29,9 +29,12 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
     private UnityAction<bool> actionActive;
     private UnityAction[] actionButs = new UnityAction[5];
 
+    private static CheckpointEditorWindow Instance;
+    private void Awake() { Instance = this; }
+
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         SXBlock = new FloatBlock(SXField, SXButs);
         SYBlock = new FloatBlock(SYField, SYButs);
         EXBlock = new FloatBlock(EXField, EXButs);
@@ -44,16 +47,16 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
         typeRandom[3].onClick.AddListener(() => SetActive(true, true));
         typeRandom[4].onClick.AddListener(() => SetActive(true, false));
     }
-    public void CheckpointSelect(int index)
+    public static void CheckpointSelect(int index)
     {
-        if (actionName != null)
+        if (Instance.actionName != null)
         {
-            nameField.onValueChanged.RemoveListener(actionName);
-            activeToggle.onValueChanged.RemoveListener(actionActive);
+            Instance.nameField.onValueChanged.RemoveListener(Instance.actionName);
+            Instance.activeToggle.onValueChanged.RemoveListener(Instance.actionActive);
             for (int i = 0; i < length; i++)
-                typeRandom[i].onClick.RemoveListener(actionButs[i]);
+                Instance.typeRandom[i].onClick.RemoveListener(Instance.actionButs[i]);
         }
-        checkpointSelect = index;
+        Instance.checkpointSelect = index;
     }
     public RectTransform Open()
     {
@@ -63,7 +66,7 @@ public class CheckpointEditorWindow : MonoBehaviour, IWindow, IInit
         nameField.onValueChanged.AddListener(actionName);
         actionActive = LevelManager.CheckpointActive(checkpointSelect);
         activeToggle.onValueChanged.AddListener(actionActive);
-        timeBlock.Mod(LevelManager.CheckpointTime(checkpointSelect), checkpoint.Time);
+        frameBlock.Mod(LevelManager.CheckpointFrame(checkpointSelect), checkpoint.Frame);
 
         for (int i = 0; i < length; i++)
         {

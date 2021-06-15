@@ -23,8 +23,8 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new UnityAction<string>((string value) => { level.Markers[index].Name = value; }); }
     public static UnityAction<string> MarkerDescription(int index)
     { return new UnityAction<string>((string value) => { level.Markers[index].Description = value; }); }
-    public static UnityAction<string> MarkerTime(int index)
-    { return new UnityAction<string>((string value) => { level.Markers[index].Time = Utils.String2Int(value); }); }
+    public static UnityAction<string> MarkerFrame(int index)
+    { return new UnityAction<string>((string value) => { level.Markers[index].Frame = Utils.String2Int(value); }); }
     public static UnityAction<float> MarkerColorR(int index)
     { return new UnityAction<float>((float value) => { level.Markers[index].Red = value; }); }
     public static UnityAction<float> MarkerColorG(int index)
@@ -37,8 +37,8 @@ class LevelManager// Convert JSON to Track Animation and reverse
     { return new UnityAction<bool>((bool value) => { level.Checkpoints[index].Active = value; }); }
     public static UnityAction<string> CheckpointName(int index)
     { return new UnityAction<string>((string value) => { level.Checkpoints[index].Name = value; }); }
-    public static UnityAction<string> CheckpointTime(int index)
-    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Time = Utils.String2Float(value); }); }
+    public static UnityAction<string> CheckpointFrame(int index)
+    { return new UnityAction<string>((string value) => { level.Checkpoints[index].Frame = Utils.String2Int(value); }); }
     public static UnityAction<int> CheckpointRandom(int index)
     { return new UnityAction<int>((int value) => { level.Checkpoints[index].RandomType = (VectorRandomType)value; }); }
     public static UnityAction<string> CheckpointSX(int index)
@@ -100,9 +100,9 @@ class LevelManager// Convert JSON to Track Animation and reverse
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, -5, -5),
-                new Pos(3, VectorRandomType.N, EasingType.Linear, 5, -5),
-                new Pos(5, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(7, VectorRandomType.N, EasingType.Linear, 5, -5)
+                new Pos(30, VectorRandomType.N, EasingType.Linear, 5, -5),
+                new Pos(50, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(70, VectorRandomType.N, EasingType.Linear, 5, -5)
             },
             new List<Sca>()
             {
@@ -114,16 +114,17 @@ class LevelManager// Convert JSON to Track Animation and reverse
             },
             new List<Clr>()
             {
-                new Clr(1, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
+                new Clr(0, ColorRandomType.N, EasingType.Linear, 0f, 0f, 0f, 1f),
+                new Clr(10, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
             },
             SpriteType.Square, 0, 900, AnchorPresets.Left_Top, 1, 0, 1, 1);
         Prefab prefab2 = new Prefab("cube2", true, true,
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, -5, -5),
-                new Pos(8, VectorRandomType.N, EasingType.Linear, 5, -5),
-                new Pos(10, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(12, VectorRandomType.N, EasingType.Linear, -5, 5)
+                new Pos(80, VectorRandomType.N, EasingType.Linear, 5, -5),
+                new Pos(100, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(120, VectorRandomType.N, EasingType.Linear, -5, 5)
             },
             new List<Sca>()
             {
@@ -135,16 +136,17 @@ class LevelManager// Convert JSON to Track Animation and reverse
             },
             new List<Clr>()
             {
-                new Clr(7, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
+                new Clr(0, ColorRandomType.N, EasingType.Linear, 0f, 0f, 0f, 1f),
+                new Clr(70, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
             },
             SpriteType.Square, 0, 1200, AnchorPresets.Right_Middle, 2, 0, 1, 2);
         Prefab prefab3 = new Prefab("circle1", true, true,
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, -5, -5),
-                new Pos(13, VectorRandomType.N, EasingType.Linear, 5, -5),
-                new Pos(15, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(17, VectorRandomType.N, EasingType.Linear, -5, 5)
+                new Pos(130, VectorRandomType.N, EasingType.Linear, 5, -5),
+                new Pos(150, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(170, VectorRandomType.N, EasingType.Linear, -5, 5)
             },
             new List<Sca>()
             {
@@ -156,18 +158,19 @@ class LevelManager// Convert JSON to Track Animation and reverse
             },
             new List<Clr>()
             {
-                new Clr(11, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
+                new Clr(0, ColorRandomType.N, EasingType.Linear, 0f, 0f, 0f, 1f),
+                new Clr(110, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
             },
             SpriteType.Circle, 0, 1800, AnchorPresets.Left_Bottom, 3, 0, 2, 3);
         Prefab prefab4 = new Prefab("empty", true, false,
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(10, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(15, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(20, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(35, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(40, VectorRandomType.N, EasingType.Linear, -5, 5)
+                new Pos(100, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(150, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(200, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(350, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(400, VectorRandomType.N, EasingType.Linear, -5, 5)
             },
             new List<Sca>()
             {
@@ -179,18 +182,19 @@ class LevelManager// Convert JSON to Track Animation and reverse
             },
             new List<Clr>()
             {
-                new Clr(0, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
+                new Clr(0, ColorRandomType.N, EasingType.Linear, 0f, 0f, 0f, 1f),
+                new Clr(100, ColorRandomType.N, EasingType.Linear, 1f, 0.2f, 0.3f, 1f)
             },
             SpriteType.None, 0, 2400, AnchorPresets.Center_Middle, 4, 1, 3, 4);
         Prefab prefab5 = new Prefab("empty", true, false,
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(10, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(15, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(20, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(35, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(40, VectorRandomType.N, EasingType.Linear, -5, 5)
+                new Pos(100, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(150, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(200, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(350, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(400, VectorRandomType.N, EasingType.Linear, -5, 5)
             },
             new List<Sca>() { new Sca(0, VectorRandomType.N, EasingType.Linear, 1, 1) },
             new List<Rot>() { new Rot(0, FloatRandomType.N, EasingType.Linear, 0) },
@@ -200,11 +204,11 @@ class LevelManager// Convert JSON to Track Animation and reverse
             new List<Pos>()
             {
                 new Pos(0, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(10, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(15, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(20, VectorRandomType.N, EasingType.Linear, -5, 5),
-                new Pos(35, VectorRandomType.N, EasingType.Linear, 5, 5),
-                new Pos(40, VectorRandomType.N, EasingType.Linear, -5, 5)
+                new Pos(100, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(150, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(200, VectorRandomType.N, EasingType.Linear, -5, 5),
+                new Pos(350, VectorRandomType.N, EasingType.Linear, 5, 5),
+                new Pos(400, VectorRandomType.N, EasingType.Linear, -5, 5)
             },
             new List<Sca>() { new Sca(0, VectorRandomType.N, EasingType.Linear, 1, 1) },
             new List<Rot>() { new Rot(0, FloatRandomType.N, EasingType.Linear, 0) },
@@ -215,15 +219,15 @@ class LevelManager// Convert JSON to Track Animation and reverse
             new LevelData("0 demo level", 1, "1up muncher", "DUNDERPATRULLEN", "vertog", 184.5f, 188f),
             new List<Marker>()
             {
-                new Marker("here is block", "", 3, 1, 1, 1),
-                new Marker("here is another block", "", 5, 1, 0, 0),
-                new Marker("here is circle", "", 15, 0, 1, 0)
+                new Marker("here is block", "", 30, 1, 1, 1),
+                new Marker("here is another block", "", 50, 1, 0, 0),
+                new Marker("here is circle", "", 150, 0, 1, 0)
             },
             new List<Checkpoint>()
             {
-                new Checkpoint(true, "checkPoint 1", 3, VectorRandomType.N, 0, 0),
-                new Checkpoint(true, "checkPoint 2", 60, VectorRandomType.N, 0, 0),
-                new Checkpoint(true, "cHEckPoint 3", 120, VectorRandomType.N, 0, 0)
+                new Checkpoint(true, "checkPoint 1", 30, VectorRandomType.N, 0, 0),
+                new Checkpoint(true, "checkPoint 2", 600, VectorRandomType.N, 0, 0),
+                new Checkpoint(true, "cHEckPoint 3", 1200, VectorRandomType.N, 0, 0)
             },
             new List<Prefab>() { prefab1, prefab2, prefab3, prefab4, prefab5, prefab6 },
             new List<EditorPrefab>());

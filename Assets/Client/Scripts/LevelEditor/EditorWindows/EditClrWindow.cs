@@ -11,7 +11,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [SerializeField] private Button[] typeRandom;
 
     [SerializeField] private Slider sliderSR, sliderSG, sliderSB, sliderSA;
@@ -36,7 +36,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
 
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         colorStartBlock = new ColorRGBABlock(sliderSR, sliderSG, sliderSB, sliderSA, textSR, textSG, textSB, textSA, objectsStart);
         colorEndBlock = new ColorRGBABlock(sliderER, sliderEG, sliderEB, sliderEA, textER, textEG, textEB, textEA, objectsEnd);
         IBlock = new FloatBlock(IField, IButs);
@@ -74,7 +74,7 @@ public class EditClrWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { clr.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { clr.Time = Utils.String2Float(value); Save(); }, clr.Time);
+        frameBlock.Mod((string value) => { clr.Frame = Utils.String2Int(value); Save(); }, clr.Frame);
         void sr(float value) { clr.SR = value; Save(); };
         void sg(float value) { clr.SG = value; Save(); };
         void sb(float value) { clr.SB = value; Save(); };

@@ -13,7 +13,7 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
     [Header("Time")]
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [Header("Position")]
     [SerializeField] private Button[] typeRandom;
     [SerializeField] private Button[] SXButs;
@@ -33,7 +33,7 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
 
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         SXBlock = new FloatBlock(SXField, SXButs);
         SYBlock = new FloatBlock(SYField, SYButs);
         EXBlock = new FloatBlock(EXField, EXButs);
@@ -61,7 +61,7 @@ public class CreateCheckpointWindow : MonoBehaviour, IWindow, IInit
             typeRandom[i].onClick.AddListener(actionButs[i]);
         }
 
-        timeBlock.Mod((string value) => { data.Time = Utils.String2Float(value); }, 0);
+        frameBlock.Mod((string value) => { data.Frame = Utils.String2Int(value); }, 0);
         SXBlock.Mod((string value) => { data.SX = Utils.String2Float(value); }, 0);
         SYBlock.Mod((string value) => { data.SY = Utils.String2Float(value); }, 0);
         EXBlock.Mod((string value) => { data.EX = Utils.String2Float(value); }, 0);

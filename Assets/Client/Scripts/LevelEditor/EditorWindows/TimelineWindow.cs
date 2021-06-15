@@ -9,6 +9,8 @@ public class TimelineWindow : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private Transform contentSeconds;
     [SerializeField] private Transform contentTimeline;
+    [SerializeField] private Transform contentCheckpoints;
+
     private RectTransform contentTimelineRect;
 
     [SerializeField] private Scrollbar scrollbarHorizontal;
@@ -22,8 +24,10 @@ public class TimelineWindow : MonoBehaviour
     [Header("Pools")]
     [SerializeField] private RectTransform secondInstance;
     [SerializeField] private RectTransform prefabInstance;
+    [SerializeField] private RectTransform checkpointInstance;
     private SpawnPool secondsPool;
     private SpawnPool prefabsPool;
+    private SpawnPool checkpointsPool;
 
     private bool isPlay = false;
     private float timelineLength, camAspect;
@@ -64,6 +68,13 @@ public class TimelineWindow : MonoBehaviour
         tr.sizeDelta = new Vector2(Utils.Frame2Sec(offsetFrame) * Utils.SecondLength, Utils.LayerLength);
         tr.GetChild(0).GetComponent<TMP_Text>().text = data.GetParameter(0);
     }
+    private void CustomizeCheckpoint(RectTransform tr, IData data, int index)
+    {
+        int frame = int.Parse(data.GetParameter(2));
+        tr.gameObject.name = index.ToString();
+        float x = frame / Utils.FRAMES_PER_SECOND * Utils.SecondLength;
+        tr.localPosition = new Vector2(x - timelineLength * scrollbarHorizontal.value - width / 2f, -22.5f);
+    }
     #endregion
 
     private void Awake()
@@ -78,6 +89,7 @@ public class TimelineWindow : MonoBehaviour
         contentTimelineRect = contentTimeline.GetComponent<RectTransform>();
         secondsPool = new SpawnPool(0, 30, secondInstance, contentSeconds, secondsList, CustomizeSeconds);
         prefabsPool = new SpawnPool(100, 50, prefabInstance, contentTimeline, StaticSearchPrefabsEditor.searchPrefabsEditor, CustomizePrefab);
+        checkpointsPool = new SpawnPool(5, 0, checkpointInstance, contentCheckpoints, StaticSearchCheckpointsEditor.searchCheckpointsEditor, CustomizeCheckpoint);
 
         viewportSizeDelta = timelineRect.sizeDelta + scrollView.sizeDelta;
         viewportSizeDelta = new Vector2(viewportSizeDelta.x, -viewportSizeDelta.y);
@@ -132,6 +144,7 @@ public class TimelineWindow : MonoBehaviour
         //Debug.Log(string.Join(" - ", startFrame, endFrame, startHeigth, endHeigth));
         secondsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
         prefabsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
+        checkpointsPool.Render(startFrame, endFrame, startHeigth, endHeigth);
     }
 
     public void SecLineDown()

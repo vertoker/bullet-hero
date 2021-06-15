@@ -30,7 +30,7 @@ public static class StaticSearchPrefabsEditor
             startFrames = startFrames,
             endFrames = endFrames,
             heigths = heigths,
-            indexesPrefabs = indexesArray,
+            indexes = indexesArray,
 
             startFrame = startFrame,
             endFrame = endFrame,
@@ -40,12 +40,12 @@ public static class StaticSearchPrefabsEditor
         JobHandle jobHandle = searchPrefabsEditorParallelJob.Schedule(length, 50);
         jobHandle.Complete();
 
-        length = searchPrefabsEditorParallelJob.indexesPrefabs[0];
+        length = searchPrefabsEditorParallelJob.indexes[0];
         IData[] data = new IData[length];
         indexes = new int[length];
         for (int i = 0; i < length; i++)
         {
-            int id = searchPrefabsEditorParallelJob.indexesPrefabs[i + 1];
+            int id = searchPrefabsEditorParallelJob.indexes[i + 1];
             data[i] = LevelManager.level.Prefabs[id];
             indexes[i] = id;
         }
@@ -64,7 +64,7 @@ public struct SearchPrefabsEditor : IJobParallelFor
     [ReadOnly] public NativeArray<int> startFrames;
     [ReadOnly] public NativeArray<int> endFrames;
     [ReadOnly] public NativeArray<int> heigths;
-    public NativeArray<int> indexesPrefabs;
+    public NativeArray<int> indexes;
 
     [ReadOnly] public int startFrame;
     [ReadOnly] public int endFrame;
@@ -75,8 +75,8 @@ public struct SearchPrefabsEditor : IJobParallelFor
     {
         if ((startFrame < endFrames[index] || endFrame > startFrames[index]) && (startHeigth <= heigths[index] || endHeigth >= heigths[index]))
         {
-            indexesPrefabs[indexesPrefabs[0]] = index;
-            indexesPrefabs[0]++;
+            indexes[indexes[0]] = index;
+            indexes[0]++;
         }
     }
 }

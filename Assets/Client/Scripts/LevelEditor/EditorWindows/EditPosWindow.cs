@@ -11,7 +11,7 @@ public class EditPosWindow : MonoBehaviour, IWindow
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [SerializeField] private Button[] typeRandom;
     [SerializeField] private Button[] SXButs;
     [SerializeField] private Button[] SYButs;
@@ -30,7 +30,7 @@ public class EditPosWindow : MonoBehaviour, IWindow
 
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         SXBlock = new FloatBlock(SXField, SXButs);
         SYBlock = new FloatBlock(SYField, SYButs);
         EXBlock = new FloatBlock(EXField, EXButs);
@@ -72,7 +72,7 @@ public class EditPosWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { pos.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { pos.Time = Utils.String2Float(value); Save(); }, pos.Time);
+        frameBlock.Mod((string value) => { pos.Frame = Utils.String2Int(value); Save(); }, pos.Frame);
         SXBlock.Mod((string value) => { pos.SX = Utils.String2Float(value); Save(); }, pos.SX);
         SYBlock.Mod((string value) => { pos.SY = Utils.String2Float(value); Save(); }, pos.SY);
         EXBlock.Mod((string value) => { pos.EX = Utils.String2Float(value); Save(); }, pos.EX);

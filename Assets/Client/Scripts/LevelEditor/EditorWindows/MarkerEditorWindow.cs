@@ -12,7 +12,7 @@ public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
     [SerializeField] private TMP_InputField descriptionField;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [SerializeField] private Slider sliderR, sliderG, sliderB;
     [SerializeField] private TMP_Text textR, textG, textB;
     [SerializeField] private ColorRGBBlock colorBlock;
@@ -24,7 +24,7 @@ public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
 
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         colorBlock = new ColorRGBBlock(sliderR, sliderG, sliderB, textR, textG, textB);
     }
     public void MarkerSelect(int index)
@@ -45,7 +45,7 @@ public class MarkerEditorWindow : MonoBehaviour, IWindow, IInit
         actionDescription = LevelManager.MarkerDescription(markerSelect);
         descriptionField.onValueChanged.AddListener(actionDescription);
 
-        timeBlock.Mod(LevelManager.MarkerTime(markerSelect), marker.Time);
+        frameBlock.Mod(LevelManager.MarkerFrame(markerSelect), marker.Frame);
         colorBlock.Mod(LevelManager.MarkerColorR(markerSelect), 
             LevelManager.MarkerColorG(markerSelect),
             LevelManager.MarkerColorB(markerSelect),

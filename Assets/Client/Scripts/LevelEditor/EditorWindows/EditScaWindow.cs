@@ -11,7 +11,7 @@ public class EditScaWindow : MonoBehaviour, IWindow
     [SerializeField] private TMP_Dropdown easingDropdown;
     [SerializeField] private TMP_InputField timeField;
     [SerializeField] private Button[] timeButs;
-    private FloatBlock timeBlock;
+    private IntBlock frameBlock;
     [SerializeField] private Button[] typeRandom;
     [SerializeField] private Button[] SXButs;
     [SerializeField] private Button[] SYButs;
@@ -30,7 +30,7 @@ public class EditScaWindow : MonoBehaviour, IWindow
 
     public void Init()
     {
-        timeBlock = new FloatBlock(timeField, timeButs);
+        frameBlock = new IntBlock(timeField, timeButs);
         SXBlock = new FloatBlock(SXField, SXButs);
         SYBlock = new FloatBlock(SYField, SYButs);
         EXBlock = new FloatBlock(EXField, EXButs);
@@ -72,7 +72,7 @@ public class EditScaWindow : MonoBehaviour, IWindow
 
         actionEasing = (int value) => { sca.Easing = (EasingType)value; Save(); };
         easingDropdown.onValueChanged.AddListener(actionEasing);
-        timeBlock.Mod((string value) => { sca.Time = Utils.String2Float(value); Save(); }, sca.Time);
+        frameBlock.Mod((string value) => { sca.Frame = Utils.String2Int(value); Save(); }, sca.Frame);
         SXBlock.Mod((string value) => { sca.SX = Utils.String2Float(value); Save(); }, sca.SX);
         SYBlock.Mod((string value) => { sca.SY = Utils.String2Float(value); Save(); }, sca.SY);
         EXBlock.Mod((string value) => { sca.EX = Utils.String2Float(value); Save(); }, sca.EX);

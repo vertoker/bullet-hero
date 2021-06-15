@@ -235,7 +235,7 @@ public class Runtime : MonoBehaviour
         MainJobParentParallelBlock mainParentParallelJob = new MainJobParentParallelBlock
         {
             tool = tool,
-            timer = timerFrame,
+            activeFrame = activeFrame,
             playerPos = player.position,
 
             posArray = posList.AsArray(),
@@ -273,7 +273,8 @@ public class Runtime : MonoBehaviour
         #region Выполнение работы по высчитыванию кадра для простых объектов
         MainJobSimpleParallelBlock mainSimpleParallelJob = new MainJobSimpleParallelBlock
         {
-            tool = tool, timer = timerFrame,
+            tool = tool,
+            activeFrame = activeFrame,
             playerPos = player.position,
             countOfSimpleBlocks = countOfSimpleBlocks,
             countOfParentBlocks = countOfParentBlocks,
@@ -428,7 +429,7 @@ public struct MainJobParentParallelBlock : IJob
     public NativeArray<float4> clres;
 
     public BlockJobTools tool;
-    [ReadOnly] public float timer;
+    [ReadOnly] public int activeFrame;
     [ReadOnly] public float3 playerPos;
 
     public void Execute()
@@ -439,11 +440,11 @@ public struct MainJobParentParallelBlock : IJob
         {
             if (IDPArray[index] == 0)// Если у объекта нет родителя
             {
-                clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), timer);
-                rotes[index] = tool.GetRot(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), timer);
-                scaes[index] = tool.GetSca(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), timer);
+                clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), activeFrame);
+                rotes[index] = tool.GetRot(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), activeFrame);
+                scaes[index] = tool.GetSca(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), activeFrame);
                 float3 localPivot = tool.CalculatePivot(rotes[index].z, scaes[index], anchorArray[index]);
-                poses[index] = tool.GetPos(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), timer, localPivot, anchorArray[index]);
+                poses[index] = tool.GetPos(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), activeFrame, localPivot, anchorArray[index]);
 
                 if (colliderArray[index])
                 {
@@ -465,12 +466,12 @@ public struct MainJobParentParallelBlock : IJob
                 if (idsParent.Contains(IDPArray[index]) && !idsParent.Contains(IDArray[index]))
                 {
                     int idParent = idsParent.IndexOf(IDPArray[index]);// Находиться индекс родительского объекта с помощью другого индекса
-                    clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), timer);
-                    rotes[index] = tool.GetRotChild(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), timer, rotes[idParent]);
-                    scaes[index] = tool.GetScaChild(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), timer, scaes[idParent]);
+                    clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), activeFrame);
+                    rotes[index] = tool.GetRotChild(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), activeFrame, rotes[idParent]);
+                    scaes[index] = tool.GetScaChild(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), activeFrame, scaes[idParent]);
                     float3 localPivot = tool.CalculatePivot(rotes[index].z, scaes[index], anchorArray[index]);
                     float3 global = tool.CalculatePivot(rotes[idParent].z, scaes[idParent], anchorArray[idParent]);
-                    poses[index] = tool.GetPosChild(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), timer, localPivot, poses[idParent], global, anchorArray[index]);
+                    poses[index] = tool.GetPosChild(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), activeFrame, localPivot, poses[idParent], global, anchorArray[index]);
 
                     if (colliderArray[index])
                     {
@@ -490,11 +491,11 @@ public struct MainJobParentParallelBlock : IJob
                     // Если объекта нету в записанных объектах
                     if (!idsParent.Contains(IDArray[index]))
                     {
-                        clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), timer);
-                        rotes[index] = tool.GetRot(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), timer);
-                        scaes[index] = tool.GetSca(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), timer);
+                        clres[index] = tool.GetClr(clrArray.GetSubArray(clrCountArray[index], clrLengthArray[index]), activeFrame);
+                        rotes[index] = tool.GetRot(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), activeFrame);
+                        scaes[index] = tool.GetSca(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), activeFrame);
                         float3 localPivot = tool.CalculatePivot(rotes[index].z, scaes[index], anchorArray[index]);
-                        poses[index] = tool.GetPos(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), timer, localPivot, anchorArray[index]);
+                        poses[index] = tool.GetPos(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), activeFrame, localPivot, anchorArray[index]);
 
                         if (colliderArray[index])
                         {
@@ -549,7 +550,7 @@ public struct MainJobSimpleParallelBlock : IJob
     public NativeArray<float4> clres;
 
     public BlockJobTools tool;
-    [ReadOnly] public float timer;
+    [ReadOnly] public int activeFrame;
     [ReadOnly] public float3 playerPos;
 
     public void Execute()
@@ -567,21 +568,21 @@ public struct MainJobSimpleParallelBlock : IJob
             }
             if (pid == -1)// Если родитель не был найден
             {
-                clres[id] = tool.GetClr(clrArray.GetSubArray(clrCountArray[id], clrLengthArray[id]), timer);
-                rotes[id] = tool.GetRot(rotArray.GetSubArray(rotCountArray[id], rotLengthArray[id]), timer);
-                scaes[id] = tool.GetSca(scaArray.GetSubArray(scaCountArray[id], scaLengthArray[id]), timer);
+                clres[id] = tool.GetClr(clrArray.GetSubArray(clrCountArray[id], clrLengthArray[id]), activeFrame);
+                rotes[id] = tool.GetRot(rotArray.GetSubArray(rotCountArray[id], rotLengthArray[id]), activeFrame);
+                scaes[id] = tool.GetSca(scaArray.GetSubArray(scaCountArray[id], scaLengthArray[id]), activeFrame);
                 float3 localPivot = tool.CalculatePivot(rotes[id].z, scaes[id], anchorArray[id]);
-                poses[id] = tool.GetPos(posArray.GetSubArray(posCountArray[id], posLengthArray[id]), timer, localPivot, anchorArray[id]);
+                poses[id] = tool.GetPos(posArray.GetSubArray(posCountArray[id], posLengthArray[id]), activeFrame, localPivot, anchorArray[id]);
             }
             else// Если родитель у объекта был найден
             {
-                clres[id] = tool.GetClr(clrArray.GetSubArray(clrCountArray[id], clrLengthArray[id]), timer);
-                rotes[id] = tool.GetRotChild(rotArray.GetSubArray(rotCountArray[id], rotLengthArray[id]), timer, rotes[pid]);
-                scaes[id] = tool.GetScaChild(scaArray.GetSubArray(scaCountArray[id], scaLengthArray[id]), timer, scaes[pid]);
+                clres[id] = tool.GetClr(clrArray.GetSubArray(clrCountArray[id], clrLengthArray[id]), activeFrame);
+                rotes[id] = tool.GetRotChild(rotArray.GetSubArray(rotCountArray[id], rotLengthArray[id]), activeFrame, rotes[pid]);
+                scaes[id] = tool.GetScaChild(scaArray.GetSubArray(scaCountArray[id], scaLengthArray[id]), activeFrame, scaes[pid]);
                 //Debug.Log(id + " " + pid + " " + scaes[id] + " " + scaes[pid]);
                 float3 localPivot = tool.CalculatePivot(rotes[id].z, scaes[id], anchorArray[id]);
                 float3 global = tool.CalculatePivot(rotes[pid].z, scaes[pid], anchorArray[pid]);
-                poses[id] = tool.GetPosChild(posArray.GetSubArray(posCountArray[id], posLengthArray[id]), timer, localPivot, poses[pid], global, anchorArray[id]);
+                poses[id] = tool.GetPosChild(posArray.GetSubArray(posCountArray[id], posLengthArray[id]), activeFrame, localPivot, poses[pid], global, anchorArray[id]);
             }
             if (colliderArray[id])
             {
@@ -616,17 +617,17 @@ public struct BlockJobTools
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     #region Get
-    public float3 GetPos(NativeArray<Pos> posMarkers, float timer, float3 local, AnchorPresets anchor)
+    public float3 GetPos(NativeArray<Pos> posMarkers, int frame, float3 local, AnchorPresets anchor)
     {
-        if (posMarkers.Length == 1 || posMarkers[0].Time >= timer)
+        if (posMarkers.Length == 1 || posMarkers[0].Frame >= frame)
             return CalculatePos(posMarkers[0], local, anchor);
-        else if (posMarkers[posMarkers.Length - 1].Time <= timer)
+        else if (posMarkers[posMarkers.Length - 1].Frame <= frame)
             return CalculatePos(posMarkers[posMarkers.Length - 1], local, anchor);
 
         Pos startPos = posMarkers[0], endPos = posMarkers[0];
         for (int i = 0; i < posMarkers.Length - 1; i++)
         {
-            if (posMarkers[i].Time <= timer && posMarkers[i + 1].Time >= timer)
+            if (posMarkers[i].Frame <= frame && posMarkers[i + 1].Frame >= frame)
             {
                 startPos = posMarkers[i];
                 endPos = posMarkers[i + 1];
@@ -636,20 +637,20 @@ public struct BlockJobTools
 
         float3 start = CalculatePos(startPos, local, anchor);
         float3 end = CalculatePos(endPos, local, anchor);
-        float progress = (timer - startPos.Time) / (endPos.Time - startPos.Time);
+        float progress = (float)(frame - startPos.Frame) / (endPos.Frame - startPos.Frame);
         return start + (end - start) * GetEasing(progress, endPos.Easing);
     }
-    public float3 GetRot(NativeArray<Rot> rotMarkers, float timer)
+    public float3 GetRot(NativeArray<Rot> rotMarkers, int frame)
     {
-        if (rotMarkers.Length == 1 || rotMarkers[0].Time >= timer)
+        if (rotMarkers.Length == 1 || rotMarkers[0].Frame >= frame)
             return new float3(0, 0, CalculateRot(rotMarkers[0]));
-        else if (rotMarkers[rotMarkers.Length - 1].Time <= timer)
+        else if (rotMarkers[rotMarkers.Length - 1].Frame <= frame)
             return new float3(0, 0, CalculateRot(rotMarkers[rotMarkers.Length - 1]));
 
         Rot startRot = rotMarkers[0], endRot = rotMarkers[0];
         for (int i = 0; i < rotMarkers.Length - 1; i++)
         {
-            if (rotMarkers[i].Time <= timer && rotMarkers[i + 1].Time >= timer)
+            if (rotMarkers[i].Frame <= frame && rotMarkers[i + 1].Frame >= frame)
             {
                 startRot = rotMarkers[i];
                 endRot = rotMarkers[i + 1];
@@ -661,14 +662,14 @@ public struct BlockJobTools
         float end = CalculateRot(endRot);
         if (math.abs(end - start) > 180f)
             end += 360f;
-        float progress = (timer - startRot.Time) / (endRot.Time - startRot.Time);
+        float progress = (float)(frame - startRot.Frame) / (endRot.Frame - startRot.Frame);
         return new float3(0, 0, start + (end - start) * GetEasing(progress, endRot.Easing));
     }
-    public float3 GetSca(NativeArray<Sca> scaMarkers, float timer)
+    public float3 GetSca(NativeArray<Sca> scaMarkers, int frame)
     {
-        if (scaMarkers.Length == 1 || scaMarkers[0].Time >= timer)
+        if (scaMarkers.Length == 1 || scaMarkers[0].Frame >= frame)
             return CalculateSca(scaMarkers[0]);
-        else if (scaMarkers[scaMarkers.Length - 1].Time <= timer)
+        else if (scaMarkers[scaMarkers.Length - 1].Frame <= frame)
             return CalculateSca(scaMarkers[scaMarkers.Length - 1]);
 
         Sca startSca = scaMarkers[0];
@@ -676,7 +677,7 @@ public struct BlockJobTools
 
         for (int i = 0; i < scaMarkers.Length - 1; i++)
         {
-            if (scaMarkers[i].Time <= timer && scaMarkers[i + 1].Time >= timer)
+            if (scaMarkers[i].Frame <= frame && scaMarkers[i + 1].Frame >= frame)
             {
                 startSca = scaMarkers[i];
                 endSca = scaMarkers[i + 1];
@@ -686,20 +687,20 @@ public struct BlockJobTools
 
         float3 start = CalculateSca(startSca);
         float3 end = CalculateSca(endSca);
-        float progress = (timer - startSca.Time) / (endSca.Time - startSca.Time);
+        float progress = (float)(frame - startSca.Frame) / (endSca.Frame - startSca.Frame);
         return start + (end - start) * GetEasing(progress, endSca.Easing);
     }
-    public float4 GetClr(NativeArray<Clr> clrMarkers, float timer)
+    public float4 GetClr(NativeArray<Clr> clrMarkers, int frame)
     {
-        if (clrMarkers.Length == 1 || clrMarkers[0].Time >= timer)
+        if (clrMarkers.Length == 1 || clrMarkers[0].Frame >= frame)
             return CalculateClr(clrMarkers[0]);
-        else if (clrMarkers[clrMarkers.Length - 1].Time <= timer)
+        else if (clrMarkers[clrMarkers.Length - 1].Frame <= frame)
             return CalculateClr(clrMarkers[clrMarkers.Length - 1]);
 
         Clr startClr = clrMarkers[0], endClr = clrMarkers[0];
         for (int i = 0; i < clrMarkers.Length - 1; i++)
         {
-            if (clrMarkers[i].Time <= timer && clrMarkers[i + 1].Time >= timer)
+            if (clrMarkers[i].Frame <= frame && clrMarkers[i + 1].Frame >= frame)
             {
                 startClr = clrMarkers[i];
                 endClr = clrMarkers[i + 1];
@@ -709,7 +710,7 @@ public struct BlockJobTools
 
         float4 start = CalculateClr(startClr);
         float4 end = CalculateClr(endClr);
-        float progress = (timer - startClr.Time) / (endClr.Time - startClr.Time);
+        float progress = (float)(frame - startClr.Frame) / (endClr.Frame - startClr.Frame);
         return start + (end - start) * GetEasing(progress, endClr.Easing);
     }
     #endregion
@@ -725,22 +726,22 @@ public struct BlockJobTools
             case VectorRandomType.N:
                 return center + local + new float3(pos.SX, pos.SY, 0);
             case VectorRandomType.IMM:
-                float xRandomIMM = noise.GetPerlin(pos.SX, pos.EX, pos.Time) / 2f + 0.5f;
-                float yRandomIMM = noise.GetPerlin(pos.Time, pos.SY, pos.EY) / 2f + 0.5f;
+                float xRandomIMM = noise.GetPerlin(pos.SX, pos.EX, pos.Frame) / 2f + 0.5f;
+                float yRandomIMM = noise.GetPerlin(pos.Frame, pos.SY, pos.EY) / 2f + 0.5f;
                 float xIMM = pos.SX + (pos.EX - pos.SX) * xRandomIMM;
                 float yIMM = pos.SY + (pos.EY - pos.SY) * yRandomIMM;
                 return center + local + new float3(xIMM, yIMM, 0);
             case VectorRandomType.MM:
-                float xRandomMM = noise.GetPerlin(pos.SX, pos.EX, pos.Time) / 2f + 0.5f;
-                float yRandomMM = noise.GetPerlin(pos.Time, pos.SY, pos.EY) / 2f + 0.5f;
+                float xRandomMM = noise.GetPerlin(pos.SX, pos.EX, pos.Frame) / 2f + 0.5f;
+                float yRandomMM = noise.GetPerlin(pos.Frame, pos.SY, pos.EY) / 2f + 0.5f;
                 float xMM = Interval(pos.SX + (pos.EX - pos.SX) * xRandomMM, pos.SX, pos.EX, pos.Interval);
                 float yMM = Interval(pos.SY + (pos.EY - pos.SY) * yRandomMM, pos.SY, pos.EY, pos.Interval);
                 return center + local + new float3(xMM, yMM, 0);
             case VectorRandomType.C:
-                float angleC = noise.GetPerlin(pos.EX, pos.Time, pos.EY);
+                float angleC = noise.GetPerlin(pos.EX, pos.Frame, pos.EY);
                 return center + local + RandomPointOnCircle(pos.SX, pos.SY, angleC, pos.Interval);
             case VectorRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(pos.EX, pos.Time, pos.EY) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(pos.EX, pos.Frame, pos.EY) / 2f + 0.5f;
                 return center + local + new float3(pos.SX, pos.SY, 0) * (pos.EX + (pos.EY - pos.EX) * multiplyRandomM);
         }
         return float3.zero;
@@ -752,13 +753,13 @@ public struct BlockJobTools
             case FloatRandomType.N:
                 return rot.SA;
             case FloatRandomType.IMM:
-                float randomIMM = noise.GetPerlin(rot.SA, rot.Time, rot.EA) / 2f + 0.5f;
+                float randomIMM = noise.GetPerlin(rot.SA, rot.Frame, rot.EA) / 2f + 0.5f;
                 return rot.SA + (rot.EA - rot.SA) * randomIMM;
             case FloatRandomType.MM:
-                float randomMM = noise.GetPerlin(rot.SA, rot.Time, rot.EA) / 2f + 0.5f;
+                float randomMM = noise.GetPerlin(rot.SA, rot.Frame, rot.EA) / 2f + 0.5f;
                 return Interval(rot.SA + (rot.EA - rot.SA) * randomMM, rot.SA, rot.EA, rot.Interval);
             case FloatRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(rot.EA, rot.Time, rot.Interval) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(rot.EA, rot.Frame, rot.Interval) / 2f + 0.5f;
                 return rot.SA * (rot.EA + (rot.Interval - rot.EA) * multiplyRandomM);
         }
         return 0;
@@ -770,22 +771,22 @@ public struct BlockJobTools
             case VectorRandomType.N:
                 return new float3(sca.SX, sca.SY, 0);
             case VectorRandomType.IMM:
-                float xRandomIMM = noise.GetPerlin(sca.SX, sca.EX, sca.Time) / 2f + 0.5f;
-                float yRandomIMM = noise.GetPerlin(sca.Time, sca.SY, sca.EY) / 2f + 0.5f;
+                float xRandomIMM = noise.GetPerlin(sca.SX, sca.EX, sca.Frame) / 2f + 0.5f;
+                float yRandomIMM = noise.GetPerlin(sca.Frame, sca.SY, sca.EY) / 2f + 0.5f;
                 float xIMM = sca.SX + (sca.EX - sca.SX) * xRandomIMM;
                 float yIMM = sca.SY + (sca.EY - sca.SY) * yRandomIMM;
                 return new float3(xIMM, yIMM, 0);
             case VectorRandomType.MM:
-                float xRandomMM = noise.GetPerlin(sca.SX, sca.EX, sca.Time) / 2f + 0.5f;
-                float yRandomMM = noise.GetPerlin(sca.Time, sca.SY, sca.EY) / 2f + 0.5f;
+                float xRandomMM = noise.GetPerlin(sca.SX, sca.EX, sca.Frame) / 2f + 0.5f;
+                float yRandomMM = noise.GetPerlin(sca.Frame, sca.SY, sca.EY) / 2f + 0.5f;
                 float xMM = Interval(sca.SX + (sca.EX - sca.SX) * xRandomMM, sca.SX, sca.EX, sca.Interval);
                 float yMM = Interval(sca.SY + (sca.EY - sca.SY) * yRandomMM, sca.SY, sca.EY, sca.Interval);
                 return new float3(xMM, yMM, 0);
             case VectorRandomType.C:
-                float angleC = noise.GetPerlin(sca.EX, sca.Time, sca.EY);
+                float angleC = noise.GetPerlin(sca.EX, sca.Frame, sca.EY);
                 return RandomPointOnCircle(sca.SX, sca.SY, angleC, sca.Interval);
             case VectorRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(sca.EX, sca.Time, sca.EY) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(sca.EX, sca.Frame, sca.EY) / 2f + 0.5f;
                 return new float3(sca.SX, sca.SY, 0) * (sca.EX + (sca.EY - sca.EX) * multiplyRandomM);
         }
         return float3.zero;
@@ -797,20 +798,20 @@ public struct BlockJobTools
             case ColorRandomType.N:
                 return new float4(clr.SR, clr.SG, clr.SB, clr.SA);
             case ColorRandomType.IMM:
-                float rRandomIMM = noise.GetPerlin(clr.Time, clr.SR, clr.ER) / 2f + 0.5f;
-                float gRandomIMM = noise.GetPerlin(clr.SG, clr.Time, clr.EG) / 2f + 0.5f;
-                float bRandomIMM = noise.GetPerlin(clr.SB, clr.EB, clr.Time) / 2f + 0.5f;
-                float aRandomIMM = noise.GetPerlin(clr.SA, -clr.Time, clr.EA) / 2f + 0.5f;
+                float rRandomIMM = noise.GetPerlin(clr.Frame, clr.SR, clr.ER) / 2f + 0.5f;
+                float gRandomIMM = noise.GetPerlin(clr.SG, clr.Frame, clr.EG) / 2f + 0.5f;
+                float bRandomIMM = noise.GetPerlin(clr.SB, clr.EB, clr.Frame) / 2f + 0.5f;
+                float aRandomIMM = noise.GetPerlin(clr.SA, -clr.Frame, clr.EA) / 2f + 0.5f;
                 float rIMM = clr.SR + (clr.ER - clr.SR) * rRandomIMM;
                 float gIMM = clr.SG + (clr.EG - clr.SG) * gRandomIMM;
                 float bIMM = clr.SB + (clr.EB - clr.SB) * bRandomIMM;
                 float aIMM = clr.SA + (clr.EA - clr.SA) * aRandomIMM;
                 return new float4(rIMM, gIMM, bIMM, aIMM);
             case ColorRandomType.MM:
-                float rRandomMM = noise.GetPerlin(clr.Time, clr.SR, clr.ER) / 2f + 0.5f;
-                float gRandomMM = noise.GetPerlin(clr.SG, clr.Time, clr.EG) / 2f + 0.5f;
-                float bRandomMM = noise.GetPerlin(clr.SB, clr.EB, clr.Time) / 2f + 0.5f;
-                float aRandomMM = noise.GetPerlin(clr.SA, -clr.Time, clr.EA) / 2f + 0.5f;
+                float rRandomMM = noise.GetPerlin(clr.Frame, clr.SR, clr.ER) / 2f + 0.5f;
+                float gRandomMM = noise.GetPerlin(clr.SG, clr.Frame, clr.EG) / 2f + 0.5f;
+                float bRandomMM = noise.GetPerlin(clr.SB, clr.EB, clr.Frame) / 2f + 0.5f;
+                float aRandomMM = noise.GetPerlin(clr.SA, -clr.Frame, clr.EA) / 2f + 0.5f;
                 float rMM = Interval(clr.SR + (clr.ER - clr.SR) * rRandomMM, clr.SR, clr.ER, clr.Interval);
                 float gMM = Interval(clr.SG + (clr.EG - clr.SG) * gRandomMM, clr.SG, clr.EG, clr.Interval);
                 float bMM = Interval(clr.SB + (clr.EB - clr.SB) * bRandomMM, clr.SB, clr.EB, clr.Interval);
@@ -824,17 +825,17 @@ public struct BlockJobTools
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     #region Get (Child)
-    public float3 GetPosChild(NativeArray<Pos> posMarkers, float timer, float3 local, float3 posParent, float3 global, AnchorPresets anchor)
+    public float3 GetPosChild(NativeArray<Pos> posMarkers, int frame, float3 local, float3 posParent, float3 global, AnchorPresets anchor)
     {
-        if (posMarkers.Length == 1 || posMarkers[0].Time >= timer)
+        if (posMarkers.Length == 1 || posMarkers[0].Frame >= frame)
             return CalculatePosChild(posMarkers[0], local, posParent, global, anchor);
-        else if (posMarkers[posMarkers.Length - 1].Time <= timer)
+        else if (posMarkers[posMarkers.Length - 1].Frame <= frame)
             return CalculatePosChild(posMarkers[posMarkers.Length - 1], local, posParent, global, anchor);
 
         Pos startPos = posMarkers[0], endPos = posMarkers[0];
         for (int i = 0; i < posMarkers.Length - 1; i++)
         {
-            if (posMarkers[i].Time <= timer && posMarkers[i + 1].Time >= timer)
+            if (posMarkers[i].Frame <= frame && posMarkers[i + 1].Frame >= frame)
             {
                 startPos = posMarkers[i];
                 endPos = posMarkers[i + 1];
@@ -844,20 +845,20 @@ public struct BlockJobTools
 
         float3 start = CalculatePosChild(startPos, local, posParent, global, anchor);
         float3 end = CalculatePosChild(endPos, local, posParent, global, anchor);
-        float progress = (timer - startPos.Time) / (endPos.Time - startPos.Time);
+        float progress = (float)(frame - startPos.Frame) / (endPos.Frame - startPos.Frame);
         return start + (end - start) * GetEasing(progress, endPos.Easing);
     }
-    public float3 GetRotChild(NativeArray<Rot> rotMarkers, float timer, float3 rotParent)
+    public float3 GetRotChild(NativeArray<Rot> rotMarkers, int frame, float3 rotParent)
     {
-        if (rotMarkers.Length == 1 || rotMarkers[0].Time >= timer)
+        if (rotMarkers.Length == 1 || rotMarkers[0].Frame >= frame)
             return new float3(0, 0, CalculateRotChild(rotMarkers[0], rotParent.z));
-        else if (rotMarkers[rotMarkers.Length - 1].Time <= timer)
+        else if (rotMarkers[rotMarkers.Length - 1].Frame <= frame)
             return new float3(0, 0, CalculateRotChild(rotMarkers[rotMarkers.Length - 1], rotParent.z));
 
         Rot startRot = rotMarkers[0], endRot = rotMarkers[0];
         for (int i = 0; i < rotMarkers.Length - 1; i++)
         {
-            if (rotMarkers[i].Time <= timer && rotMarkers[i + 1].Time >= timer)
+            if (rotMarkers[i].Frame <= frame && rotMarkers[i + 1].Frame >= frame)
             {
                 startRot = rotMarkers[i];
                 endRot = rotMarkers[i + 1];
@@ -869,14 +870,14 @@ public struct BlockJobTools
         float end = CalculateRotChild(endRot, rotParent.z);
         if (math.abs(end - start) > 180f)
             end += 360f;
-        float progress = (timer - startRot.Time) / (endRot.Time - startRot.Time);
+        float progress = (float)(frame - startRot.Frame) / (endRot.Frame - startRot.Frame);
         return new float3(0, 0, start + (end - start) * GetEasing(progress, endRot.Easing));
     }
-    public float3 GetScaChild(NativeArray<Sca> scaMarkers, float timer, float3 scaParent)
+    public float3 GetScaChild(NativeArray<Sca> scaMarkers, int frame, float3 scaParent)
     {
-        if (scaMarkers.Length == 1 || scaMarkers[0].Time >= timer)
+        if (scaMarkers.Length == 1 || scaMarkers[0].Frame >= frame)
             return CalculateScaChild(scaMarkers[0], scaParent);
-        else if (scaMarkers[scaMarkers.Length - 1].Time <= timer)
+        else if (scaMarkers[scaMarkers.Length - 1].Frame <= frame)
             return CalculateScaChild(scaMarkers[scaMarkers.Length - 1], scaParent);
 
         Sca startSca = scaMarkers[0];
@@ -884,7 +885,7 @@ public struct BlockJobTools
 
         for (int i = 0; i < scaMarkers.Length - 1; i++)
         {
-            if (scaMarkers[i].Time <= timer && scaMarkers[i + 1].Time >= timer)
+            if (scaMarkers[i].Frame <= frame && scaMarkers[i + 1].Frame >= frame)
             {
                 startSca = scaMarkers[i];
                 endSca = scaMarkers[i + 1];
@@ -894,7 +895,7 @@ public struct BlockJobTools
 
         float3 start = CalculateScaChild(startSca, scaParent);
         float3 end = CalculateScaChild(endSca, scaParent);
-        float progress = (timer - startSca.Time) / (endSca.Time - startSca.Time);
+        float progress = (float)(frame - startSca.Frame) / (endSca.Frame - startSca.Frame);
         return start + (end - start) * GetEasing(progress, endSca.Easing);
     }
     #endregion
@@ -911,22 +912,22 @@ public struct BlockJobTools
             case VectorRandomType.N:
                 return fullOffset + new float3(pos.SX, pos.SY, 0);
             case VectorRandomType.IMM:
-                float xRandomIMM = noise.GetPerlin(pos.SX, pos.EX, pos.Time) / 2f + 0.5f;
-                float yRandomIMM = noise.GetPerlin(pos.Time, pos.SY, pos.EY) / 2f + 0.5f;
+                float xRandomIMM = noise.GetPerlin(pos.SX, pos.EX, pos.Frame) / 2f + 0.5f;
+                float yRandomIMM = noise.GetPerlin(pos.Frame, pos.SY, pos.EY) / 2f + 0.5f;
                 float xIMM = pos.SX + (pos.EX - pos.SX) * xRandomIMM;
                 float yIMM = pos.SY + (pos.EY - pos.SY) * yRandomIMM;
                 return fullOffset + new float3(xIMM, yIMM, 0);
             case VectorRandomType.MM:
-                float xRandomMM = noise.GetPerlin(pos.SX, pos.EX, pos.Time) / 2f + 0.5f;
-                float yRandomMM = noise.GetPerlin(pos.Time, pos.SY, pos.EY) / 2f + 0.5f;
+                float xRandomMM = noise.GetPerlin(pos.SX, pos.EX, pos.Frame) / 2f + 0.5f;
+                float yRandomMM = noise.GetPerlin(pos.Frame, pos.SY, pos.EY) / 2f + 0.5f;
                 float xMM = Interval(pos.SX + (pos.EX - pos.SX) * xRandomMM, pos.SX, pos.EX, pos.Interval);
                 float yMM = Interval(pos.SY + (pos.EY - pos.SY) * yRandomMM, pos.SY, pos.EY, pos.Interval);
                 return fullOffset + new float3(xMM, yMM, 0);
             case VectorRandomType.C:
-                float angleC = noise.GetPerlin(pos.EX, pos.Time, pos.EY);
+                float angleC = noise.GetPerlin(pos.EX, pos.Frame, pos.EY);
                 return fullOffset + RandomPointOnCircle(pos.SX, pos.SY, angleC, pos.Interval);
             case VectorRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(pos.EX, pos.Time, pos.EY) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(pos.EX, pos.Frame, pos.EY) / 2f + 0.5f;
                 return fullOffset + new float3(pos.SX, pos.SY, 0) * (pos.EX + (pos.EY - pos.EX) * multiplyRandomM);
         }
         return float3.zero;
@@ -938,13 +939,13 @@ public struct BlockJobTools
             case FloatRandomType.N:
                 return rot.SA * rotParent;
             case FloatRandomType.IMM:
-                float randomIMM = noise.GetPerlin(rot.SA, rot.Time, rot.EA) / 2f + 0.5f;
+                float randomIMM = noise.GetPerlin(rot.SA, rot.Frame, rot.EA) / 2f + 0.5f;
                 return rot.SA + (rot.EA - rot.SA) * randomIMM * rotParent;
             case FloatRandomType.MM:
-                float randomMM = noise.GetPerlin(rot.SA, rot.Time, rot.EA) / 2f + 0.5f;
+                float randomMM = noise.GetPerlin(rot.SA, rot.Frame, rot.EA) / 2f + 0.5f;
                 return Interval(rot.SA + (rot.EA - rot.SA) * randomMM, rot.SA, rot.EA, rot.Interval) * rotParent;
             case FloatRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(rot.EA, rot.Time, rot.Interval) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(rot.EA, rot.Frame, rot.Interval) / 2f + 0.5f;
                 return rot.SA * (rot.EA + (rot.Interval - rot.EA) * multiplyRandomM) * rotParent;
         }
         return 0;
@@ -956,22 +957,22 @@ public struct BlockJobTools
             case VectorRandomType.N:
                 return new float3(sca.SX, sca.SY, 0) * scaParent;
             case VectorRandomType.IMM:
-                float xRandomIMM = noise.GetPerlin(sca.SX, sca.EX, sca.Time) / 2f + 0.5f;
-                float yRandomIMM = noise.GetPerlin(sca.Time, sca.SY, sca.EY) / 2f + 0.5f;
+                float xRandomIMM = noise.GetPerlin(sca.SX, sca.EX, sca.Frame) / 2f + 0.5f;
+                float yRandomIMM = noise.GetPerlin(sca.Frame, sca.SY, sca.EY) / 2f + 0.5f;
                 float xIMM = sca.SX + (sca.EX - sca.SX) * xRandomIMM;
                 float yIMM = sca.SY + (sca.EY - sca.SY) * yRandomIMM;
                 return new float3(xIMM, yIMM, 0) * scaParent;
             case VectorRandomType.MM:
-                float xRandomMM = noise.GetPerlin(sca.SX, sca.EX, sca.Time) / 2f + 0.5f;
-                float yRandomMM = noise.GetPerlin(sca.Time, sca.SY, sca.EY) / 2f + 0.5f;
+                float xRandomMM = noise.GetPerlin(sca.SX, sca.EX, sca.Frame) / 2f + 0.5f;
+                float yRandomMM = noise.GetPerlin(sca.Frame, sca.SY, sca.EY) / 2f + 0.5f;
                 float xMM = Interval(sca.SX + (sca.EX - sca.SX) * xRandomMM, sca.SX, sca.EX, sca.Interval);
                 float yMM = Interval(sca.SY + (sca.EY - sca.SY) * yRandomMM, sca.SY, sca.EY, sca.Interval);
                 return new float3(xMM, yMM, 0) * scaParent;
             case VectorRandomType.C:
-                float angleC = noise.GetPerlin(sca.EX, sca.Time, sca.EY);
+                float angleC = noise.GetPerlin(sca.EX, sca.Frame, sca.EY);
                 return RandomPointOnCircle(sca.SX, sca.SY, angleC, sca.Interval) * scaParent;
             case VectorRandomType.M:
-                float multiplyRandomM = noise.GetPerlin(sca.EX, sca.Time, sca.EY) / 2f + 0.5f;
+                float multiplyRandomM = noise.GetPerlin(sca.EX, sca.Frame, sca.EY) / 2f + 0.5f;
                 return new float3(sca.SX, sca.SY, 0) * (sca.EX + (sca.EY - sca.EX) * multiplyRandomM) * scaParent;
         }
         return float3.zero;
@@ -1032,14 +1033,12 @@ public struct BlockJobTools
     {
         return borderScreen * anchorCoefficient[anchor];
     }
-
     public float3 RandomPointOnCircle(float x, float y, float angle, float radius)
     {
         angle -= 90f;
         float3 randomDirection = new float3(math.cos(angle / Rad2Deg), math.sin(angle / Rad2Deg), 0);
         return new float3(x, y, 0) + randomDirection * radius;
     }
-
     public float3 RotateVector(float3 a, float offsetAngle)//метод вращения объекта
     {
         float power = math.sqrt(a.x * a.x + a.y * a.y);//коэффициент силы
@@ -1047,13 +1046,11 @@ public struct BlockJobTools
         return new float3(math.cos(angle / Rad2Deg), math.sin(angle / Rad2Deg), 0) * power;
         //построение вектора из изменённого угла с коэффициентом силы
     }
-
     public float Interval(float value, float min, float max, float interval)
     {
         value = math.floor(value / interval) * interval;
         return math.clamp(value, min, max);
     }
-
     public float3 CalculatePivot(float rot, float3 sca, AnchorPresets pivot)
     {
         sca *= anchorCoefficient[pivot] / -2f;

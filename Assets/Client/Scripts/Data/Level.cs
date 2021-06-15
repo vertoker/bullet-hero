@@ -142,28 +142,28 @@ public class Marker : IData
 {
     [SerializeField] private string n;// Имя маркера (name)
     [SerializeField] private string d;// Описание маркера (description)
-    [SerializeField] private float t;// На каком моменте времени находиться метка (time)
+    [SerializeField] private int f;// На каком моменте времени находиться метка по кадрам (frame)
     [SerializeField] private float r;// Цвет маркера (красное) (red)
     [SerializeField] private float g;// Цвет маркера (синее) (green)
     [SerializeField] private float b;// Цвет маркера (зелёное) (blue)
 
     public string Name { get { return n; } set { n = value; } }
     public string Description { get { return d; } set { d = value; } }
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public float Red { get { return r; } set { r = value; } }
     public float Green { get { return g; } set { g = value; } }
     public float Blue { get { return b; } set { b = value; } }
 
     public Marker(string name, 
         string description, 
-        float time,
+        int frame,
         float red,
         float green,
         float blue)
     {
         n = name;
         d = description;
-        t = time;
+        f = frame;
         r = red;
         g = green;
         b = blue;
@@ -180,7 +180,7 @@ public class Marker : IData
         {
             case 0: return n.ToString();
             case 1: return d.ToString();
-            case 2: return t.ToString();
+            case 2: return f.ToString();
             case 3: return r.ToString();
             case 4: return g.ToString();
             case 5: return b.ToString();
@@ -199,7 +199,7 @@ public class Checkpoint : IData
 {
     [SerializeField] private bool a;// Активность чекпоинта (active)
     [SerializeField] private string n;// Название чекпоинта (name)
-    [SerializeField] private float t;// На каком моменте времени находиться чекпоинт (time)
+    [SerializeField] private int f;// На каком моменте времени находиться чекпоинт по кадрам (frame)
     [SerializeField] private VectorRandomType r;// Тип рандома у позиции (type of random)
     // Параметры позиции
     [SerializeField] private float sx;// start x
@@ -210,7 +210,7 @@ public class Checkpoint : IData
 
     public bool Active { get { return a; } set { a = value; } }
     public string Name { get { return n; } set { n = value; } }
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public VectorRandomType RandomType { get { return r; } set { r = value; } }
     public float SX { get { return sx; } set { sx = value; } }
     public float SY { get { return sy; } set { sy = value; } }
@@ -220,7 +220,7 @@ public class Checkpoint : IData
 
     public Checkpoint(bool active,
         string name,
-        float time,
+        int frame,
         VectorRandomType random_type,
         float sx, float sy,
         float ex = 0, float ey = 0,
@@ -228,7 +228,7 @@ public class Checkpoint : IData
     {
         a = active;
         n = name;
-        t = time;
+        f = frame;
         r = random_type;
 
         this.sx = sx;
@@ -249,7 +249,7 @@ public class Checkpoint : IData
         {
             case 0: return a.ToString();
             case 1: return n.ToString();
-            case 2: return t.ToString();
+            case 2: return f.ToString();
             case 3: return r.ToString();
             case 4: return sx.ToString();
             case 5: return sy.ToString();
@@ -376,7 +376,7 @@ public interface MarkerData { }
 [Serializable]
 public struct Pos : MarkerData, IData
 {
-    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private int f; // Глобальная метка во времени по кадрам (frame)
     [SerializeField] private VectorRandomType r;// Тип рандома у позиции (type of random)
     [SerializeField] private EasingType e;// Тип функции (easing)
     // Параметры позиции
@@ -386,7 +386,7 @@ public struct Pos : MarkerData, IData
     [SerializeField] private float ey;// end y
     [SerializeField] private float i; // internal
 
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public VectorRandomType RandomType { get { return r; } set { r = value; } }
     public EasingType Easing { get { return e; } set { e = value; } }
     public float SX { get { return sx; } set { sx = value; } }
@@ -395,14 +395,14 @@ public struct Pos : MarkerData, IData
     public float EY { get { return ey; } set { ey = value; } }
     public float Interval { get { return i; } set { i = value; } }
 
-    public Pos(float time, 
+    public Pos(int frame, 
         VectorRandomType random_type, 
         EasingType easing, 
         float sx, float sy, 
         float ex = 0, float ey = 0, 
         float i = 0)
     {
-        t = time;
+        f = frame;
         r = random_type;
         e = easing;
         this.sx = sx;
@@ -416,7 +416,7 @@ public struct Pos : MarkerData, IData
     {
         switch (index)
         {
-            case 0: return t.ToString();
+            case 0: return f.ToString();
             case 1: return r.ToString();
             case 2: return e.ToString();
             case 3: return sx.ToString();
@@ -432,7 +432,7 @@ public struct Pos : MarkerData, IData
 [Serializable]
 public struct Sca : MarkerData, IData
 {
-    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private int f; // Глобальная метка во времени по кадрам (frame)
     [SerializeField] private VectorRandomType r;// Тип рандома у размера (type of random)
     [SerializeField] private EasingType e;// Тип функции (easing)
     // Параметры размера
@@ -442,7 +442,7 @@ public struct Sca : MarkerData, IData
     [SerializeField] private float ey;// end y
     [SerializeField] private float i; // internal
 
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public VectorRandomType RandomType { get { return r; } set { r = value; } }
     public EasingType Easing { get { return e; } set { e = value; } }
     public float SX { get { return sx; } set { sx = value; } }
@@ -451,14 +451,14 @@ public struct Sca : MarkerData, IData
     public float EY { get { return ey; } set { ey = value; } }
     public float Interval { get { return i; } set { i = value; } }
 
-    public Sca(float time,
+    public Sca(int frame,
         VectorRandomType random_type,
         EasingType easing,
         float sx, float sy,
         float ex = 0, float ey = 0,
         float i = 0)
     {
-        t = time;
+        f = frame;
         r = random_type;
         e = easing;
         this.sx = sx;
@@ -472,7 +472,7 @@ public struct Sca : MarkerData, IData
     {
         switch (index)
         {
-            case 0: return t.ToString();
+            case 0: return f.ToString();
             case 1: return r.ToString();
             case 2: return e.ToString();
             case 3: return sx.ToString();
@@ -488,7 +488,7 @@ public struct Sca : MarkerData, IData
 [Serializable]
 public struct Rot : MarkerData, IData
 {
-    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private int f; // Глобальная метка во времени по кадрам (frame)
     [SerializeField] private FloatRandomType r;// Тип рандома у угла (type of random)
     [SerializeField] private EasingType e;// Тип функции (easing)
     // Параметры угла
@@ -496,20 +496,20 @@ public struct Rot : MarkerData, IData
     [SerializeField] private float ea;// end angle
     [SerializeField] private float i; // internal
 
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public FloatRandomType RandomType { get { return r; } set { r = value; } }
     public EasingType Easing { get { return e; } set { e = value; } }
     public float SA { get { return sa; } set { sa = value; } }
     public float EA { get { return ea; } set { ea = value; } }
     public float Interval { get { return i; } set { i = value; } }
 
-    public Rot(float time,
+    public Rot(int frame,
         FloatRandomType random_type,
         EasingType easing,
         float sa, float ea = 0,
         float i = 0)
     {
-        t = time;
+        f = frame;
         r = random_type;
         e = easing;
         this.sa = sa;
@@ -521,7 +521,7 @@ public struct Rot : MarkerData, IData
     {
         switch (index)
         {
-            case 0: return t.ToString();
+            case 0: return f.ToString();
             case 1: return r.ToString();
             case 2: return e.ToString();
             case 3: return sa.ToString();
@@ -535,7 +535,7 @@ public struct Rot : MarkerData, IData
 [Serializable]
 public struct Clr : MarkerData, IData
 {
-    [SerializeField] private float t; // Глобальная метка во времени (time)
+    [SerializeField] private int f; // Глобальная метка во времени по кадрам (frame)
     [SerializeField] private ColorRandomType r;// Тип рандома у угла (type of random)
     [SerializeField] private EasingType e;// Тип функции (easing)
     // Параметры угла
@@ -549,7 +549,7 @@ public struct Clr : MarkerData, IData
     [SerializeField] private float ea;// end a
     [SerializeField] private float i; // internal
 
-    public float Time { get { return t; } set { t = value; } }
+    public int Frame { get { return f; } set { f = value; } }
     public ColorRandomType RandomType { get { return r; } set { r = value; } }
     public EasingType Easing { get { return e; } set { e = value; } }
     public float SR { get { return sr; } set { sr = value; } }
@@ -562,14 +562,14 @@ public struct Clr : MarkerData, IData
     public float EA { get { return ea; } set { ea = value; } }
     public float Interval { get { return i; } set { i = value; } }
 
-    public Clr(float time,
+    public Clr(int frame,
         ColorRandomType random_type,
         EasingType easing, 
         float sr, float sg, float sb, float sa, 
         float er = 0, float eg = 0, float eb = 0, float ea = 0, 
         float i = 0)
     {
-        t = time;
+        f = frame;
         r = random_type;
         e = easing;
         this.sr = sr;
@@ -587,7 +587,7 @@ public struct Clr : MarkerData, IData
     {
         switch (index)
         {
-            case 0: return t.ToString();
+            case 0: return f.ToString();
             case 1: return r.ToString();
             case 2: return e.ToString();
             case 3: return sr.ToString();

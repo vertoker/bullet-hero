@@ -90,7 +90,12 @@ public class Raycaster : MonoBehaviour
                     ObjectEditorWindow.PrefabSelect(id);
                     window.LeftEditorOpen("object_editor");
                     break;
+                case "CheckpointTimeline":
+                    CheckpointEditorWindow.CheckpointSelect(id);
+                    window.LeftEditorOpen("checkpoint_editor");
+                    break;
                 case "MarkerTimeline":
+
                     break;
                 case "Untagged":
                     window.LeftEditorClose();
