@@ -9,8 +9,8 @@ namespace Data
     [Serializable]
     public struct Checkpoint
     {
-        [SerializeField] private bool a;// Активность чекпоинта (active)
         [SerializeField] private string n;// Название чекпоинта (name)
+        [SerializeField] private bool a;// Активность чекпоинта (active)
         [SerializeField] private int f;// На каком моменте времени находиться чекпоинт по кадрам (frame)
         [SerializeField] private VectorRandomType r;// Тип рандома у позиции (type of random)
 
@@ -21,8 +21,8 @@ namespace Data
         [SerializeField] private float ey;// end y
         [SerializeField] private float i; // internal
 
-        public bool Active { get { return a; } set { a = value; } }
         public string Name { get { return n; } set { n = value; } }
+        public bool Active { get { return a; } set { a = value; } }
         public int Frame { get { return f; } set { f = value; } }
         public VectorRandomType RandomType { get { return r; } set { r = value; } }
         public float SX { get { return sx; } set { sx = value; } }
@@ -31,16 +31,16 @@ namespace Data
         public float EY { get { return ey; } set { ey = value; } }
         public float Interval { get { return i; } set { i = value; } }
 
-        public Checkpoint(bool active,
-            string name,
+        public Checkpoint(string name,
+            bool active,
             int frame,
             VectorRandomType random_type,
             float sx, float sy,
             float ex = 0, float ey = 0,
             float i = 0)
         {
-            a = active;
             n = name;
+            a = active;
             f = frame;
             r = random_type;
 

@@ -8,8 +8,8 @@ namespace Game.SerializationSaver
     {
         private static Dictionary<TypeSaver, string> _formats = new Dictionary<TypeSaver, string>()
         { { TypeSaver.Binary, ".dat" }, { TypeSaver.XML, ".xml" }, { TypeSaver.Json, ".json"  } };
-        private static TypeSaver _typeSaver = TypeSaver.Binary;
-        private static ISaver _saver = new BinarySaver();
+        private static TypeSaver _typeSaver = TypeSaver.Json;
+        private static ISaver _saver = new JsonSaver();
 
         public static string GetFormat(TypeSaver saver)
         {
