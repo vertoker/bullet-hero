@@ -1,12 +1,14 @@
 using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 using Data;
+using Game.Core;
 
 namespace Game.Static
 {
     public static class CollisionDetection
     {
-        public static bool GetDetection(Vector3 pos, Vector3 rot, Vector3 sca, Vector3 player, SpriteType type)
+        public static bool GetDetection(float3 pos, float3 rot, float3 sca, float3 player, SpriteType type)
         {
             switch (type)
             {
@@ -19,15 +21,15 @@ namespace Game.Static
             }
         }
 
-        public static bool CircleRectangle(Vector3 pos, Vector3 rot, Vector3 sca, Vector3 player)
+        public static bool CircleRectangle(float3 pos, float3 rot, float3 sca, float3 player)
         {
             player = GameUtils.RotateVector(player - pos, -rot.z);
 
             float distanceX = Mathf.Abs(player.x);
             float distanceY = Mathf.Abs(player.y);
 
-            if (distanceX > (sca.x / 2 + GameUtils.PLAYER_RADIUS)) { return false; }
-            if (distanceY > (sca.y / 2 + GameUtils.PLAYER_RADIUS)) { return false; }
+            if (distanceX > (sca.x / 2 + Player.RADIUS)) { return false; }
+            if (distanceY > (sca.y / 2 + Player.RADIUS)) { return false; }
             if (distanceX <= (sca.x / 2)) { return true; }
             if (distanceY <= (sca.y / 2)) { return true; }
 
@@ -35,10 +37,10 @@ namespace Game.Static
             float cDist_sqY = distanceY - sca.y / 2;
             float cDist_sq = cDist_sqX * cDist_sqX + cDist_sqY * cDist_sqY;
 
-            return cDist_sq <= GameUtils.PLAYER_RADIUS * GameUtils.PLAYER_RADIUS;
+            return cDist_sq <= Player.RADIUS * Player.RADIUS;
         }
 
-        public static bool CircleEllipse(Vector3 pos, Vector3 rot, Vector3 sca, Vector3 player)
+        public static bool CircleEllipse(float3 pos, float3 rot, float3 sca, float3 player)
         {
             return false;
         }

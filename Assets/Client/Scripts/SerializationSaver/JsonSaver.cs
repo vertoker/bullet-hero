@@ -20,7 +20,7 @@ namespace Game.SerializationSaver
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            string json = JsonUtility.ToJson(data);
+            string json = JsonUtility.ToJson(data, true);
             File.WriteAllText(path, json);
         }
 

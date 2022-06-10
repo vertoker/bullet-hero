@@ -13,12 +13,18 @@ namespace Game.Core
 {
     public class GameController : MonoBehaviour
     {
+        [SerializeField] private Player[] players;
         [SerializeField] private Level level;
 
+        private void Start()
+        {
+            DataProvider.Load(level, players);
+        }
         public void Load(string name)
         {
             level = LevelSaver.Load(name);
-            DataProvider.Load(level);
+            //Debug.Log(level);
+            DataProvider.Load(level, players);
         }
         public void Save()
         {

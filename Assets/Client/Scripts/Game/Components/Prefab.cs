@@ -12,13 +12,13 @@ namespace Game.Components
     [Serializable]
     public struct Prefab
     {
-        [SerializeField] private string n;// Имя у объекта (name)
+        //[SerializeField] private string n;// Имя у объекта (name)
         [SerializeField] private bool a;// Активность объекта (active)
         [SerializeField] private bool c;// Наличие коллайдера у объекта (collider)
-        [SerializeField] private List<Pos> pos;// Список с метками позиции (position)
-        [SerializeField] private List<Sca> sca;// Список с метками размера (scale)
-        [SerializeField] private List<Rot> rot;// Список с метками поворота (rotation)
-        [SerializeField] private List<Clr> clr;// Список с метками цветов (color)
+        [SerializeField] private Pos[] pos;// Список с метками позиции (position)
+        [SerializeField] private Sca[] sca;// Список с метками размера (scale)
+        [SerializeField] private Rot[] rot;// Список с метками поворота (rotation)
+        [SerializeField] private Clr[] clr;// Список с метками цветов (color)
         [SerializeField] private SpriteType st;// Тип спрайта у объекта (sprite type)
         [SerializeField] private int sf;// На этом моменте времени создаётся объект (start frame)
         [SerializeField] private int ef;// На этом моменте времени удаляется объект (end frame)
@@ -27,13 +27,13 @@ namespace Game.Components
         [SerializeField] private int l;// Слой на котором находиться объект, относительно других (layer) (выше или ниже)
         [SerializeField] private int h;//На каком потоке (в редакторе) находиться объект (height)
 
-        public string Name { get { return n; } set { n = value; } }
+        //public string Name { get { return n; } set { n = value; } }
         public bool Active { get { return a; } set { a = value; } }
         public bool Collider { get { return c; } set { c = value; } }
-        public List<Pos> Pos { get { return pos ?? new List<Pos>(); ; } set { pos = value; } }
-        public List<Sca> Sca { get { return sca; } set { sca = value; } }
-        public List<Rot> Rot { get { return rot; } set { rot = value; } }
-        public List<Clr> Clr { get { return clr; } set { clr = value; } }
+        public Pos[] Pos { get { return pos; } set { pos = value; } }
+        public Sca[] Sca { get { return sca; } set { sca = value; } }
+        public Rot[] Rot { get { return rot; } set { rot = value; } }
+        public Clr[] Clr { get { return clr; } set { clr = value; } }
         public SpriteType SpriteType { get { return st; } set { st = value; } }
         public int StartFrame { get { return sf; } set { sf = value; } }
         public int EndFrame { get { return ef; } set { ef = value; } }
@@ -44,13 +44,13 @@ namespace Game.Components
         public int Height { get { return h; } set { h = value; } }
         public int GetFrameLength { get { return ef - sf; } }
 
-        public Prefab(string name,
+        public Prefab(//string name,
             bool active,
             bool collider,
-            List<Pos> pos,
-            List<Sca> sca,
-            List<Rot> rot,
-            List<Clr> clr,
+            Pos[] pos,
+            Sca[] sca,
+            Rot[] rot,
+            Clr[] clr,
             SpriteType st,
             int startFrame,
             int endFrame,
@@ -59,7 +59,7 @@ namespace Game.Components
             int layer,
             int height)
         {
-            n = name;
+            //n = name;
             a = active;
             c = collider;
             this.pos = pos;

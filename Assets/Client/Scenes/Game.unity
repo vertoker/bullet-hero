@@ -123,6 +123,104 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &409073792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 409073793}
+  - component: {fileID: 409073795}
+  - component: {fileID: 409073794}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &409073793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409073792}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &409073794
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409073792}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 123db1922d769b24da756c33bea821fa, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.5, y: 0.5}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &409073795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409073792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f2357112150df24aba457b740eaa07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 3
 --- !u!1 &900259091
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,6 +349,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c3efe3956cf48f4fa5ba8d69475c231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  players:
+  - {fileID: 409073795}
   level:
     CURRENT_VERSION: 1
     ld:
@@ -309,11 +409,18 @@ MonoBehaviour:
       ey: 0
       i: 0
     p:
-    - n: prefab2
-      a: 1
+    - a: 1
       c: 1
       pos:
-      - f: 300
+      - f: 100
+        r: 0
+        e: 0
+        sx: -5
+        sy: -5
+        ex: 0
+        ey: 0
+        i: 0
+      - f: 700
         r: 0
         e: 0
         sx: 5
@@ -321,16 +428,8 @@ MonoBehaviour:
         ex: 0
         ey: 0
         i: 0
-      - f: 600
-        r: 0
-        e: 28
-        sx: -5
-        sy: -5
-        ex: 0
-        ey: 0
-        i: 0
       sca:
-      - f: 0
+      - f: 100
         r: 0
         e: 0
         sx: 1
@@ -339,19 +438,25 @@ MonoBehaviour:
         ey: 0
         i: 0
       rot:
-      - f: 0
+      - f: 100
         r: 0
         e: 0
         sa: 0
         ea: 0
         i: 0
+      - f: 700
+        r: 0
+        e: 0
+        sa: 360
+        ea: 0
+        i: 0
       clr:
-      - f: 0
+      - f: 100
         r: 0
         e: 0
         sr: 1
-        sg: 0
-        sb: 0
+        sg: 1
+        sb: 1
         sa: 1
         er: 0
         eg: 0
@@ -359,35 +464,26 @@ MonoBehaviour:
         ea: 0
         i: 0
       st: 1
-      sf: 300
-      ef: 600
+      sf: 100
+      ef: 700
       ap: 4
-      id: 1
+      id: 0
       idp: 0
       l: 0
       h: 0
-    - n: prefab1
-      a: 1
+    - a: 1
       c: 1
       pos:
-      - f: 0
+      - f: 200
         r: 0
         e: 0
-        sx: -5
-        sy: -5
-        ex: 0
-        ey: 0
-        i: 0
-      - f: 300
-        r: 0
-        e: 28
-        sx: 5
-        sy: 5
+        sx: 0
+        sy: 10
         ex: 0
         ey: 0
         i: 0
       sca:
-      - f: 0
+      - f: 200
         r: 0
         e: 0
         sx: 1
@@ -396,14 +492,14 @@ MonoBehaviour:
         ey: 0
         i: 0
       rot:
-      - f: 0
+      - f: 200
         r: 0
         e: 0
         sa: 0
         ea: 0
         i: 0
       clr:
-      - f: 0
+      - f: 200
         r: 0
         e: 0
         sr: 1
@@ -416,10 +512,10 @@ MonoBehaviour:
         ea: 0
         i: 0
       st: 1
-      sf: 0
-      ef: 300
+      sf: 200
+      ef: 500
       ap: 4
-      id: 0
+      id: 1
       idp: 0
       l: 0
       h: 0

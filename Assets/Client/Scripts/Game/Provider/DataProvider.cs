@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Game.Components;
 using UnityEngine;
-using System.Linq;
+using Game.Core;
 using Data;
 
 using UnityEngine.Jobs;
@@ -24,9 +24,10 @@ namespace Game.Provider
             instance = this;
         }
 
-        public static void Load(Level level)
+        public static void Load(Level level, Player[] players)
         {
-            instance.runtime.LoadLevel(level);
+            if (instance != null)
+                instance.runtime.LoadLevel(level, players);
         }
         public static void StartGame()
         {

@@ -9,36 +9,46 @@ using Unity.Jobs;
 namespace Game.Provider
 {
     [BurstCompile]
-    public struct FindActiveBlocksParallel : IJob
+    public struct FindActiveBlocksParallel : IJobParallelFor
     {
         [ReadOnly] public int activeFrame, maxFrame;
         [ReadOnly] public NativeArray<int> startFrames;
         [ReadOnly] public NativeArray<int> endFrames;
-        public NativeArray<int> activeBlocks;
+        [ReadOnly] public NativeArray<bool> prefabActives;
+        public NativeArray<int> activePrefabs;
+        public NativeArray<int> counter;
 
-        public void Execute()
+        public void Execute(int index)
         {
-            int length = startFrames.Length;
+            if (activeFrame >= startFrames[index] && activeFrame <= endFrames[index] && prefabActives[index])
+            {
+                activePrefabs[counter[0]] = index;
+                counter[0]++;
+            }
+
+            /*int length = allPrefabs.Length;
             int progress = (int)(length * (float)(activeFrame / maxFrame));
 
-            for (int i = 0; i < length; i++)
+            for (int index = progress; index < length; index++)
             {
-                int id = GetNextID(i, ref progress, ref length);// Закончить
+                if (activeFrame >= allPrefabs[index].StartFrame && activeFrame <= allPrefabs[index].EndFrame && allPrefabs[index].Active)
+                {
+                    activePrefabs[counter[0]] = allPrefabs[index];
+                    counter[0]++;
+                }
+                else
+                    break;
             }
-
-            if (activeFrame >= startFrames[index] && activeFrame <= endFrames[index])
+            for (int index = progress - 1; index >= 0; index--)
             {
-                activeBlocks[counter] = index;
-                counter++;
-            }
-        }
-
-        public static int GetNextID(int id, ref int progress, ref int length)
-        {
-            int half = (id + 1) / 2;
-            if (id % 2 == 0)
-                return progress + half;
-            return progress - half;
+                if (activeFrame >= allPrefabs[index].StartFrame && activeFrame <= allPrefabs[index].EndFrame && allPrefabs[index].Active)
+                {
+                    activePrefabs[counter[0]] = allPrefabs[index];
+                    counter[0]++;
+                }
+                else
+                    break;
+            }*/
         }
     }
 }
