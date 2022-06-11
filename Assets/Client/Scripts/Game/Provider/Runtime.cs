@@ -40,9 +40,9 @@ namespace Game.Provider
         private AnchorPresets[] prefabAnchorses;
         private SpriteType[] prefabSprites;
 
-        private int playersCount;
-        private PositionDelegate[] playerPositions;
-        private HealthDelegate[] playerDamages;
+        private PositionDelegate playerPosition;
+        private HealthDelegate playerDamage;
+        private Player player;
 
         private const float FrameRate = 60;
         private const int CountBlocks = 1000;
@@ -67,7 +67,7 @@ namespace Game.Provider
             borderScreen = new float3(aspect * 10, 10, 0);
         }
 
-        public void LoadLevel(Level level, Player[] players)
+        public void LoadLevel(Level level, Player player)
         {
             maxFrame = (int)(level.LevelData.EndFadeOut * FrameRate);
             prefabsCount = level.Prefabs.Count;
@@ -102,17 +102,19 @@ namespace Game.Provider
                 prefabSprites[i] = prefabs[i].SpriteType;
             }
 
-            playersCount = players.Length;
-            playerPositions = new PositionDelegate[playersCount];
-            playerDamages = new HealthDelegate[playersCount];
-            for (int i = 0; i < playersCount; i++)
-            {
-                playerPositions[i] = players[i].GetPositionDelegate;
-                playerDamages[i] = players[i].GetDamageDelegate;
-            }
+            if (this.player != null)
+                player.DeathCaller -= Stop;
+            this.player = player;
+            playerPosition = player.GetPositionDelegate;
+            playerDamage = player.GetDamageDelegate;
+            player.DeathCaller += Stop;
 
             updater = StartCoroutine(Updater());
             //UpdateCycle();
+        }
+        private void OnDisable()
+        {
+            player.DeathCaller -= Stop;
         }
 
         private IEnumerator Updater()
@@ -128,6 +130,10 @@ namespace Game.Provider
                     continue;
                 UpdateCycle();
             }
+        }
+        private void Stop()
+        {
+            StopCoroutine(updater);
         }
 
         private void UpdateCycle()
@@ -231,8 +237,8 @@ namespace Game.Provider
 
             NativeArray<AnchorPresets> prefabAnchorses = new NativeArray<AnchorPresets>(activeCount, Allocator.TempJob);
             NativeArray<SpriteType> prefabSprites = new NativeArray<SpriteType>(activeCount, Allocator.TempJob);
-            NativeArray<float3> positionPlayers = new NativeArray<float3>(playersCount, Allocator.TempJob);
-            NativeArray<bool> collidedPlayers = new NativeArray<bool>(playersCount, Allocator.TempJob);
+            NativeArray<float3> positionPlayer = new NativeArray<float3>(1, Allocator.TempJob);
+            NativeArray<bool> collidedPlayer = new NativeArray<bool>(1, Allocator.TempJob);
 
             int counterPos = 0, counterRot = 0, counterSca = 0, counterClr = 0;
             for (int i = 0; i < activeCount; i++)
@@ -261,6 +267,8 @@ namespace Game.Provider
 
                 prefabAnchorses[i] = prefab.Anchor;
                 prefabSprites[i] = prefab.SpriteType;
+
+                srs[i].sortingOrder = prefab.Layer;
             }
 
             NativeArray<Pos> prefabPoses = new NativeArray<Pos>(counterPos, Allocator.TempJob);
@@ -295,24 +303,16 @@ namespace Game.Provider
                 }
             }
 
-            for (int i = 0; i < playersCount; i++)
-            {
-                var pos = playerPositions[i].Invoke();
-                positionPlayers[i] = new float3(pos.x, pos.y, 0);
-                collidedPlayers[i] = false;
-            }
+            collidedPlayer[0] = false;
+            var pos = playerPosition.Invoke();
+            positionPlayer[0] = new float3(pos.x, pos.y, 0);
 
             MainCalculateParallel mainSimpleParallelJob = new MainCalculateParallel
             {
-                seed = seed,
-                activeFrame = activeFrame,
-                playersCount = playersCount,
+                seed = seed, activeFrame = activeFrame,
                 countActivePrefabs = activeCount,
                 borderScreen = borderScreen,
-
                 anchorArray = prefabAnchorses,
-                colliderArray = prefabColliders,
-                spriteArray = prefabSprites,
 
                 posArray = prefabPoses,
                 rotArray = prefabRotes,
@@ -330,17 +330,10 @@ namespace Game.Provider
                 poses = poses,
                 rotes = rotes,
                 scaes = scaes,
-                clres = clres,
-
-                positionPlayers = positionPlayers,
-                collidedPlayers = collidedPlayers
+                clres = clres
             };
             JobHandle mainSimpleJobHandle = mainSimpleParallelJob.Schedule(activeCount, 50);
             mainSimpleJobHandle.Complete();
-
-            for (int i = 0; i < playersCount; i++)
-                if (collidedPlayers[i])
-                    playerDamages[i].Invoke(1);
 
             for (int i = 0; i < activeCount; i++)
             {
@@ -351,6 +344,31 @@ namespace Game.Provider
                 srs[i].color = color;
                 srs[i].sprite = GameData.GetSprite(prefabSprites[i]);
             }
+
+            for (int i = 0; i < activeCount; i++)
+            {
+                poses[i] = trs[i].position;
+                rotes[i] = trs[i].eulerAngles;
+                scaes[i] = trs[i].lossyScale;
+            }
+
+            CollisionDetectionParallel collisionDetectionParallelJob = new CollisionDetectionParallel
+            {
+                countActivePrefabs = activeCount,
+                positionPlayers = positionPlayer,
+                collidedPlayers = collidedPlayer,
+                colliderArray = prefabColliders,
+                spriteArray = prefabSprites,
+
+                poses = poses,
+                rotes = rotes,
+                scaes = scaes
+            };
+            JobHandle collisionDetectionJobHandle = collisionDetectionParallelJob.Schedule();
+            collisionDetectionJobHandle.Complete();
+
+            if (collidedPlayer[0])
+                playerDamage.Invoke(1);
 
             startFrames.Dispose();
             endFrames.Dispose();
@@ -376,8 +394,8 @@ namespace Game.Provider
             clres.Dispose();
             prefabAnchorses.Dispose();
             prefabSprites.Dispose();
-            positionPlayers.Dispose();
-            collidedPlayers.Dispose();
+            positionPlayer.Dispose();
+            collidedPlayer.Dispose();
         }
     }
 }

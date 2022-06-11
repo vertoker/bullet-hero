@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.SerializationSaver;
 using Game.Provider;
 using UnityEngine;
+using Game.UI;
 using Data;
 
 #if UNITY_EDITOR
@@ -13,23 +14,34 @@ namespace Game.Core
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] private Player[] players;
+        [SerializeField] private HealthBar healthBar;
+        [SerializeField] private Player player;
         [SerializeField] private Level level;
 
+        public Player Player => player;
+        public static GameController Instance;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
         private void Start()
         {
-            DataProvider.Load(level, players);
+            healthBar.SetPlayer(player);
+            player.SetPlayerPreset(1);
+            DataProvider.Load(level, player);
         }
         public void Load(string name)
         {
             level = LevelSaver.Load(name);
-            //Debug.Log(level);
-            DataProvider.Load(level, players);
+            DataProvider.Load(level, player);
         }
         public void Save()
         {
             LevelSaver.Save(level);
         }
+
+
     }
     
 #if UNITY_EDITOR

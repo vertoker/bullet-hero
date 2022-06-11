@@ -9233,7 +9233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c453d5501d3d6c418888386facffd0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 666
   sprites:
   - {fileID: 0}
   - {fileID: 21300000, guid: 8b7499c74bc9eba4a941a930811df7b2, type: 3}
@@ -9265,6 +9264,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 55a6232847caa564896f60bc71a0dbb7, type: 3}
   - {fileID: 21300000, guid: 0db9a62b1b3a46047a074700502561db, type: 3}
   - {fileID: 21300000, guid: d41b65e1b0c8fb84a8c7ac896321b2ca, type: 3}
+  playerSkins:
+  - {fileID: 21300000, guid: 1289db6d44d4f524abad8c7f46e8d7c2, type: 3}
+  - {fileID: 21300000, guid: 0fa1636c6be425b4c90d5fe357285180, type: 3}
+  - {fileID: 21300000, guid: 123db1922d769b24da756c33bea821fa, type: 3}
+  - {fileID: 21300000, guid: e88d460599f2f274bbabdbd96a49004d, type: 3}
+  - {fileID: 21300000, guid: 3be17afb38f83194fb7b7d382c8a29cd, type: 3}
 --- !u!114 &199063020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9277,6 +9282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea98d2ba743cdd4f93e0a51e0a278e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 666
   timer: 0
   activeFrame: 0
 --- !u!114 &199063021

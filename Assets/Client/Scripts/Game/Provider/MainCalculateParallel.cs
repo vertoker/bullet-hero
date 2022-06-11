@@ -15,12 +15,8 @@ namespace Game.Provider
     public struct MainCalculateParallel : IJobParallelFor
     {
         [ReadOnly] public float3 borderScreen;
-        [ReadOnly] public int activeFrame, playersCount, seed;
-        [ReadOnly] public NativeArray<float3> positionPlayers;
-
-        [ReadOnly] public NativeArray<bool> colliderArray;
+        [ReadOnly] public int activeFrame, seed;
         [ReadOnly] public NativeArray<AnchorPresets> anchorArray;
-        [ReadOnly] public NativeArray<SpriteType> spriteArray;
 
         [ReadOnly] public NativeArray<Pos> posArray;
         [ReadOnly] public NativeArray<Rot> rotArray;
@@ -40,7 +36,6 @@ namespace Game.Provider
         public NativeArray<float3> rotes;
         public NativeArray<float3> scaes;
         public NativeArray<float4> clres;
-        public NativeArray<bool> collidedPlayers;
 
         public void Execute(int index)
         {
@@ -50,12 +45,6 @@ namespace Game.Provider
             rotes[index] = GetData.GetRot(rotArray.GetSubArray(rotCountArray[index], rotLengthArray[index]), activeFrame, ref noise);
             scaes[index] = GetData.GetSca(scaArray.GetSubArray(scaCountArray[index], scaLengthArray[index]), activeFrame, ref noise);
             poses[index] = GetData.GetPos(posArray.GetSubArray(posCountArray[index], posLengthArray[index]), activeFrame, anchorArray[index], ref noise, ref borderScreen);
-
-            for (int i = 0; i < playersCount; i++)
-                if (colliderArray[index])
-                    if (!collidedPlayers[i])
-                        if (CollisionDetection.GetDetection(poses[index], rotes[index], scaes[index], positionPlayers[i], spriteArray[index]))
-                            collidedPlayers[i] = true;
         }
     }
 }

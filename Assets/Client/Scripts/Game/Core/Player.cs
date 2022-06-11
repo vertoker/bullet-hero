@@ -1,27 +1,40 @@
 ﻿using System.Collections;
 using UnityEngine.Events;
 using UnityEngine;
+using Game.Provider;
 
 namespace Game.Core
 {
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Player : MonoBehaviour
     {
         [SerializeField] private int maxHealth = 3;
+        [SerializeField] private float speedFollow = 0.1f;
         [SerializeField] private float damageCooldown = 0.5f;
-
         private bool inImmortality = false;
+        private bool isActive = false;
         private int health = 3;
 
         public const float RADIUS = 0.25f;
 
-        private Transform tr;
+        [SerializeField] private Transform player;
+        [SerializeField] private Transform target;
+        private SpriteRenderer spriteRenderer;
         private Coroutine immortalityActivity;
-        private UnityEvent<int, int> healthEvent = new UnityEvent<int, int>();
 
-        public event UnityAction<int, int> HealthUpdate
+        private UnityEvent<int> healthEvent = new UnityEvent<int>();
+        private UnityEvent deathEvent = new UnityEvent();
+
+        public int MaxHealth => maxHealth;
+        public event UnityAction<int> HealthUpdate
         {
             add => healthEvent.AddListener(value);
             remove => healthEvent.RemoveListener(value);
+        }
+        public event UnityAction DeathCaller
+        {
+            add => deathEvent.AddListener(value);
+            remove => deathEvent.RemoveListener(value);
         }
 
         public PositionDelegate GetPositionDelegate => GetPosition;
@@ -32,17 +45,40 @@ namespace Game.Core
 
         private void Awake()
         {
-            tr = GetComponent<Transform>();
-            Activate();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+        public void Update()
+        {
+            float targetLocal = 0, rotVelocity = 0;
+            Vector2 offset = player.position - target.localPosition;
+
+            if (offset.sqrMagnitude > 0.01f)
+            { targetLocal = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg + 90; }
+
+            player.localEulerAngles = new Vector3(0, 0, Mathf.SmoothDampAngle(player.localEulerAngles.z, targetLocal, ref rotVelocity, 0.02f));
+        }
+        private void FixedUpdate()
+        {
+            if (isActive)
+                player.position = Vector3.Lerp(player.position, target.position, speedFollow);
         }
 
-        public void Activate()
+        public void SetPlayerPreset(int skinID)
+        {
+            spriteRenderer.sprite = GameData.GetSkin(skinID);
+            Enable();
+            return;
+        }
+        public void Enable()
         {
             health = maxHealth;
+            spriteRenderer.enabled = true;
+            isActive = true;
         }
-        public void DeActivate()
+        public void Disable()
         {
-
+            isActive = false;
+            spriteRenderer.enabled = false;
         }
 
         public void SetImmortality(float time)
@@ -57,24 +93,24 @@ namespace Game.Core
             health += count;
             if (health > maxHealth)
                 health = maxHealth;
-            healthEvent.Invoke(health, maxHealth);
+            healthEvent.Invoke(health);
         }
         public void Damage(int count = 1)
         {
             if (inImmortality)
                 return;
 
-            healthEvent.Invoke(health, maxHealth);
             health -= count;
             if (health <= 0)
             {
-                health = 0;
-                DeActivate();
+                healthEvent.Invoke(0);
+                deathEvent.Invoke();
+                Disable();
             }
             else
             {
-                inImmortality = true;
-                StartCoroutine(ImmortalityActivity(damageCooldown));
+                healthEvent.Invoke(health);
+                SetImmortality(damageCooldown);
             }
         }
 
@@ -86,7 +122,7 @@ namespace Game.Core
 
         private Vector2 GetPosition()
         {
-            return tr.position;
+            return player.position;
         }
     }
 

@@ -24,10 +24,10 @@ namespace Game.Provider
             instance = this;
         }
 
-        public static void Load(Level level, Player[] players)
+        public static void Load(Level level, Player player)
         {
             if (instance != null)
-                instance.runtime.LoadLevel(level, players);
+                instance.runtime.LoadLevel(level, player);
         }
         public static void StartGame()
         {
