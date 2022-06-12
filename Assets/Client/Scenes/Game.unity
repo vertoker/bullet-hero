@@ -2347,6 +2347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1829714790}
+  - component: {fileID: 1829714792}
   - component: {fileID: 1829714791}
   m_Layer: 0
   m_Name: Controller
@@ -2557,6 +2558,30 @@ MonoBehaviour:
       zoom: []
       pos: []
       rot: []
+  gameRules:
+    time: 0
+    lifeCount: 0
+    immortality: 0
+    autopilot: 0
+    skinID: 1
+  playerSkins:
+  - {fileID: 21300000, guid: 1289db6d44d4f524abad8c7f46e8d7c2, type: 3}
+  - {fileID: 21300000, guid: 0fa1636c6be425b4c90d5fe357285180, type: 3}
+  - {fileID: 21300000, guid: 123db1922d769b24da756c33bea821fa, type: 3}
+  - {fileID: 21300000, guid: e88d460599f2f274bbabdbd96a49004d, type: 3}
+  - {fileID: 21300000, guid: 3be17afb38f83194fb7b7d382c8a29cd, type: 3}
+--- !u!114 &1829714792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829714789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9534d2bb3e505f24ab77786ac9524523, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1898015861
 GameObject:
   m_ObjectHideFlags: 0
@@ -2958,6 +2983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8148fadc0c950648a228672049ba1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 409073795}
 --- !u!114 &2005657351
 MonoBehaviour:
   m_ObjectHideFlags: 0

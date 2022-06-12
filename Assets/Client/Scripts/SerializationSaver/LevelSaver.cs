@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 using System.IO;
 using Data;
@@ -19,6 +19,16 @@ namespace Game.SerializationSaver
         {
             string path = Path.Combine(Application.dataPath, "Levels", level.LevelData.LevelName, "level.json");
             Saver.Save(level, path);
+        }
+
+        public static string[] LoadListAll()
+        {
+            string path = Path.Combine(Application.dataPath, "Levels");
+            return Directory.GetDirectories(path).Select(GetName).ToArray();
+        }
+        private static string GetName(string directory)
+        {
+            return Path.GetFileName(directory);
         }
     }
 }

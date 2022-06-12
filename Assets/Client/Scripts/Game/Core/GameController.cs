@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using Game.SerializationSaver;
 using Game.Provider;
 using UnityEngine;
@@ -17,6 +17,12 @@ namespace Game.Core
         [SerializeField] private HealthBar healthBar;
         [SerializeField] private Player player;
         [SerializeField] private Level level;
+        [SerializeField] private GameRules gameRules;
+
+        [Space]
+        [SerializeField] private Sprite[] playerSkins;
+
+        private bool isLoaded = false;
 
         public Player Player => player;
         public static GameController Instance;
@@ -24,24 +30,35 @@ namespace Game.Core
         private void Awake()
         {
             Instance = this;
+            SceneManager.sceneLoaded += LoadedProvider;
         }
         private void Start()
         {
-            healthBar.SetPlayer(player);
-            player.SetPlayerPreset(1);
-            DataProvider.Load(level, player);
-        }
-        public void Load(string name)
-        {
-            level = LevelSaver.Load(name);
-            DataProvider.Load(level, player);
-        }
-        public void Save()
-        {
-            LevelSaver.Save(level);
+            if (isLoaded)
+                return;
+
+            LoadLevel(GameRules.standard, level);
         }
 
+        public void LoadLevel(GameRules rules, Level level)
+        {
+            isLoaded = true;
+            gameRules = rules;
 
+            SceneManager.LoadScene(1, LoadSceneMode.Additive);
+
+            healthBar.SetPlayerRules(rules.immortality ? 0 : rules.lifeCount);
+            player.SetPlayerPreset(playerSkins[rules.skinID], rules.immortality, rules.lifeCount);
+        }
+
+        private void LoadedProvider(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (loadSceneMode == LoadSceneMode.Additive)
+            {
+                DataProvider.Start(level, player);
+                SceneManager.sceneLoaded -= LoadedProvider;
+            }
+        }
     }
     
 #if UNITY_EDITOR
@@ -55,16 +72,12 @@ namespace Game.Core
             base.OnInspectorGUI();
             GameController controller = (GameController)target;
 
-            EditorGUILayout.Space(10);
-            if (GUILayout.Button("Save"))
-            {
-                controller.Save();
-            }
+            //EditorGUILayout.Space(10);
             //_name = GUILayout.TextArea(_name);
-            if (GUILayout.Button("Load"))
+            /*if (GUILayout.Button("Load"))
             {
                 controller.Load("0 demo level");
-            }
+            }*/
         }
     }
 #endif

@@ -1,15 +1,17 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utils.Localization
 {
+    [Serializable]
+    [CreateAssetMenu(menuName = "Language/New String", fileName = "LocalizationString", order = 0)]
     public class LocalizationString : ScriptableObject
     {
         [SerializeField] private string english;
         [SerializeField] private string russian;
 
-        public string GetString(Language language)
+        public string GetString(Language language = Language.English)
         {
             switch (language)
             {

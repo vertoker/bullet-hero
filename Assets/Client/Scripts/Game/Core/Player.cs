@@ -11,6 +11,7 @@ namespace Game.Core
         [SerializeField] private int maxHealth = 3;
         [SerializeField] private float speedFollow = 0.1f;
         [SerializeField] private float damageCooldown = 0.5f;
+        private bool rulesImmortality = false;
         private bool inImmortality = false;
         private bool isActive = false;
         private int health = 3;
@@ -63,9 +64,11 @@ namespace Game.Core
                 player.position = Vector3.Lerp(player.position, target.position, speedFollow);
         }
 
-        public void SetPlayerPreset(int skinID)
+        public void SetPlayerPreset(Sprite skin, bool immortality, int lifeCount)
         {
-            spriteRenderer.sprite = GameData.GetSkin(skinID);
+            maxHealth = lifeCount;
+            rulesImmortality = immortality;
+            spriteRenderer.sprite = skin;
             Enable();
             return;
         }
@@ -100,7 +103,8 @@ namespace Game.Core
             if (inImmortality)
                 return;
 
-            health -= count;
+            if (!rulesImmortality)
+                health -= count;
             if (health <= 0)
             {
                 healthEvent.Invoke(0);

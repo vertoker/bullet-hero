@@ -8,10 +8,10 @@ namespace Game.UI
 {
     public class HealthBar : MonoBehaviour
     {
+        [SerializeField] private Player player;
         private PoolSpawner spawner;
         private int maxHealth = 0;
         private Image[] cells;
-        private Player player;
 
         private void Awake()
         {
@@ -19,35 +19,30 @@ namespace Game.UI
         }
         private void OnEnable()
         {
-            if (player != null)
-            {
-                player.HealthUpdate += UpdateHealth;
-                maxHealth = player.MaxHealth;
-                cells = new Image[maxHealth];
-                for (int i = 0; i < maxHealth; i++)
-                    cells[i] = spawner.Dequeue().GetComponent<Image>();
-                UpdateHealth(maxHealth);
-            }
+            player.HealthUpdate += UpdateHealth;
+            UpdateHealth(maxHealth);
         }
         private void OnDisable()
         {
-            if (player != null)
-            {
-                for (int i = 0; i < maxHealth; i++)
-                    spawner.Enqueue(cells[i].gameObject);
-                player.HealthUpdate -= UpdateHealth;
-            }
+            for (int i = 0; i < maxHealth; i++)
+                spawner.Enqueue(cells[i].gameObject);
+            player.HealthUpdate -= UpdateHealth;
         }
 
-        public void SetPlayer(Player player)
+        public void SetPlayerRules(int lifeCount)
         {
             OnDisable();
-            this.player = player;
+            maxHealth = lifeCount;
+            cells = new Image[maxHealth];
+            for (int i = 0; i < maxHealth; i++)
+                cells[i] = spawner.Dequeue().GetComponent<Image>();
             OnEnable();
         }
 
         private void UpdateHealth(int health)
         {
+            if (maxHealth < health)
+                return;
             for (int i = 0; i < health; i++)
                 cells[i].color = Color.red;
             for (int i = health; i < maxHealth; i++)
