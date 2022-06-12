@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEngine;
 
@@ -23,3 +24,4 @@ namespace Utils.Attributes
     public enum ConditionOperator { And, Or }
     public enum ActionOnConditionFail { DoNotDraw, Disable }
 }
+#endif

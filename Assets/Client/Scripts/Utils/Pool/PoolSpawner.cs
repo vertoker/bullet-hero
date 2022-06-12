@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using Utils.Attributes;
+#endif
 
 namespace Utils.Pool
 {
@@ -10,7 +12,9 @@ namespace Utils.Pool
         [SerializeField] private PoolData _data;
         [SerializeField] private Queue<GameObject> pool = new Queue<GameObject>();
         [SerializeField] private bool _spawnInParent = true;
+#if UNITY_EDITOR
         [ShowIf(ActionOnConditionFail.Disable, ConditionOperator.And, nameof(_spawnInParent))]
+#endif
         [SerializeField] private Transform parent;
 
         private void Awake()

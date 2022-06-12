@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Game.SerializationSaver;
 using System.Collections;
 using UnityEngine;
+using Data;
 using TMPro;
 
 namespace UI
@@ -9,6 +10,7 @@ namespace UI
     public class StorageController : MonoBehaviour
     {
         [SerializeField] private GameObject loaderObj;
+        [SerializeField] private GameObject loaderEmptyObj;
         [SerializeField] private GameObject levelListScrollerObj;
         [SerializeField] private GameObject levelListObj;
         private GameObject[] levelView;
@@ -16,6 +18,8 @@ namespace UI
 
         [SerializeField] private Slider slider;
         [SerializeField] private LevelWindowController levelWindow;
+        [SerializeField] private ButtonListAnimator storageAnimator;
+        [SerializeField] private ButtonListAnimator levelWindowAnimator;
 
         private Coroutine loader;
         private string[] levelList;
@@ -27,6 +31,7 @@ namespace UI
         private void Awake()
         {
             loaderObj.SetActive(true);
+            loaderEmptyObj.SetActive(false);
             levelListScrollerObj.SetActive(false);
             levelListObj.SetActive(false);
 
@@ -51,6 +56,11 @@ namespace UI
             StartLoad();
         }
 
+        public void AddDefaultLevel()
+        {
+            LevelSaver.Save(Level.DEFAULT_LEVEL);
+            StartLoad();
+        }
         public void StartLoad()
         {
             if (loader != null)
@@ -58,6 +68,7 @@ namespace UI
             isLoaded = false;
             loaderObj.SetActive(true);
             levelListObj.SetActive(false);
+            loaderEmptyObj.SetActive(false);
             loader = StartCoroutine(Load());
         }
         private IEnumerator Load()
@@ -68,12 +79,20 @@ namespace UI
         }
         private void FinishLoad()
         {
-            isLoaded = true;
-            int pagesCount = (levelList.Length - levelList.Length % levelPageCount) / levelPageCount + 1;
-            slider.Initialize(pagesCount);
             loaderObj.SetActive(false);
-            levelListObj.SetActive(true);
-            levelListScrollerObj.SetActive(true);
+            if (levelList.Length == 0)
+            {
+                loaderEmptyObj.SetActive(true);
+                levelListScrollerObj.SetActive(false);
+            }
+            else
+            {
+                isLoaded = true;
+                int pagesCount = (levelList.Length - levelList.Length % levelPageCount) / levelPageCount + 1;
+                slider.Initialize(pagesCount);
+                levelListObj.SetActive(true);
+                levelListScrollerObj.SetActive(true);
+            }
         }
 
         private void ListUpdate(int currentPage, int pagesCount)
@@ -100,8 +119,17 @@ namespace UI
         public void LevelLoad(int id)
         {
             int index = currentPage * levelPageCount + id;
-            var level = LevelSaver.Load(levelList[index]);
-            levelWindow.LoadLevelInfo(level);
+            if (LevelSaver.Exists(levelList[index]))
+            {
+                var level = LevelSaver.Load(levelList[index]);
+                levelWindow.LoadLevelInfo(level);
+            }
+            else
+            {
+                storageAnimator.Timeout();
+                levelWindowAnimator.Timeout();
+                StartLoad();
+            }
         }
     }
 }

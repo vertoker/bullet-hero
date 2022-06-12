@@ -11,8 +11,10 @@ namespace UI
     {
         [SerializeField] private bool openOnStart = false;
         [SerializeField] private bool isOpen = false;
+        private bool isTimeout = false;
         [SerializeField] private float openTime = 0.5f;
         [SerializeField] private float closeTime = 0.5f;
+        [SerializeField] private float timeoutTime = 0.5f;
 
         [SerializeField] private Vector2 openPosition = new Vector2(-250f, 0f);
         [SerializeField] private Vector2 closePosition = new Vector2(-5000f, 0f);
@@ -20,6 +22,7 @@ namespace UI
         [SerializeField] private RectTransform layout;
 
         private Coroutine currentAnimation;
+        private Coroutine timeoutTimer;
         private Coroutine offTimer;
 
         private void Awake()
@@ -38,8 +41,18 @@ namespace UI
             }
         }
 
+        public void Timeout()
+        {
+            if (timeoutTimer != null)
+                StopCoroutine(timeoutTimer);
+
+            isTimeout = true;
+            timeoutTimer = StartCoroutine(TimeoutTimer());
+        }
         public void Open()
         {
+            if (isTimeout)
+                return;
             if (currentAnimation != null)
                 StopCoroutine(currentAnimation);
             if (offTimer != null)
@@ -50,6 +63,8 @@ namespace UI
         }
         public void Close()
         {
+            if (isTimeout)
+                return;
             if (currentAnimation != null)
                 StopCoroutine(currentAnimation);
             if (offTimer != null)
@@ -72,6 +87,11 @@ namespace UI
         {
             yield return new WaitForSeconds(closeTime);
             layout.gameObject.SetActive(false);
+        }
+        private IEnumerator TimeoutTimer()
+        {
+            yield return new WaitForSeconds(timeoutTime);
+            isTimeout = false;
         }
     }
 }

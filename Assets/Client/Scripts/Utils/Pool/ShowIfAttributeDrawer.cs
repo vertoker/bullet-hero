@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿#if UNITY_EDITOR
+using System.Reflection;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
@@ -144,3 +145,4 @@ namespace Utils.Attributes
         }
     }
 }
+#endif

@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+#if UNITY_EDITOR
 using Utils.Attributes;
+#endif
 using UnityEngine;
 
 namespace Utils.Pool
@@ -12,7 +14,9 @@ namespace Utils.Pool
         [SerializeField] private PoolData _data;
         [SerializeField] private Queue<GameObject> _pool = new Queue<GameObject>();
         [SerializeField] private bool _spawnInParent = false;
+#if UNITY_EDITOR
         [ShowIf(ActionOnConditionFail.Disable, ConditionOperator.And, nameof(_spawnInParent))]
+#endif
         [SerializeField] private Transform parent;
         private readonly UnityEvent _onLoad = new UnityEvent();
 

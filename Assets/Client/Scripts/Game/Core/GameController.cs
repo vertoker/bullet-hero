@@ -21,7 +21,6 @@ namespace Game.Core
 
         [Space]
         [SerializeField] private Sprite[] playerSkins;
-
         private bool isLoaded = false;
 
         public Player Player => player;
@@ -34,15 +33,14 @@ namespace Game.Core
         }
         private void Start()
         {
-            if (isLoaded)
-                return;
-
-            LoadLevel(GameRules.standard, level);
+            LoadLevel(GameRules.standard, Level.DEFAULT_LEVEL);
         }
-
         public void LoadLevel(GameRules rules, Level level)
         {
+            if (isLoaded)
+                return;
             isLoaded = true;
+
             gameRules = rules;
 
             SceneManager.LoadScene(1, LoadSceneMode.Additive);
@@ -50,7 +48,6 @@ namespace Game.Core
             healthBar.SetPlayerRules(rules.immortality ? 0 : rules.lifeCount);
             player.SetPlayerPreset(playerSkins[rules.skinID], rules.immortality, rules.lifeCount);
         }
-
         private void LoadedProvider(Scene scene, LoadSceneMode loadSceneMode)
         {
             if (loadSceneMode == LoadSceneMode.Additive)
@@ -58,6 +55,15 @@ namespace Game.Core
                 DataProvider.Start(level, player);
                 SceneManager.sceneLoaded -= LoadedProvider;
             }
+        }
+
+        public void Play()
+        {
+            DataProvider.Runtime.StartGame();
+        }
+        public void Pause()
+        {
+            DataProvider.Runtime.StopGame();
         }
     }
     

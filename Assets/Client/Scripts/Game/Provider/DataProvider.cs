@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using Game.Components;
 using UnityEngine;
 using Game.Core;
@@ -17,6 +18,8 @@ namespace Game.Provider
     {
         private Runtime runtime;
         private static DataProvider instance;
+
+        public static Runtime Runtime => instance.runtime;
 
         private void Awake()
         {

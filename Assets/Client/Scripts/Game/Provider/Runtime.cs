@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 using Game.Components;
 using UnityEngine;
 using System.Linq;
@@ -44,13 +45,20 @@ namespace Game.Provider
         private HealthDelegate playerDamage;
         private Player player;
 
-        private const float FrameRate = 60;
+        private const float FPS = 60;
         private const int CountBlocks = 1000;
 
         private int maxFrame = 0;
         [SerializeField] private float timer = 0f;
         [SerializeField] private int activeFrame = 0;
         private Coroutine updater;
+
+        private static UnityEvent<int, int> frameEvent = new UnityEvent<int, int>();
+        public static event UnityAction<int, int> UpdateFrame
+        {
+            add => frameEvent.AddListener(value);
+            remove => frameEvent.AddListener(value);
+        }
 
         private void Awake()
         {
@@ -69,7 +77,7 @@ namespace Game.Provider
 
         public void LoadLevel(Level level, Player player)
         {
-            maxFrame = (int)(level.LevelData.EndFadeOut * FrameRate);
+            maxFrame = (int)(level.LevelData.EndFadeOut * FPS);
             prefabsCount = level.Prefabs.Count;
             prefabs = new List<Prefab>();
 
@@ -103,18 +111,17 @@ namespace Game.Provider
             }
 
             if (this.player != null)
-                player.DeathCaller -= Stop;
+                player.DeathCaller -= StopGame;
             this.player = player;
             playerPosition = player.GetPositionDelegate;
             playerDamage = player.GetDamageDelegate;
-            player.DeathCaller += Stop;
+            player.DeathCaller += StopGame;
 
-            updater = StartCoroutine(Updater());
-            //UpdateCycle();
+            StartGame();
         }
         private void OnDisable()
         {
-            player.DeathCaller -= Stop;
+            player.DeathCaller -= StopGame;
         }
 
         private IEnumerator Updater()
@@ -124,14 +131,22 @@ namespace Game.Provider
                 yield return null;
                 timer += Time.deltaTime;
                 int lastFrame = activeFrame;
-                activeFrame = Mathf.FloorToInt(timer * FrameRate);
+                activeFrame = Mathf.FloorToInt(timer * FPS);
                 //timerFrame = activeFrame / FrameRate;
                 if (activeFrame == lastFrame)
                     continue;
+                frameEvent.Invoke(activeFrame, maxFrame);
                 UpdateCycle();
+                if (activeFrame == maxFrame)
+                    StopGame();
             }
         }
-        private void Stop()
+        public void StartGame()
+        {
+            if (updater == null)
+                updater = StartCoroutine(Updater());
+        }
+        public void StopGame()
         {
             StopCoroutine(updater);
         }

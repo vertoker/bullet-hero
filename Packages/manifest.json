@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.leopotam.ecslite": "https://github.com/Leopotam/ecslite.git",
+    "com.yasirkula.ingamedebugconsole": "https://github.com/yasirkula/UnityIngameDebugConsole.git",
     
     "com.unity.collab-proxy": "1.15.16",
     "com.unity.feature.2d": "1.0.0",
