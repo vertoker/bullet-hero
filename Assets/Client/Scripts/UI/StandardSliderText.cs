@@ -8,14 +8,19 @@ namespace UI
     {
         [SerializeField] private StandardSlider slider;
         [SerializeField] private FormatSingle format = FormatSingle.Float;
+        private bool isInited = false;
         private TMP_Text text;
 
         private void Awake()
         {
             text = GetComponent<TMP_Text>();
+            isInited = true;
         }
         public void SliderUpdate()
         {
+            if (!isInited)
+                return;
+
             float value = slider.value;
             if (format == FormatSingle.Float)
             {

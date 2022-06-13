@@ -239,12 +239,6 @@
       "dependencies": {},
       "hash": "ef9dc42a669bb37089065c8f5f18167d14e139a0"
     },
-    "com.unity.modules.ai": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
     "com.unity.modules.androidjni": {
       "version": "1.0.0",
       "depth": 0,

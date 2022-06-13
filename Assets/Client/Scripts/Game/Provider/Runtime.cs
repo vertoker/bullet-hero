@@ -51,6 +51,7 @@ namespace Game.Provider
         private int maxFrame = 0;
         [SerializeField] private float timer = 0f;
         [SerializeField] private int activeFrame = 0;
+        private bool play = false;
         private Coroutine updater;
 
         private static UnityEvent<int, int> frameEvent = new UnityEvent<int, int>();
@@ -143,12 +144,16 @@ namespace Game.Provider
         }
         public void StartGame()
         {
-            if (updater == null)
+            if (!play)
+            {
+                play = true;
                 updater = StartCoroutine(Updater());
+            }
         }
         public void StopGame()
         {
             StopCoroutine(updater);
+            play = false;
         }
 
         private void UpdateCycle()

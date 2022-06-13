@@ -1,8 +1,6 @@
 {
   "dependencies": {
     "com.leopotam.ecslite": "https://github.com/Leopotam/ecslite.git",
-    "com.yasirkula.ingamedebugconsole": "https://github.com/yasirkula/UnityIngameDebugConsole.git",
-    
     "com.unity.collab-proxy": "1.15.16",
     "com.unity.feature.2d": "1.0.0",
     "com.unity.ide.rider": "3.0.13",
@@ -13,7 +11,7 @@
     "com.unity.timeline": "1.6.4",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.7.6",
-    "com.unity.modules.ai": "1.0.0",
+    "com.yasirkula.ingamedebugconsole": "https://github.com/yasirkula/UnityIngameDebugConsole.git",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.assetbundle": "1.0.0",

@@ -13,6 +13,7 @@ namespace UI
         [SerializeField] private Color backgroundOff, iconOff;
         [SerializeField] private Color backgroundOn, iconOn;
         private Image background, icon;
+        private bool isInited = false;
 
         private UnityEvent<bool> toogleUpdate = new UnityEvent<bool>();
 
@@ -28,6 +29,7 @@ namespace UI
         {
             background = GetComponent<Image>();
             icon = transform.GetChild(0).GetComponent<Image>();
+            isInited = true;
             UpdateToggle();
         }
         public void OnPointerClick(PointerEventData eventData)
@@ -48,6 +50,9 @@ namespace UI
 
         private void UpdateToggle()
         {
+            if (!isInited)
+                return;
+
             if (isOn)
             {
                 background.color = backgroundOn;

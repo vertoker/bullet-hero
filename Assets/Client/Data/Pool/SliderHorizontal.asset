@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfde8eb34eed77643bed0b7646579fcb, type: 3}
+  m_Name: SliderHorizontal
+  m_EditorClassIdentifier: 
+  _object: {fileID: 2893044570793184339, guid: dfb63f6ef2f1e164bb053c71a0daa343, type: 3}
+  _startCapacity: 5
