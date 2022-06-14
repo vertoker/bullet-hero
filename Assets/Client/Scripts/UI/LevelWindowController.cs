@@ -76,6 +76,7 @@ namespace UI
 
         public void Play()
         {
+            gameRules.skinID = ShopData.Loader.Selected;
             GameDataProvider.Set(gameRules, level);
             SceneManager.LoadSceneAsync(2);
         }

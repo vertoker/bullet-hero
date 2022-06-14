@@ -11,6 +11,7 @@ namespace UI
         [SerializeField] private UnityEngine.UI.Slider sliderMusic;
         [SerializeField] private HorizontalSliderInt sliderGraphics;
         [SerializeField] private Toggle toggleNotifications;
+        [SerializeField] private Toggle toggleGUI;
 
         [SerializeField] private SettingsData data;
         private SettingsData startData;
@@ -33,11 +34,13 @@ namespace UI
 
             sliderGraphics.SliderUpdate += UpdateGraphics;
             toggleNotifications.ToggleUpdate += UpdateNotifications;
+            toggleGUI.ToggleUpdate += UpdateGUI;
         }
         private void Push()
         {
             sliderGraphics.SliderUpdate -= UpdateGraphics;
             toggleNotifications.ToggleUpdate -= UpdateNotifications;
+            toggleGUI.ToggleUpdate += UpdateGUI;
 
             UpdateData();
         }
@@ -46,12 +49,14 @@ namespace UI
         {
             sliderGraphics.UpdateSlider((int)data.graphics);
             toggleNotifications.PressToggle(data.notifications);
+            toggleGUI.PressToggle(data.game_interface);
             sliderMusic.value = data.music;
         }
         private void UpdateData()
         {
             data.graphics = (Data.Graphics)sliderGraphics.Value;
             data.notifications = toggleNotifications.IsOn;
+            data.game_interface = toggleGUI.IsOn;
             data.music = sliderMusic.value;
         }
 
@@ -67,11 +72,19 @@ namespace UI
         {
             data.notifications = value;
         }
+        private void UpdateGUI(bool value)
+        {
+            data.notifications = value;
+        }
 
         public void ResetSettings()
         {
             data = startData.Copy();
             UpdateUI();
+        }
+        public void Switch()
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
         }
     }
 }

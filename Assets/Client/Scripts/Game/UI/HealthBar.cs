@@ -20,7 +20,10 @@ namespace Game.UI
         private void OnEnable()
         {
             player.HealthUpdate += UpdateHealth;
-            UpdateHealth(maxHealth);
+            cells = new Image[maxHealth];
+            for (int i = 0; i < maxHealth; i++)
+                cells[i] = spawner.Dequeue().GetComponent<Image>();
+            UpdateHealth(player.Health);
         }
         private void OnDisable()
         {
@@ -33,9 +36,6 @@ namespace Game.UI
         {
             OnDisable();
             maxHealth = lifeCount;
-            cells = new Image[maxHealth];
-            for (int i = 0; i < maxHealth; i++)
-                cells[i] = spawner.Dequeue().GetComponent<Image>();
             OnEnable();
         }
 

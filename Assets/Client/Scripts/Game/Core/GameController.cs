@@ -14,13 +14,14 @@ namespace Game.Core
 {
     public class GameController : MonoBehaviour
     {
-        [SerializeField] private HealthBar healthBar;
         [SerializeField] private Player player;
-        [SerializeField] private Level level;
-        [SerializeField] private GameRules gameRules;
+        [SerializeField] private HealthBar healthBar;
+        [SerializeField] private InputController inputController;
+        [SerializeField] private SkinsData skinsData;
 
-        [Space]
-        [SerializeField] private Sprite[] playerSkins;
+        [SerializeField] private GameRules gameRules;
+        [SerializeField] private Level level;
+        private UIController controllerUI;
         private bool isLoaded = false;
 
         public Player Player => player;
@@ -29,11 +30,15 @@ namespace Game.Core
         private void Awake()
         {
             Instance = this;
+            controllerUI = GetComponent<UIController>();
             SceneManager.sceneLoaded += LoadedProvider;
         }
         private void Start()
         {
-            LoadLevel(GameRules.standard, Level.DEFAULT_LEVEL);
+            if (GameDataProvider.IsSet)
+                LoadLevel(GameDataProvider.Rules, GameDataProvider.Level);
+            else
+                LoadLevel(GameRules.standard, Level.DEFAULT_LEVEL);
         }
         public void LoadLevel(GameRules rules, Level level)
         {
@@ -41,20 +46,24 @@ namespace Game.Core
                 return;
             isLoaded = true;
 
-            gameRules = rules;
+            gameRules = rules.Copy();
 
             SceneManager.LoadScene(1, LoadSceneMode.Additive);
 
-            healthBar.SetPlayerRules(rules.immortality ? 0 : rules.lifeCount);
-            player.SetPlayerPreset(playerSkins[rules.skinID], rules.immortality, rules.lifeCount);
+            RestartController();
         }
         private void LoadedProvider(Scene scene, LoadSceneMode loadSceneMode)
         {
             if (loadSceneMode == LoadSceneMode.Additive)
             {
-                DataProvider.Start(level, player);
+                DataProvider.Start(level, player, gameRules);
                 SceneManager.sceneLoaded -= LoadedProvider;
+                controllerUI.Enable();
             }
+        }
+        private void OnDisable()
+        {
+            controllerUI.Disable();
         }
 
         public void Play()
@@ -64,6 +73,18 @@ namespace Game.Core
         public void Pause()
         {
             DataProvider.Runtime.StopGame();
+        }
+        public void Restart()
+        {
+            RestartController();
+            DataProvider.Runtime.Restart();
+        }
+
+        private void RestartController()
+        {
+            player.SetPlayerPreset(skinsData.GetSkin(gameRules.skinID), gameRules.immortality, gameRules.lifeCount);
+            healthBar.SetPlayerRules(gameRules.immortality ? 0 : gameRules.lifeCount);
+            inputController.Restart();
         }
     }
     

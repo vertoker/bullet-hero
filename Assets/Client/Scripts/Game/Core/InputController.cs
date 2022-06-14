@@ -52,6 +52,11 @@ namespace Game.Core
             startPos = playerStartPos = new Vector3();
         }
 
+        public void Restart()
+        {
+            startPos = playerStartPos = target.localPosition = Vector3.zero;
+            active = true;
+        }
         private void Death()
         {
             active = false;

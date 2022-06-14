@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be501694e4c832a4eadcd6b61c19b78e, type: 3}
+  m_Name: 0
+  m_EditorClassIdentifier: 
+  skinName:
+    english: Basic
+    russian: "\u041E\u0441\u043D\u043E\u0432\u043D\u043E\u0439"
+  skinPrice: 0
+  skinPreset: {fileID: 6461093295061738858, guid: 938ca1fbe1fdf7e4e8e2096c72272456, type: 3}
+  skinSprite: {fileID: 21300000, guid: 1289db6d44d4f524abad8c7f46e8d7c2, type: 3}

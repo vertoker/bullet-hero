@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine.Events;
 using UnityEngine;
-using Game.Provider;
+using Data;
 
 namespace Game.Core
 {
-    [RequireComponent(typeof(SpriteRenderer))]
     public class Player : MonoBehaviour
     {
         [SerializeField] private int maxHealth = 3;
@@ -16,12 +15,14 @@ namespace Game.Core
         private bool isActive = false;
         private int health = 3;
 
+        public int Health => health;
         public const float RADIUS = 0.25f;
 
         [SerializeField] private Transform player;
         [SerializeField] private Transform target;
-        private SpriteRenderer spriteRenderer;
+        [SerializeField] private GameObject deathEffect;
         private Coroutine immortalityActivity;
+        private GameObject preset;
 
         private UnityEvent<int> healthEvent = new UnityEvent<int>();
         private UnityEvent deathEvent = new UnityEvent();
@@ -43,11 +44,6 @@ namespace Game.Core
         public HealthDelegate GetDamageDelegate => Damage;
         public HealthDelegate GetHealDelegate => Heal;
 
-
-        private void Awake()
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
         public void Update()
         {
             float targetLocal = 0, rotVelocity = 0;
@@ -64,24 +60,24 @@ namespace Game.Core
                 player.position = Vector3.Lerp(player.position, target.position, speedFollow);
         }
 
-        public void SetPlayerPreset(Sprite skin, bool immortality, int lifeCount)
+        public void SetPlayerPreset(Skin skin, bool immortality, int lifeCount)
         {
             maxHealth = lifeCount;
             rulesImmortality = immortality;
-            spriteRenderer.sprite = skin;
+            if (preset == null)
+                preset = Instantiate(skin.Preset, player);
             Enable();
-            return;
         }
         public void Enable()
         {
             health = maxHealth;
-            spriteRenderer.enabled = true;
+            preset.SetActive(true);
             isActive = true;
         }
         public void Disable()
         {
             isActive = false;
-            spriteRenderer.enabled = false;
+            preset.SetActive(false);
         }
 
         public void SetImmortality(float time)
@@ -104,7 +100,10 @@ namespace Game.Core
                 return;
 
             if (!rulesImmortality)
+            {
                 health -= count;
+                Destroy(Instantiate(deathEffect, GetPosition(), Quaternion.identity), 2f);
+            }
             if (health <= 0)
             {
                 healthEvent.Invoke(0);

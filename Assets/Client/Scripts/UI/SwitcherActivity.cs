@@ -10,11 +10,19 @@ namespace UI
 
         private void Awake()
         {
+            gameObject.SetActive(true);
+        }
+        private void Start()
+        {
             gameObject.SetActive(startActivity);
         }
         public void Switch()
         {
-            gameObject.SetActive(!gameObject.activeSelf);
+            SetActive(!gameObject.activeSelf);
+        }
+        public void SetActive(bool value)
+        {
+            gameObject.SetActive(value);
         }
     }
 }

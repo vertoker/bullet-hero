@@ -51,6 +51,7 @@ namespace Game.Provider
         private int maxFrame = 0;
         [SerializeField] private float timer = 0f;
         [SerializeField] private int activeFrame = 0;
+        private float timeScale = 1;
         private bool play = false;
         private Coroutine updater;
 
@@ -76,7 +77,7 @@ namespace Game.Provider
             borderScreen = new float3(aspect * 10, 10, 0);
         }
 
-        public void LoadLevel(Level level, Player player)
+        public void LoadLevel(Level level, Player player, GameRules rules)
         {
             maxFrame = (int)(level.LevelData.EndFadeOut * FPS);
             prefabsCount = level.Prefabs.Count;
@@ -111,6 +112,8 @@ namespace Game.Provider
                 prefabSprites[i] = prefabs[i].SpriteType;
             }
 
+            timeScale = rules.time;
+
             if (this.player != null)
                 player.DeathCaller -= StopGame;
             this.player = player;
@@ -130,7 +133,7 @@ namespace Game.Provider
             while (true)
             {
                 yield return null;
-                timer += Time.deltaTime;
+                timer += Time.deltaTime * timeScale;
                 int lastFrame = activeFrame;
                 activeFrame = Mathf.FloorToInt(timer * FPS);
                 //timerFrame = activeFrame / FrameRate;
@@ -154,6 +157,13 @@ namespace Game.Provider
         {
             StopCoroutine(updater);
             play = false;
+        }
+        public void Restart()
+        {
+            StopGame();
+            timer = 0;
+            activeFrame = 0;
+            StartGame();
         }
 
         private void UpdateCycle()

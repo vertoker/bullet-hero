@@ -14,9 +14,8 @@ namespace UI
         [SerializeField] private Color notFilled;
         [SerializeField] private Color filled;
 
-        private int length = 0;
+        [SerializeField] private int length = 5;
         private bool isInited = false;
-        private PoolSpawner poolSpawner;
         private Image[] blocks;
 
         private int selectedSlot = 0;
@@ -29,13 +28,9 @@ namespace UI
             remove => sliderUpdate.RemoveListener(value);
         }
 
-        private void Awake()
-        {
-            poolSpawner = GetComponent<PoolSpawner>();
-        }
         private void OnEnable()
         {
-            Initialize(5);
+            Initialize(length);
         }
 
         private void Initialize(int length)
@@ -44,23 +39,11 @@ namespace UI
                 return;
             isInited = true;
 
-            EnqueueAll();
             this.length = length;
-            DequeueAll();
-        }
-        private void EnqueueAll()
-        {
-            for (int i = 0; i < length; i++)
-            {
-                poolSpawner.Enqueue(blocks[i].gameObject);
-            }
-        }
-        private void DequeueAll()
-        {
             blocks = new Image[length];
             for (int i = 0; i < length; i++)
             {
-                blocks[i] = poolSpawner.Dequeue().GetComponent<Image>();
+                blocks[i] = transform.GetChild(i).GetComponent<Image>();
                 blocks[i].GetComponent<HorizontalSliderBlock>().Init(this, i);
             }
         }

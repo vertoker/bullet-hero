@@ -27,7 +27,7 @@ namespace Game.Core
 
         [Tooltip("Player skin")]
         [SerializeField]
-        public int skinID = 1;
+        public int skinID = 0;
 
         public float GetScoreMultiplier()
         {
@@ -39,13 +39,25 @@ namespace Game.Core
             return result;
         }
 
+        public GameRules Copy()
+        {
+            return new GameRules()
+            {
+                time = time,
+                lifeCount = lifeCount,
+                immortality = immortality,
+                autopilot = autopilot,
+                skinID = skinID
+            };
+        }
+
         public static readonly GameRules standard = new GameRules()
         {
             lifeCount = 3,
             time = 1,
             immortality = false,
             autopilot = false,
-            skinID = 1
+            skinID = 0
         };
     }
 }

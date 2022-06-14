@@ -10,12 +10,14 @@ namespace Data
     public class SettingsData
     {
         public Graphics graphics = Graphics.Basic;
+        public bool game_interface = true;
         public bool notifications = true;
         public float music = 1f;
 
         public SettingsData()
         {
             graphics = Graphics.Basic;
+            game_interface = true;
             notifications = true;
             music = 1f;
         }
@@ -25,6 +27,7 @@ namespace Data
             return new SettingsData()
             {
                 notifications = notifications,
+                game_interface = game_interface,
                 graphics = graphics,
                 music = music
             };

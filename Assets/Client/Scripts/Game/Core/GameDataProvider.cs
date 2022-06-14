@@ -7,28 +7,21 @@ using Data;
 
 namespace Game.Core
 {
-    public class GameDataProvider : MonoBehaviour
+    public static class GameDataProvider
     {
-        private GameController controller;
+        private static bool isSet = false;
         private static GameRules rules;
         private static Level level;
-        private static bool isSet = false;
 
-        private void Awake()
-        {
-            controller = GetComponent<GameController>();
-        }
-        private void Start()
-        {
-            if (isSet)
-                controller.LoadLevel(rules, level);
-        }
+        public static bool IsSet => isSet;
+        public static GameRules Rules => rules;
+        public static Level Level => level;
 
         public static void Set(GameRules rules, Level level)
         {
             isSet = true;
-            GameDataProvider.rules = rules;
-            GameDataProvider.level = level;
+            GameDataProvider.rules = rules.Copy();
+            GameDataProvider.level = level.Copy();
         }
     }
 }

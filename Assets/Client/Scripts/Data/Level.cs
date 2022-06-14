@@ -27,7 +27,6 @@ namespace Data
         public List<EditorPrefab> EditorPrefabs { get { return ep; } set { ep = value; } }
         public CameraData CameraData { get { return cd; } set { cd = value; } }
 
-        #region Static Default
         public Level(LevelData level_data,
             List<Marker> markers,
             List<Checkpoint> checkpoints,
@@ -42,7 +41,12 @@ namespace Data
             ep = editor_prefabs;
             cd = camera_data;
         }
+        public Level Copy()
+        {
+            return new Level(ld, m, c, p, ep, cd);
+        }
 
+        #region Static Default
         private static readonly LevelData levelData = new LevelData()
         {
             LevelName = "0 demo",
