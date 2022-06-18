@@ -7,6 +7,8 @@ using System.Linq;
 using Game.Core;
 using Data;
 
+using UtilsStatic = Utils.Static;
+
 using UnityEngine.Jobs;
 using Unity.Mathematics;
 using Unity.Jobs;
@@ -52,8 +54,13 @@ namespace Game.Provider
         [SerializeField] private float timer = 0f;
         [SerializeField] private int activeFrame = 0;
         private float timeScale = 1;
+        private float timePause = 1;
         private bool play = false;
         private Coroutine updater;
+
+        public float Length => UtilsStatic.Frame2Sec(maxFrame);
+        public bool Play => play;
+        public float Timer => timer;
 
         private static UnityEvent<int, int> frameEvent = new UnityEvent<int, int>();
         public static event UnityAction<int, int> UpdateFrame
@@ -79,7 +86,7 @@ namespace Game.Provider
 
         public void LoadLevel(Level level, Player player, GameRules rules)
         {
-            maxFrame = (int)(level.LevelData.EndFadeOut * FPS);
+            maxFrame = UtilsStatic.Sec2Frame(level.LevelData.EndFadeOut);
             prefabsCount = level.Prefabs.Count;
             prefabs = new List<Prefab>();
 
@@ -133,9 +140,9 @@ namespace Game.Provider
             while (true)
             {
                 yield return null;
-                timer += Time.deltaTime * timeScale;
+                timer += Time.deltaTime * timeScale * timePause;
                 int lastFrame = activeFrame;
-                activeFrame = Mathf.FloorToInt(timer * FPS);
+                activeFrame = UtilsStatic.Sec2Frame(timer);
                 //timerFrame = activeFrame / FrameRate;
                 if (activeFrame == lastFrame)
                     continue;
@@ -153,10 +160,18 @@ namespace Game.Provider
                 updater = StartCoroutine(Updater());
             }
         }
+        public void StartMove()
+        {
+            timePause = 1;
+        }
         public void StopGame()
         {
             StopCoroutine(updater);
             play = false;
+        }
+        public void StopMove()
+        {
+            timePause = 0;
         }
         public void Restart()
         {
@@ -164,6 +179,10 @@ namespace Game.Provider
             timer = 0;
             activeFrame = 0;
             StartGame();
+        }
+        public void SetSec(float sec)
+        {
+            timer = sec;
         }
 
         private void UpdateCycle()

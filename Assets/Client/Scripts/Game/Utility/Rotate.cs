@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Utils
+namespace Game.Utility
 {
     public class Rotate : MonoBehaviour
     {
