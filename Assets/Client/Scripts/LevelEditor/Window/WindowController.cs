@@ -9,27 +9,24 @@ namespace LevelEditor.Windows
     public class WindowController : MonoBehaviour
     {
         [SerializeField] private WindowData[] data;
-        [SerializeField] private GameRules gameRules;
-        [SerializeField] private Level level;
-
-        public GameRules GameRules
-        {
-            get { return gameRules; }
-            set { gameRules = value; }
-        }
-        public Level Level
-        {
-            get { return level; }
-            set { level = value; }
-        }
+        [SerializeField] private bool initOnAwake = false;
+        private WindowData lastActive;
+        private bool hasLast = false;
 
         private void Awake()
         {
+            if (initOnAwake)
+                Init();
+        }
+
+        public void Init()
+        {
             foreach (var window in data)
             {
-                window.data.Init(this);
+                if (window.data != null)
+                    window.data.Init();
                 if (window.startActive)
-                    window.Enable(this);
+                    window.Enable();
                 else
                     window.Disable();
             }
@@ -37,11 +34,31 @@ namespace LevelEditor.Windows
 
         public void Enable(string name)
         {
-            data.FirstOrDefault((WindowData windowData) => { return windowData.obj.name == name; }).Enable(this);
+            lastActive = data.FirstOrDefault((WindowData windowData) => { return windowData.obj.name == name; });
+            lastActive.Enable();
+            hasLast = true;
         }
         public void Disable(string name)
         {
-            data.FirstOrDefault((WindowData windowData) => { return windowData.obj.name == name; }).Disable();
+            lastActive = data.FirstOrDefault((WindowData windowData) => { return windowData.obj.name == name; });
+            lastActive.Disable();
+            hasLast = true;
+        }
+        public void EnableLast()
+        {
+            if (hasLast)
+            {
+                lastActive.Enable();
+                hasLast = false;
+            }
+        }
+        public void DisableLast()
+        {
+            if (hasLast)
+            {
+                lastActive.Disable();
+                hasLast = false;
+            }
         }
 
         private void OnDisable()
@@ -58,7 +75,7 @@ namespace LevelEditor.Windows
         public Window data;
         public bool startActive;
 
-        public void Enable(WindowController controller)
+        public void Enable()
         {
             obj.SetActive(true);
         }

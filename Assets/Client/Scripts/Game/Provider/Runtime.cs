@@ -51,22 +51,31 @@ namespace Game.Provider
         private const int CountBlocks = 1000;
 
         private int maxFrame = 0;
+        private float levelLength = 0;
         [SerializeField] private float timer = 0f;
         [SerializeField] private int activeFrame = 0;
         private float timeScale = 1;
         private float timePause = 1;
-        private bool play = false;
+        private bool activeUpdater = false;
         private Coroutine updater;
 
         public float Length => UtilsStatic.Frame2Sec(maxFrame);
-        public bool Play => play;
+        public bool IsPlay => timePause == 1;
+        public bool IsActive => activeUpdater;
         public float Timer => timer;
 
         private static UnityEvent<int, int> frameEvent = new UnityEvent<int, int>();
+        private static UnityEvent<bool> pauseEvent = new UnityEvent<bool>();
+
         public static event UnityAction<int, int> UpdateFrame
         {
             add => frameEvent.AddListener(value);
             remove => frameEvent.AddListener(value);
+        }
+        public static event UnityAction<bool> UpdatePause
+        {
+            add => pauseEvent.AddListener(value);
+            remove => pauseEvent.AddListener(value);
         }
 
         private void Awake()
@@ -86,7 +95,8 @@ namespace Game.Provider
 
         public void LoadLevel(Level level, Player player, GameRules rules)
         {
-            maxFrame = UtilsStatic.Sec2Frame(level.LevelData.EndFadeOut);
+            levelLength = level.LevelData.EndFadeOut;
+            maxFrame = UtilsStatic.Sec2Frame(levelLength);
             prefabsCount = level.Prefabs.Count;
             prefabs = new List<Prefab>();
 
@@ -129,6 +139,7 @@ namespace Game.Provider
             player.DeathCaller += StopGame;
 
             StartGame();
+            Play();
         }
         private void OnDisable()
         {
@@ -149,40 +160,61 @@ namespace Game.Provider
                 frameEvent.Invoke(activeFrame, maxFrame);
                 UpdateCycle();
                 if (activeFrame == maxFrame)
-                    StopGame();
+                {
+                    activeUpdater = false;
+                    Pause();
+                }
             }
+        }
+        public void TogglePlayPause()
+        {
+            if (timePause == 1)
+                Pause();
+            else if (activeFrame == maxFrame)
+                Restart();
+            else
+                Play();
         }
         public void StartGame()
         {
-            if (!play)
-            {
-                play = true;
-                updater = StartCoroutine(Updater());
-            }
+            activeUpdater = true;
+            updater = StartCoroutine(Updater());
         }
-        public void StartMove()
+        public void Play()
         {
-            timePause = 1;
+            if (activeFrame != maxFrame)
+            {
+                timePause = 1;
+                pauseEvent.Invoke(true);
+            }
         }
         public void StopGame()
         {
             StopCoroutine(updater);
-            play = false;
+            activeUpdater = false;
         }
-        public void StopMove()
+        public void Pause()
         {
             timePause = 0;
+            pauseEvent.Invoke(false);
         }
         public void Restart()
         {
+            Pause();
             StopGame();
             timer = 0;
             activeFrame = 0;
             StartGame();
+            Play();
         }
         public void SetSec(float sec)
         {
-            timer = sec;
+            if (sec < 0)
+                timer = 0;
+            else if (sec > levelLength)
+                timer = levelLength;
+            else
+                timer = sec;
         }
 
         private void UpdateCycle()

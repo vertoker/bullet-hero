@@ -1,14 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Game.Provider;
 
 namespace LevelEditor.Windows
 {
-    public abstract class Window : MonoBehaviour
+    public interface IRuntimeProvider
     {
-        public virtual void Init()
-        {
-
-        }
+        public void Init(Runtime runtime);
     }
 }

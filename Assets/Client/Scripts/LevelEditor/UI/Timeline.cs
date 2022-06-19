@@ -19,6 +19,9 @@ namespace LevelEditor.UI
         [SerializeField] private RectTransform secMarkerScrollbar;
         [SerializeField] private RectTransform content;
 
+        [Space]
+        [SerializeField] private bool verticalControl = false;
+
         private ITimelineController controller;
 
         [Space]
@@ -60,7 +63,10 @@ namespace LevelEditor.UI
             this.controller = controller;
             timelineLength = 100f * secLength;
             secLine.sizeDelta = new Vector2(timelineLength, Static.LayerLength);
-            content.sizeDelta = new Vector2(timelineLength, 1000f);
+            if (verticalControl)
+                content.sizeDelta = new Vector2(timelineLength, 1000f);
+            else
+                content.sizeDelta = new Vector2(timelineLength, content.sizeDelta.y);
             contentSizeDelta = new Vector2(timelineLength, -1000f);
 
             controller.Add(UpdateSecLineMarker);

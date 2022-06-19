@@ -8,7 +8,7 @@ using Utils;
 
 namespace LevelEditor.Windows
 {
-    public class TimelineRuntime : Window, ITimelineController
+    public class TimelinePrefab : Window, ITimelineController
     {
         private Runtime runtime;
         private Timeline timeline;

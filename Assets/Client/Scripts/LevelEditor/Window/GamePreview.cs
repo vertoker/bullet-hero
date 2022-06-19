@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+using UnityEngine.UI;
 using Game.Provider;
 using UnityEngine;
 using Game.Core;
@@ -10,23 +12,21 @@ namespace LevelEditor.Windows
 {
     public class GamePreview : Window
     {
+        [SerializeField] private Camera previewCam;
+        [SerializeField] private RawImage preview;
         [SerializeField] private SkinsData skinsData;
-        [SerializeField] private TimelineRuntime timeline;
         [SerializeField] private Player player;
-        private WindowController controller;
 
-        public override void Init(WindowController controller)
+        private static UnityEvent<Runtime> initEvent = new UnityEvent<Runtime>();
+        public static event UnityAction<Runtime> InitEvent
         {
-            this.controller = controller;
+            add => initEvent.AddListener(value);
+            remove => initEvent.RemoveListener(value);
+        }
+
+        public override void Init()
+        {
             InitProvider();
-        }
-        private void OnEnable()
-        {
-            
-        }
-        private void OnDisable()
-        {
-
         }
 
         private void InitProvider()
@@ -40,8 +40,8 @@ namespace LevelEditor.Windows
         {
             if (loadSceneMode == LoadSceneMode.Additive)
             {
-                DataProvider.Start(Level.DEFAULT_LEVEL, player, GameRules.standard);
-                timeline.Init(DataProvider.Runtime);
+                DataProvider.Start(LevelHolder.Level, player, LevelHolder.GameRules);
+                initEvent.Invoke(DataProvider.Runtime);
                 SceneManager.sceneLoaded -= LoadedProvider;
             }
         }
@@ -62,9 +62,10 @@ namespace LevelEditor.Windows
 
         private void RestartController()
         {
-            player.SetPlayerPreset(skinsData.GetSkin(controller.GameRules.skinID), true, 1);
-            //healthBar.SetPlayerRules(gameRules.immortality ? 0 : gameRules.lifeCount);
-            //inputController.Restart();
+            player.SetPlayerPreset(skinsData.GetSkin(0), true, 1);
+            var texture = new RenderTexture(Screen.width / 2, Screen.height / 2, 24);
+            previewCam.targetTexture = texture;
+            preview.texture = texture;
         }
     }
 }
