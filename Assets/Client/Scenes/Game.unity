@@ -1754,7 +1754,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 419.7735, y: -100}
+  m_AnchoredPosition: {x: 319.93903, y: -100}
   m_SizeDelta: {x: 500, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &578108658
@@ -4510,7 +4510,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1259.3206, y: -100}
+  m_AnchoredPosition: {x: 959.8171, y: -100}
   m_SizeDelta: {x: 500, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1528048373
@@ -6035,7 +6035,7 @@ MonoBehaviour:
   inputController: {fileID: 1671832485}
   skinsData: {fileID: 11400000, guid: 5b9452ed00d0f294ca4eca02c372db0a, type: 2}
   gameRules:
-    time: 0
+    time: 3
     lifeCount: 0
     immortality: 0
     autopilot: 0
@@ -6043,13 +6043,18 @@ MonoBehaviour:
   level:
     CURRENT_VERSION: 1
     ld:
-      ln: 0 demo level
-      ev: 1
+      ln: 0 demo
+      ldv: 1
       mt: 1up muncher
       ma: DUNDERPATRULLEN
       la: vertog
-      sfo: 184.5
-      efo: 188
+      asd:
+      - lp: C:\Users\verto\AppData\LocalLow\LiMiDyFy\Bullet Hero\Levels\0 demo\music.mp3
+        lt: 0
+        ls: 2
+        sfo: 184.5
+        efo: 188
+      l: 188
     m:
     - n: here is block
       d: description
@@ -6332,7 +6337,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 2098.8674, y: -100}
+  m_AnchoredPosition: {x: 1599.6951, y: -100}
   m_SizeDelta: {x: 500, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1916047596

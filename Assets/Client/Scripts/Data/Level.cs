@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Data.Enum;
 using System;
 
 using Game.Components;
@@ -47,15 +48,21 @@ namespace Data
         }
 
         #region Static Default
+        private const string DEFAULT_MUSIC_PATH = "G:\\Projects\\Unity\\Bullet Hero Legacy 2\\Assets\\levels\\0 demo\\music.mp3";
         private static readonly LevelData levelData = new LevelData()
         {
             LevelName = "0 demo",
-            EditorVersion = 1,
+            LevelDataVersion = 1,
             MusicTitle = "1up muncher",
             MusicAuthor = "DUNDERPATRULLEN",
             LevelAuthor = "vertog",
-            StartFadeOut = 184.5f,
-            EndFadeOut = 188f
+            AudioSourcesData = new AudioSourceData[]
+            {
+                new AudioSourceData(DEFAULT_MUSIC_PATH, AudioLinkType.AudioLink, LinkStatus.Specified, 184.5f, 188f),
+                new AudioSourceData("https://clck.ru/rbRbL", AudioLinkType.AudioLink, LinkStatus.Specified, 184.5f, 188f)
+            },
+            Length = 188f
+
         };
         private static readonly List<Marker> markers = new List<Marker>()
         {

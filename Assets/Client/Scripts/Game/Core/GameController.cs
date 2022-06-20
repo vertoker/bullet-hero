@@ -68,11 +68,11 @@ namespace Game.Core
 
         public void Play()
         {
-            DataProvider.Runtime.StartGame();
+            DataProvider.Runtime.Play();
         }
         public void Pause()
         {
-            DataProvider.Runtime.StopGame();
+            DataProvider.Runtime.Pause();
         }
         public void Restart()
         {

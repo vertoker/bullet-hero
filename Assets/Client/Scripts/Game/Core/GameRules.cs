@@ -8,7 +8,7 @@ namespace Game.Core
     public class GameRules
     {
         [Tooltip("Time multiplier")]
-        [Range(0.25f, 4f)]
+        [Range(0.25f, 3f)]
         [SerializeField]
         public float time;
 

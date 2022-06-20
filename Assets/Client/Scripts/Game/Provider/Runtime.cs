@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using Game.Components;
 using UnityEngine;
 using System.Linq;
+using Audio.Game;
 using Game.Core;
 using Data;
 
@@ -25,6 +26,7 @@ namespace Game.Provider
         private Transform self;
         private Transform[] trs;
         private SpriteRenderer[] srs;
+        private AudioPlayer audioPlayer;
 
         private int prefabsCount;
         private int lastActivePrefabs = 0;
@@ -47,7 +49,6 @@ namespace Game.Provider
         private HealthDelegate playerDamage;
         private Player player;
 
-        private const float FPS = 60;
         private const int CountBlocks = 1000;
 
         private int maxFrame = 0;
@@ -83,6 +84,8 @@ namespace Game.Provider
             self = transform;
             trs = new Transform[CountBlocks];
             srs = new SpriteRenderer[CountBlocks];
+            audioPlayer = GetComponent<AudioPlayer>();
+
             for (int i = 0; i < CountBlocks; i++)
             {
                 trs[i] = self.GetChild(i).GetComponent<Transform>();
@@ -95,7 +98,7 @@ namespace Game.Provider
 
         public void LoadLevel(Level level, Player player, GameRules rules)
         {
-            levelLength = level.LevelData.EndFadeOut;
+            levelLength = level.LevelData.Length;
             maxFrame = UtilsStatic.Sec2Frame(levelLength);
             prefabsCount = level.Prefabs.Count;
             prefabs = new List<Prefab>();
@@ -138,8 +141,9 @@ namespace Game.Provider
             playerDamage = player.GetDamageDelegate;
             player.DeathCaller += StopGame;
 
+            audioPlayer.SetAudio(level.LevelData, rules);
+
             StartGame();
-            Play();
         }
         private void OnDisable()
         {
@@ -154,7 +158,6 @@ namespace Game.Provider
                 timer += Time.deltaTime * timeScale * timePause;
                 int lastFrame = activeFrame;
                 activeFrame = UtilsStatic.Sec2Frame(timer);
-                //timerFrame = activeFrame / FrameRate;
                 if (activeFrame == lastFrame)
                     continue;
                 frameEvent.Invoke(activeFrame, maxFrame);
@@ -173,29 +176,38 @@ namespace Game.Provider
             else if (activeFrame == maxFrame)
                 Restart();
             else
-                Play();
+                PlaySafe();
         }
         public void StartGame()
         {
             activeUpdater = true;
             updater = StartCoroutine(Updater());
+            PlaySafe();
         }
-        public void Play()
+        public void PlaySafe()
         {
             if (activeFrame != maxFrame)
             {
-                timePause = 1;
-                pauseEvent.Invoke(true);
+                Play();
             }
+        }
+        public void Play()
+        {
+            timePause = 1;
+            audioPlayer.Drag(timer);
+            audioPlayer.Play();
+            pauseEvent.Invoke(true);
         }
         public void StopGame()
         {
+            Pause();
             StopCoroutine(updater);
             activeUpdater = false;
         }
         public void Pause()
         {
             timePause = 0;
+            audioPlayer.Pause();
             pauseEvent.Invoke(false);
         }
         public void Restart()
@@ -205,7 +217,7 @@ namespace Game.Provider
             timer = 0;
             activeFrame = 0;
             StartGame();
-            Play();
+            PlaySafe();
         }
         public void SetSec(float sec)
         {
@@ -215,6 +227,7 @@ namespace Game.Provider
                 timer = levelLength;
             else
                 timer = sec;
+            audioPlayer.Drag(timer);
         }
 
         private void UpdateCycle()

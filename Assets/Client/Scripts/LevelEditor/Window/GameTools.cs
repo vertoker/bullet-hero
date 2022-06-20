@@ -37,7 +37,7 @@ namespace LevelEditor.Windows
         }
         public void Play()
         {
-            runtime.Play();
+            runtime.PlaySafe();
         }
         public void Pause()
         {

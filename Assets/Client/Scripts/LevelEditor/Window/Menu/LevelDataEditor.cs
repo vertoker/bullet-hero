@@ -26,7 +26,7 @@ namespace LevelEditor.Windows.Menu
             musicTitle.text = levelData.MusicTitle;
             musicAuthor.text = levelData.MusicAuthor;
             levelAuthor.text = levelData.LevelAuthor;
-            levelDataVersion.text = levelData.EditorVersion.ToString();
+            levelDataVersion.text = levelData.LevelDataVersion.ToString();
         }
         public void OnDisable()
         {
