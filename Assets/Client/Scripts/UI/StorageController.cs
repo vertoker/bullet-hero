@@ -119,6 +119,7 @@ namespace UI
         public void LevelLoad(int id)
         {
             int index = currentPage * levelPageCount + id;
+            Debug.Log(index);
             if (LevelSaver.Exists(levelList[index]))
             {
                 var level = LevelSaver.Load(levelList[index]);

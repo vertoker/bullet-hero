@@ -98,7 +98,7 @@ namespace Game.Provider
 
         public void LoadLevel(Level level, Player player, GameRules rules)
         {
-            levelLength = level.LevelData.Length;
+            levelLength = level.AudioData.Length;
             maxFrame = UtilsStatic.Sec2Frame(levelLength);
             prefabsCount = level.Prefabs.Count;
             prefabs = new List<Prefab>();
@@ -141,7 +141,7 @@ namespace Game.Provider
             playerDamage = player.GetDamageDelegate;
             player.DeathCaller += StopGame;
 
-            audioPlayer.SetAudio(level.LevelData, rules);
+            audioPlayer.SetAudio(level.LevelData, level.AudioData, rules);
 
             StartGame();
         }

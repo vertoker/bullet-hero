@@ -15,6 +15,7 @@ namespace Data
         public int CURRENT_VERSION = 1;
 
         [SerializeField] private LevelData ld;// Базовая информация об уровне (level data)
+        [SerializeField] private AudioData ad;// Базовая информация об аудио уровня (audio data)
         [SerializeField] private List<Marker> m;// Маркеры для редактора (markers)
         [SerializeField] private List<Checkpoint> c;// Сохранения игрока на уровне (checkpoints)
         [SerializeField] private List<Prefab> p;// Все объекты на сцене (prefabs)
@@ -22,6 +23,7 @@ namespace Data
         [SerializeField] private CameraData cd;// Эффект движущейся камеры в игре (effects)
 
         public LevelData LevelData { get { return ld; } set { ld = value; } }
+        public AudioData AudioData { get { return ad; } set { ad = value; } }
         public List<Marker> Markers { get { return m; } set { m = value; } }
         public List<Checkpoint> Checkpoints { get { return c; } set { c = value; } }
         public List<Prefab> Prefabs { get { return p; } set { p = value; } }
@@ -29,6 +31,7 @@ namespace Data
         public CameraData CameraData { get { return cd; } set { cd = value; } }
 
         public Level(LevelData level_data,
+            AudioData audio_data,
             List<Marker> markers,
             List<Checkpoint> checkpoints,
             List<Prefab> prefabs,
@@ -36,6 +39,7 @@ namespace Data
             CameraData camera_data)
         {
             ld = level_data;
+            ad = audio_data;
             m = markers;
             c = checkpoints;
             p = prefabs;
@@ -44,7 +48,7 @@ namespace Data
         }
         public Level Copy()
         {
-            return new Level(ld, m, c, p, ep, cd);
+            return new Level(ld, ad, m, c, p, ep, cd);
         }
 
         #region Static Default
@@ -55,15 +59,15 @@ namespace Data
             LevelDataVersion = 1,
             MusicTitle = "1up muncher",
             MusicAuthor = "DUNDERPATRULLEN",
-            LevelAuthor = "vertog",
-            AudioSourcesData = new AudioSourceData[]
-            {
-                new AudioSourceData(DEFAULT_MUSIC_PATH, AudioLinkType.AudioLink, LinkStatus.Specified, 184.5f, 188f),
-                new AudioSourceData("https://clck.ru/rbRbL", AudioLinkType.AudioLink, LinkStatus.Specified, 184.5f, 188f)
-            },
-            Length = 188f
+            LevelAuthor = "vertog"
 
         };
+        private static readonly List<AudioSourceData> audioSources = new List<AudioSourceData>()
+        {
+            new AudioSourceData(DEFAULT_MUSIC_PATH, AudioLinkType.AudioLink, LinkStatus.Specified, 0f, 0f, 184.5f, 188f),
+            new AudioSourceData("https://clck.ru/rbRbL", AudioLinkType.AudioLink, LinkStatus.Specified, 0f, 0f, 184.5f, 188f)
+        };
+        private static readonly AudioData audioData = new AudioData(audioSources, 188f);
         private static readonly List<Marker> markers = new List<Marker>()
         {
             new Marker()
@@ -219,7 +223,7 @@ namespace Data
                 Layer = 1
             }
         };
-        public static readonly Level DEFAULT_LEVEL = new Level(levelData, markers, checkpoints, prefabs, null, new CameraData());
+        public static readonly Level DEFAULT_LEVEL = new Level(levelData, audioData, markers, checkpoints, prefabs, null, new CameraData());
         #endregion
     }
 }

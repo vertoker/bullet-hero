@@ -10,7 +10,7 @@ namespace Audio.Static
     public static class AudioFileConverter
     {
         static NVorbis.VorbisReader vorbis;
-        public static AudioClip FromOggData(LevelData levelData, byte[] data)
+        public static AudioClip FromOggData(byte[] data)
         {
             // Load the data into a stream
             MemoryStream oggstream = new MemoryStream(data);
@@ -20,7 +20,7 @@ namespace Audio.Static
             int samplecount = (int)(vorbis.SampleRate * vorbis.TotalTime.TotalSeconds);
 
             //  AudioClip audioClip = AudioClip.Create("clip", samplecount, vorbis.Channels, vorbis.SampleRate, false, true, OnAudioRead, OnAudioSetPosition);
-            AudioClip audioClip = AudioClip.Create(levelData.MusicTitle, samplecount, vorbis.Channels, vorbis.SampleRate, false, OnAudioRead);
+            AudioClip audioClip = AudioClip.Create("ogg_type", samplecount, vorbis.Channels, vorbis.SampleRate, false, OnAudioRead);
             // Return the clip
             return audioClip;
         }
@@ -33,14 +33,14 @@ namespace Audio.Static
                 data[i] = f[i];
             }
         }
-        public static AudioClip FromWavData(LevelData levelData, byte[] data)
+        public static AudioClip FromWavData(byte[] data)
         {
             WAV wav = new WAV(data);
-            AudioClip audioClip = AudioClip.Create(levelData.MusicTitle, wav.SampleCount, 1, wav.Frequency, false);
+            AudioClip audioClip = AudioClip.Create("wav_type", wav.SampleCount, 1, wav.Frequency, false);
             audioClip.SetData(wav.LeftChannel, 0);
             return audioClip;
         }
-        public static AudioClip FromMp3Data(LevelData levelData, byte[] data)
+        public static AudioClip FromMp3Data(byte[] data)
         {
             // Load the data into a stream
             MemoryStream mp3stream = new MemoryStream(data);
@@ -49,7 +49,7 @@ namespace Audio.Static
             WaveStream waveStream = WaveFormatConversionStream.CreatePcmStream(mp3audio);
             // Convert to WAV data
             WAV wav = new WAV(AudioMemStream(waveStream).ToArray());
-            AudioClip audioClip = AudioClip.Create(levelData.MusicTitle, wav.SampleCount, 1, wav.Frequency, false);
+            AudioClip audioClip = AudioClip.Create("mp3_type", wav.SampleCount, 1, wav.Frequency, false);
             audioClip.SetData(wav.LeftChannel, 0);
             // Return the clip
             return audioClip;

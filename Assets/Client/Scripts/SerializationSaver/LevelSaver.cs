@@ -27,9 +27,9 @@ namespace Game.SerializationSaver
             ".mp3", ".wav", ".ogg"
         };
 
-        public static bool GetAudioPath(LevelData levelData, out string path, out AudioFormat format)
+        public static bool GetAudioPath(LevelData levelData, AudioData audioData, out string path, out AudioFormat format)
         {
-            foreach (var source in levelData.AudioSourcesData)
+            foreach (var source in audioData.AudioSourcesData)
             {
                 foreach (var extension in extensions)
                 {

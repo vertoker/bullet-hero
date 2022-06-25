@@ -10,7 +10,6 @@ namespace UI
     public class Slider : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerExitHandler
     {
         [SerializeField] private bool resetOnEnable = false;
-        [SerializeField] private Camera cam;
         private bool isAwaken = false;
 
         private UnityEvent<int, int> sliderUpdate = new UnityEvent<int, int>();
@@ -47,8 +46,9 @@ namespace UI
             sliderEnd = new Vector2(slider.rect.xMax, slider.rect.yMax);
             heightSlider = slider.rect.height;
 
+            float aspect = (float)Screen.width / Screen.height;
             screenSize = new Vector2(Screen.width, Screen.height);
-            canvasSize = new Vector2(cam.aspect * 1080f, 1080f);
+            canvasSize = new Vector2(aspect * 1080f, 1080f);
             screenMultiplier = canvasSize / screenSize;
         }
         private void OnEnable()

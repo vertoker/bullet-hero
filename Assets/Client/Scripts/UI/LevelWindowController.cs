@@ -71,7 +71,7 @@ namespace UI
             var data = level.LevelData;
             _level.text = string.Format("{0} - {1}", data.LevelAuthor, data.LevelName);
             _music.text = string.Format("{0} - {1} :{2}", data.MusicAuthor, data.MusicTitle, musicString.GetString());
-            _info.text = string.Format("({2}) {0} - {1}", data.Length, level.Prefabs.Count, data.LevelDataVersion);
+            _info.text = string.Format("({2}) {0} - {1}", level.AudioData.Length, level.Prefabs.Count, data.LevelDataVersion);
         }
 
         public void Play()

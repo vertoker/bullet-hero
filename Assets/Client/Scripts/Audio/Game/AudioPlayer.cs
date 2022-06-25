@@ -22,13 +22,13 @@ namespace Audio.Game
             audioSource = GetComponent<AudioSource>();
         }
 
-        public void SetAudio(LevelData levelData, GameRules gameRules)
+        public void SetAudio(LevelData levelData, AudioData audioData, GameRules gameRules)
         {
-            loadAudio = LevelSaver.GetAudioPath(levelData, out string path, out AudioFormat format);
+            loadAudio = LevelSaver.GetAudioPath(levelData, audioData, out string path, out AudioFormat format);
             if (loadAudio)
             {
                 var bytes = File.ReadAllBytes(path);
-                audioSource.clip = GetClip(levelData, bytes, format);
+                audioSource.clip = GetClip(bytes, format);
                 audioSource.pitch = gameRules.time;
             }
         }
@@ -49,13 +49,13 @@ namespace Audio.Game
                 audioSource.Play();
         }
 
-        private static AudioClip GetClip(LevelData levelData, byte[] data, AudioFormat format)
+        private static AudioClip GetClip(byte[] data, AudioFormat format)
         {
             switch (format)
             {
-                case AudioFormat.MP3: return AudioFileConverter.FromMp3Data(levelData, data);
-                case AudioFormat.WAV: return AudioFileConverter.FromWavData(levelData, data);
-                case AudioFormat.OGG: return AudioFileConverter.FromOggData(levelData, data);
+                case AudioFormat.MP3: return AudioFileConverter.FromMp3Data(data);
+                case AudioFormat.WAV: return AudioFileConverter.FromWavData(data);
+                case AudioFormat.OGG: return AudioFileConverter.FromOggData(data);
             }
             return null;
         }

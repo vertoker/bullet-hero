@@ -18,12 +18,12 @@ namespace LevelEditor
 
         public static GameRules GameRules
         {
-            get { return GameRules.standard; }
+            get { return instance.gameRules; }
             set { instance.gameRules = value; }
         }
         public static Level Level
         {
-            get { return Level.DEFAULT_LEVEL; }
+            get { return instance.level; }
             set { instance.level = value; }
         }
 
@@ -35,7 +35,12 @@ namespace LevelEditor
         private void Awake()
         {
             instance = this;
-            controller.Init();
+        }
+        public static void Load(Level level)
+        {
+            instance.level = level;
+            instance.gameRules = GameRules.standard;
+            instance.controller.Init();
         }
         public static void Save()
         {

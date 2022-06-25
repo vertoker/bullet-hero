@@ -16,10 +16,11 @@ namespace LevelEditor.Windows.Menu
         [SerializeField] private TMP_InputField levelAuthor;
         [SerializeField] private TMP_Text levelDataVersion;
 
-        private LevelData levelData;
+        [SerializeField] private LevelData levelData;
 
         public void OnEnable()
         {
+            Debug.Log("OnEnable");
             levelData = LevelHolder.Level.LevelData;
 
             levelName.text = levelData.LevelName;
@@ -30,12 +31,30 @@ namespace LevelEditor.Windows.Menu
         }
         public void OnDisable()
         {
-            levelData.LevelName = levelName.text;
-            levelData.MusicTitle = musicTitle.text;
-            levelData.MusicAuthor = musicAuthor.text;
-            levelData.LevelAuthor = levelAuthor.text;
+            Debug.Log("OnDisable");
+            //levelData.LevelName = levelName.text;
+            //levelData.MusicTitle = musicTitle.text;
+            //levelData.MusicAuthor = musicAuthor.text;
+            //levelData.LevelAuthor = levelAuthor.text;
 
             LevelHolder.Level.LevelData = levelData;
+        }
+
+        private void LevelNameUpdate()
+        {
+
+        }
+        private void MusicTitleUpdate()
+        {
+
+        }
+        private void MusicAuthorUpdate()
+        {
+
+        }
+        private void LevelAuthorUpdate()
+        {
+
         }
     }
 }
