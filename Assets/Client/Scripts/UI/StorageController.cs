@@ -22,7 +22,7 @@ namespace UI
         [SerializeField] private ButtonListAnimator levelWindowAnimator;
 
         private Coroutine loader;
-        private string[] levelList;
+        private PreviewData[] levelList;
 
         private bool isLoaded = false;
         private readonly int levelPageCount = 6;
@@ -108,7 +108,7 @@ namespace UI
             for (int i = 0; i < count; i++)
             {
                 levelView[i].SetActive(true);
-                levelViewText[i].text = levelList[currentPage * levelPageCount + i];
+                levelViewText[i].text = levelList[currentPage * levelPageCount + i].LevelName;
             }
             for (int i = count; i < levelPageCount; i++)
             {
@@ -119,10 +119,9 @@ namespace UI
         public void LevelLoad(int id)
         {
             int index = currentPage * levelPageCount + id;
-            Debug.Log(index);
-            if (LevelSaver.Exists(levelList[index]))
+            if (LevelSaver.Exists(levelList[index].Identificator))
             {
-                var level = LevelSaver.Load(levelList[index]);
+                var level = LevelSaver.Load(levelList[index].Identificator);
                 levelWindow.LoadLevelInfo(level);
             }
             else

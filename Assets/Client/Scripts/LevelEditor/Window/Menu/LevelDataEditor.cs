@@ -20,7 +20,6 @@ namespace LevelEditor.Windows.Menu
 
         public void OnEnable()
         {
-            Debug.Log("OnEnable");
             levelData = LevelHolder.Level.LevelData;
 
             levelName.text = levelData.LevelName;
@@ -29,32 +28,26 @@ namespace LevelEditor.Windows.Menu
             levelAuthor.text = levelData.LevelAuthor;
             levelDataVersion.text = levelData.LevelDataVersion.ToString();
         }
-        public void OnDisable()
-        {
-            Debug.Log("OnDisable");
-            //levelData.LevelName = levelName.text;
-            //levelData.MusicTitle = musicTitle.text;
-            //levelData.MusicAuthor = musicAuthor.text;
-            //levelData.LevelAuthor = levelAuthor.text;
 
+        public void LevelNameUpdate()
+        {
+            levelData.LevelName = levelName.text;
             LevelHolder.Level.LevelData = levelData;
         }
-
-        private void LevelNameUpdate()
+        public void MusicTitleUpdate()
         {
-
+            levelData.MusicTitle = musicTitle.text;
+            LevelHolder.Level.LevelData = levelData;
         }
-        private void MusicTitleUpdate()
+        public void MusicAuthorUpdate()
         {
-
+            levelData.MusicAuthor = musicAuthor.text;
+            LevelHolder.Level.LevelData = levelData;
         }
-        private void MusicAuthorUpdate()
+        public void LevelAuthorUpdate()
         {
-
-        }
-        private void LevelAuthorUpdate()
-        {
-
+            levelData.LevelAuthor = levelAuthor.text;
+            LevelHolder.Level.LevelData = levelData;
         }
     }
 }

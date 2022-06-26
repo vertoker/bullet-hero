@@ -1729,6 +1729,7 @@ GameObject:
   - component: {fileID: 578108659}
   - component: {fileID: 578108658}
   - component: {fileID: 578108661}
+  - component: {fileID: 578108662}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -1864,6 +1865,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quitType: 1
+--- !u!114 &578108662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578108656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf6f51aba9752f6409c5d391884f9e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quitButton: {fileID: 578108661}
 --- !u!1 &624619891
 GameObject:
   m_ObjectHideFlags: 0
@@ -2078,6 +2092,7 @@ GameObject:
   - component: {fileID: 802259490}
   - component: {fileID: 802259489}
   - component: {fileID: 802259492}
+  - component: {fileID: 802259493}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -2213,6 +2228,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quitType: 1
+--- !u!114 &802259493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802259487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf6f51aba9752f6409c5d391884f9e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quitButton: {fileID: 802259492}
 --- !u!1 &804088873
 GameObject:
   m_ObjectHideFlags: 0
@@ -2677,6 +2705,7 @@ GameObject:
   - component: {fileID: 913188854}
   - component: {fileID: 913188853}
   - component: {fileID: 913188852}
+  - component: {fileID: 913188856}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -2812,6 +2841,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913188850}
   m_CullTransparentMesh: 1
+--- !u!114 &913188856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913188850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf6f51aba9752f6409c5d391884f9e92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quitButton: {fileID: 913188852}
 --- !u!1 &938960418
 GameObject:
   m_ObjectHideFlags: 0
@@ -4510,7 +4552,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 959.8171, y: -100}
+  m_AnchoredPosition: {x: 959.817, y: -100}
   m_SizeDelta: {x: 500, y: 75}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1528048373
@@ -6048,13 +6090,11 @@ MonoBehaviour:
       mt: 1up muncher
       ma: DUNDERPATRULLEN
       la: vertog
-      asd:
-      - lp: C:\Users\verto\AppData\LocalLow\LiMiDyFy\Bullet Hero\Levels\0 demo\music.mp3
-        lt: 0
-        ls: 2
-        sfo: 184.5
-        efo: 188
-      l: 188
+    id:
+      id: 0
+    ad:
+      asd: []
+      l: 0
     m:
     - n: here is block
       d: description

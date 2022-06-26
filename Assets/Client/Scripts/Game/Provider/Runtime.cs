@@ -141,12 +141,13 @@ namespace Game.Provider
             playerDamage = player.GetDamageDelegate;
             player.DeathCaller += StopGame;
 
-            audioPlayer.SetAudio(level.LevelData, level.AudioData, rules);
+            audioPlayer.SetAudio(level.IdentificationData, level.AudioData, rules);
 
             StartGame();
         }
         private void OnDisable()
         {
+            StopGame();
             player.DeathCaller -= StopGame;
         }
 

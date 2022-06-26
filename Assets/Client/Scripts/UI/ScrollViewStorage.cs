@@ -22,7 +22,7 @@ namespace UI
         private string searchMask = string.Empty;
 
         private Coroutine loader;
-        private string[] dataList;
+        private PreviewData[] dataList;
 
         private bool isLoaded = false;
         private readonly int pageCount = 6;
@@ -79,7 +79,7 @@ namespace UI
         {
             dataList = LevelSaver.LoadListAll();
             if (searchMask.Length != 0)
-                dataList = dataList.Where(d => d.Contains(searchMask)).ToArray();
+                dataList = dataList.Where(d => d.LevelName.Contains(searchMask)).ToArray();
             yield return null;
             FinishLoad();
         }
@@ -114,7 +114,7 @@ namespace UI
             for (int i = 0; i < count; i++)
             {
                 view[i].SetActive(true);
-                viewText[i].text = dataList[currentPage * pageCount + i];
+                viewText[i].text = dataList[currentPage * pageCount + i].LevelName;
             }
             for (int i = count; i < pageCount; i++)
             {
@@ -125,9 +125,9 @@ namespace UI
         public void SelectLevel(int id)
         {
             int index = currentPage * pageCount + id;
-            if (LevelSaver.Exists(dataList[index]))
+            if (LevelSaver.Exists(dataList[index].Identificator))
             {
-                selectEvent.Invoke(LevelSaver.Load(dataList[index]));
+                selectEvent.Invoke(LevelSaver.Load(dataList[index].Identificator));
             }
             else
             {

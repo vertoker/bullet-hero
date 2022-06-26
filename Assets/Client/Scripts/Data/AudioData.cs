@@ -16,6 +16,8 @@ namespace Data
         public List<AudioSourceData> AudioSourcesData => asd;
         public float Length { get { return l; } set { l = value; } }
 
+        public void SetAudioSourcesData(List<AudioSourceData> audio_sources_data) { asd = audio_sources_data; }
+
         public AudioData(List<AudioSourceData> audio_sources_data,
             float length)
         {

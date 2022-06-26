@@ -46,7 +46,9 @@ namespace Game.Core
                 return;
             isLoaded = true;
 
+            GameDataProvider.Reset();
             gameRules = rules.Copy();
+            this.level = level.Copy();
 
             SceneManager.LoadScene(1, LoadSceneMode.Additive);
 

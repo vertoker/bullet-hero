@@ -10,6 +10,7 @@ namespace LevelEditor
 {
     public class LevelHolder : MonoBehaviour
     {
+        [SerializeField] private GameObject levelSelect;
         [SerializeField] private WindowController controller;
         [SerializeField] private GameRules gameRules;
         [SerializeField] private Level level;
@@ -27,19 +28,18 @@ namespace LevelEditor
             set { instance.level = value; }
         }
 
-        /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Init()
-        {
-        }*/
-
         private void Awake()
         {
             instance = this;
+            levelSelect.SetActive(!GameDataProvider.IsSet);
+            if (GameDataProvider.IsSet)
+                Load(GameDataProvider.Level);
         }
         public static void Load(Level level)
         {
-            instance.level = level;
-            instance.gameRules = GameRules.standard;
+            Level = level;
+            GameRules = GameRules.standard;
+            GameDataProvider.Reset();
             instance.controller.Init();
         }
         public static void Save()

@@ -74,7 +74,7 @@ namespace Game.Core
             preset.SetActive(true);
             isActive = true;
         }
-        public void Disable()
+        public void OnDisable()
         {
             isActive = false;
             preset.SetActive(false);
@@ -108,7 +108,7 @@ namespace Game.Core
             {
                 healthEvent.Invoke(0);
                 deathEvent.Invoke();
-                Disable();
+                OnDisable();
             }
             else
             {

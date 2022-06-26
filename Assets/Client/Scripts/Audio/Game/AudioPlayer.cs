@@ -16,18 +16,19 @@ namespace Audio.Game
     {
         [SerializeField] private bool loadAudio = false;
         private AudioSource audioSource;
+        private byte[] bytes;
 
         private void Awake()
         {
             audioSource = GetComponent<AudioSource>();
         }
 
-        public void SetAudio(LevelData levelData, AudioData audioData, GameRules gameRules)
+        public void SetAudio(IdentificationData identificationData, AudioData audioData, GameRules gameRules)
         {
-            loadAudio = LevelSaver.GetAudioPath(levelData, audioData, out string path, out AudioFormat format);
+            loadAudio = LevelSaver.GetAudioPath(identificationData, audioData, out string path, out AudioFormat format);
             if (loadAudio)
             {
-                var bytes = File.ReadAllBytes(path);
+                ReadAllBytes(path);
                 audioSource.clip = GetClip(bytes, format);
                 audioSource.pitch = gameRules.time;
             }
@@ -58,6 +59,15 @@ namespace Audio.Game
                 case AudioFormat.OGG: return AudioFileConverter.FromOggData(data);
             }
             return null;
+        }
+        private void ReadAllBytes(string filePath)
+        {
+            var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var ms = new MemoryStream();
+            fs.CopyTo(ms);
+            bytes = ms.ToArray();
+            ms.Close();
+            fs.Close();
         }
     }
 }

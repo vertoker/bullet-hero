@@ -17,7 +17,7 @@ namespace LevelEditor.Windows.Menu
         [SerializeField] private RectTransform content;
 
         private WindowController windowController;
-        private List<AudioSourceData> sources;
+        [SerializeField] private List<AudioSourceData> sources;
         private List<ParserInput> inputs;
         private int countSources = 0;
 
@@ -29,10 +29,11 @@ namespace LevelEditor.Windows.Menu
         {
             windowController.Init();
 
-            sources = LevelHolder.Level.AudioData.AudioSourcesData;
+            sources = new List<AudioSourceData>(LevelHolder.Level.AudioData.AudioSourcesData);
             inputs = new List<ParserInput>();
             for (int i = 0; i < sources.Count; i++)
                 Add();
+            UpdateUI();
         }
         private void OnDisable()
         {
@@ -40,10 +41,11 @@ namespace LevelEditor.Windows.Menu
                 Remove(i);
         }
 
-        public void AddNew()
+        public void AddUpdate()
         {
             sources.Add(new AudioSourceData());
             Add();
+            UpdateUI();
         }
         public void Add()
         {
@@ -53,7 +55,7 @@ namespace LevelEditor.Windows.Menu
 
             inputs[countSources].TapDownload += Download;
             inputs[countSources].TapClear += Clear;
-            inputs[countSources].TapDelete += Remove;
+            inputs[countSources].TapDelete += RemoveUpdate;
             inputs[countSources].TapUp += MoveUp;
             inputs[countSources].TapDown += MoveDown;
 
@@ -66,11 +68,18 @@ namespace LevelEditor.Windows.Menu
 
             countSources++;
         }
+        public void RemoveUpdate(int id)
+        {
+            sources.RemoveAt(id);
+            inputs.RemoveAt(id);
+            Remove(id);
+            UpdateUI();
+        }
         public void Remove(int id)
         {
             inputs[id].TapDownload -= Download;
             inputs[id].TapClear -= Clear;
-            inputs[id].TapDelete -= Remove;
+            inputs[id].TapDelete -= RemoveUpdate;
             inputs[id].TapUp -= MoveUp;
             inputs[id].TapDown -= MoveDown;
 
@@ -82,8 +91,6 @@ namespace LevelEditor.Windows.Menu
             inputs[id].UpdateEFO -= UpdateEFO;
 
             poolSpawner.Enqueue(inputs[id].gameObject);
-            sources.RemoveAt(id);
-            inputs.RemoveAt(id);
             countSources--;
 
             for (int i = id; i < countSources; i++)
@@ -106,8 +113,12 @@ namespace LevelEditor.Windows.Menu
                 inputs[id - 1].ID = id;
                 inputs[id].ID = id - 1;
                 (inputs[id], inputs[id - 1]) = (inputs[id - 1], inputs[id]);
-                (sources[id], sources[id - 1]) = (sources[id - 1], sources[id]);
+                (sources[id],
+                    sources[id - 1]) = 
+                    (sources[id - 1],
+                    sources[id]);
             }
+            UpdateUI();
         }
         public void MoveDown(int id)
         {
@@ -116,34 +127,61 @@ namespace LevelEditor.Windows.Menu
                 inputs[id + 1].ID = id;
                 inputs[id].ID = id + 1;
                 (inputs[id], inputs[id + 1]) = (inputs[id + 1], inputs[id]);
-                (sources[id], sources[id + 1]) = (sources[id + 1], sources[id]);
+                (sources[id],
+                    sources[id + 1]) =
+                    (sources[id + 1],
+                    sources[id]);
             }
+            UpdateUI();
         }
 
         public void UpdateLinkType(int id, int type)
         {
-            sources[id].SetLinkType((AudioLinkType)type);
-            content.sizeDelta = new Vector2(content.sizeDelta.x, countSources * ParserInput.OFFSET_HEIGTH);
+            var data = sources[id];
+            data.SetLinkType((AudioLinkType)type);
+            sources[id] = data;
+            UpdateUI();
         }
         public void UpdateLink(int id, string link)
         {
-            sources[id].SetLinkPath(link);
+            var data = sources[id];
+            data.SetLinkPath(link);
+            sources[id] = data;
+            UpdateUI();
         }
         public void UpdateSFI(int id, float value)
         {
-            sources[id].SetStartFadeIn(value);
+            var data = sources[id];
+            data.SetStartFadeIn(value);
+            sources[id] = data;
+            UpdateUI();
         }
         public void UpdateEFI(int id, float value)
         {
-            sources[id].SetEndFadeIn(value);
+            var data = sources[id];
+            data.SetEndFadeIn(value);
+            sources[id] = data;
+            UpdateUI();
         }
         public void UpdateSFO(int id, float value)
         {
-            sources[id].SetStartFadeOut(value);
+            var data = sources[id];
+            data.SetStartFadeOut(value);
+            sources[id] = data;
+            UpdateUI();
         }
         public void UpdateEFO(int id, float value)
         {
-            sources[id].SetEndFadeOut(value);
+            var data = sources[id];
+            data.SetEndFadeOut(value);
+            sources[id] = data;
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            content.sizeDelta = new Vector2(content.sizeDelta.x, countSources * ParserInput.OFFSET_HEIGTH);
+            LevelHolder.Level.AudioData = new AudioData(sources, LevelHolder.Level.AudioData.Length);
         }
     }
 }

@@ -10,6 +10,10 @@ namespace Game.SerializationSaver
 {
     public static class LevelSaver
     {
+        private const string LEVEL_NAME = "level.json";
+        private const string LEVEL_PREVIEW = "preview.txt";
+        private const char POINT = '.';
+
         private static readonly Dictionary<AudioLinkType, string> names = new Dictionary<AudioLinkType, string>()
         {
             { AudioLinkType.FilePath, "music" },
@@ -18,24 +22,35 @@ namespace Game.SerializationSaver
         };
         private static readonly Dictionary<string, AudioFormat> converter = new Dictionary<string, AudioFormat>()
         {
-            { ".mp3", AudioFormat.MP3 },
-            { ".wav", AudioFormat.WAV },
-            { ".ogg", AudioFormat.OGG }
+            { "mp3", AudioFormat.MP3 },
+            { "wav", AudioFormat.WAV },
+            { "ogg", AudioFormat.OGG }
         };
         private static readonly string[] extensions = new string[]
         {
-            ".mp3", ".wav", ".ogg"
+            "mp3", "wav", "ogg"
         };
 
-        public static bool GetAudioPath(LevelData levelData, AudioData audioData, out string path, out AudioFormat format)
+        public static bool GetAudioPath(IdentificationData identificationData, AudioData audioData, out string path, out AudioFormat format)
         {
             foreach (var source in audioData.AudioSourcesData)
             {
+                if (source.LinkType == AudioLinkType.FilePath)
+                {
+                    if (File.Exists(source.LinkPath))
+                    {
+                        path = source.LinkPath;
+                        if (converter.TryGetValue(source.LinkPath.Split(POINT)[^1], out format))
+                            return true;
+                        else
+                            continue;
+                    }
+                }
                 foreach (var extension in extensions)
                 {
                     format = converter[extension];
-                    var file = names[source.LinkType] + extension;
-                    path = Path.Combine(Application.persistentDataPath, "Levels", levelData.LevelName, file);
+                    var file = string.Join(POINT, names[source.LinkType], extension);
+                    path = GetFilePath(identificationData.Identificator, file);
                     if (File.Exists(path))
                         return true;
                 }
@@ -45,37 +60,38 @@ namespace Game.SerializationSaver
             return false;
         }
 
-        public static string GetFilePath(string nameLevel, string fileName)
+        public static string GetFilePath(long levelID, string fileName)
         {
-            return Path.Combine(Application.persistentDataPath, "Levels", nameLevel, fileName);
+            return Path.Combine(Application.persistentDataPath, "Levels", levelID.ToString(), fileName);
         }
-        public static Level Load(string name)
+        public static Level Load(long id)
         {
-            return Saver.Load<Level>(Application.persistentDataPath, "Levels", name, "level.json");
+            return Saver.Load<Level>(GetFilePath(id, LEVEL_NAME));
         }
-        public static bool Exists(string name)
+        public static bool Exists(long id)
         {
-            return File.Exists(Path.Combine(Application.persistentDataPath, "Levels", name, "level.json"));
+            return File.Exists(GetFilePath(id, LEVEL_NAME));
         }
         public static void Save(Level level)
         {
-            string path = Path.Combine(Application.persistentDataPath, "Levels", level.LevelData.LevelName, "level.json");
-            Saver.Save(level, path);
+            long id = level.IdentificationData.Identificator;
+            Saver.Save(level, GetFilePath(id, LEVEL_NAME));
+            PreviewSaver.Save(id, level.LevelData.LevelName, GetFilePath(id, LEVEL_PREVIEW));
         }
 
-        public static string[] LoadListAll()
+        public static PreviewData[] LoadListAll()
         {
             string path = Path.Combine(Application.persistentDataPath, "Levels");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
-                return new string[0];
+                return new PreviewData[0];
             }
             return Directory.GetDirectories(path).Select(GetName).ToArray();
         }
-        private static string GetName(string directory)
+        private static PreviewData GetName(string directory)
         {
-            return Path.GetFileName(directory);
+            return PreviewSaver.Load(Path.Combine(directory, LEVEL_PREVIEW));
         }
     }
 }

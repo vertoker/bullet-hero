@@ -15,6 +15,7 @@ namespace Data
         public int CURRENT_VERSION = 1;
 
         [SerializeField] private LevelData ld;// Базовая информация об уровне (level data)
+        [SerializeField] private IdentificationData id;// Идентификационная информация об уровне (identification data)
         [SerializeField] private AudioData ad;// Базовая информация об аудио уровня (audio data)
         [SerializeField] private List<Marker> m;// Маркеры для редактора (markers)
         [SerializeField] private List<Checkpoint> c;// Сохранения игрока на уровне (checkpoints)
@@ -23,6 +24,7 @@ namespace Data
         [SerializeField] private CameraData cd;// Эффект движущейся камеры в игре (effects)
 
         public LevelData LevelData { get { return ld; } set { ld = value; } }
+        public IdentificationData IdentificationData { get { return id; } set { id = value; } }
         public AudioData AudioData { get { return ad; } set { ad = value; } }
         public List<Marker> Markers { get { return m; } set { m = value; } }
         public List<Checkpoint> Checkpoints { get { return c; } set { c = value; } }
@@ -31,6 +33,7 @@ namespace Data
         public CameraData CameraData { get { return cd; } set { cd = value; } }
 
         public Level(LevelData level_data,
+            IdentificationData identification_data,
             AudioData audio_data,
             List<Marker> markers,
             List<Checkpoint> checkpoints,
@@ -39,6 +42,7 @@ namespace Data
             CameraData camera_data)
         {
             ld = level_data;
+            id = identification_data;
             ad = audio_data;
             m = markers;
             c = checkpoints;
@@ -48,7 +52,9 @@ namespace Data
         }
         public Level Copy()
         {
-            return new Level(ld, ad, m, c, p, ep, cd);
+            var list_audio = new List<AudioSourceData>(ad.AudioSourcesData);
+            var audio_data = new AudioData(list_audio, ad.Length);
+            return new Level(ld, id, audio_data, m, c, p, ep, cd);
         }
 
         #region Static Default
@@ -60,8 +66,8 @@ namespace Data
             MusicTitle = "1up muncher",
             MusicAuthor = "DUNDERPATRULLEN",
             LevelAuthor = "vertog"
-
         };
+        private static readonly IdentificationData identificationData = new IdentificationData(DateTime.Now.Ticks);
         private static readonly List<AudioSourceData> audioSources = new List<AudioSourceData>()
         {
             new AudioSourceData(DEFAULT_MUSIC_PATH, AudioLinkType.AudioLink, LinkStatus.Specified, 0f, 0f, 184.5f, 188f),
@@ -223,7 +229,8 @@ namespace Data
                 Layer = 1
             }
         };
-        public static readonly Level DEFAULT_LEVEL = new Level(levelData, audioData, markers, checkpoints, prefabs, null, new CameraData());
+        public static readonly Level DEFAULT_LEVEL = new Level(levelData, identificationData, 
+            audioData, markers, checkpoints, prefabs, null, new CameraData());
         #endregion
     }
 }
