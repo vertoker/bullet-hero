@@ -43,16 +43,17 @@ namespace LevelEditor.Windows
                 DataProvider.Start(LevelHolder.Level, player, LevelHolder.GameRules);
                 initEvent.Invoke(DataProvider.Runtime);
                 SceneManager.sceneLoaded -= LoadedProvider;
+                Pause();
             }
         }
 
         public void Play()
         {
-            DataProvider.Runtime.StartGame();
+            DataProvider.Runtime.PlaySafe();
         }
         public void Pause()
         {
-            DataProvider.Runtime.StopGame();
+            DataProvider.Runtime.Pause();
         }
         public void Restart()
         {

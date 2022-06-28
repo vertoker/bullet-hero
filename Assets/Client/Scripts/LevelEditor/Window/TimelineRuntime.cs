@@ -5,19 +5,21 @@ using UnityEngine;
 using UnityEngine.Events;
 using Game.Provider;
 using Utils;
+using UI;
 
 namespace LevelEditor.Windows
 {
     public class TimelineRuntime : Window, ITimelineController
     {
         private Runtime runtime;
-        private Timeline timeline;
+        [SerializeField] private Timeline timeline;
+        [SerializeField] private Slider slider;
+
         private UnityAction<int, int> updateActive;
         private UnityAction<float> updateCall;
 
         private void Awake()
         {
-            timeline = GetComponent<Timeline>();
             GamePreview.InitEvent += Init;
         }
         public void Init(Runtime runtime)

@@ -49,7 +49,7 @@ namespace Game.Provider
         private HealthDelegate playerDamage;
         private Player player;
 
-        private const int CountBlocks = 1000;
+        public const int CountBlocks = 1000;
 
         private int maxFrame = 0;
         private float levelLength = 0;
@@ -65,9 +65,15 @@ namespace Game.Provider
         public bool IsActive => activeUpdater;
         public float Timer => timer;
 
+        private static UnityEvent<NativeArray<int>> prefabsEvent = new UnityEvent<NativeArray<int>>();
         private static UnityEvent<int, int> frameEvent = new UnityEvent<int, int>();
         private static UnityEvent<bool> pauseEvent = new UnityEvent<bool>();
 
+        public static event UnityAction<NativeArray<int>> PrefabsFrame
+        {
+            add => prefabsEvent.AddListener(value);
+            remove => prefabsEvent.AddListener(value);
+        }
         public static event UnityAction<int, int> UpdateFrame
         {
             add => frameEvent.AddListener(value);
@@ -132,8 +138,6 @@ namespace Game.Provider
                 prefabSprites[i] = prefabs[i].SpriteType;
             }
 
-            timeScale = rules.time;
-
             if (this.player != null)
                 player.DeathCaller -= StopGame;
             this.player = player;
@@ -141,7 +145,8 @@ namespace Game.Provider
             playerDamage = player.GetDamageDelegate;
             player.DeathCaller += StopGame;
 
-            audioPlayer.SetAudio(level.IdentificationData, level.AudioData, rules);
+            SetTimeScale(rules.time);
+            audioPlayer.SetAudio(level.IdentificationData, level.AudioData);
 
             StartGame();
         }
@@ -163,7 +168,7 @@ namespace Game.Provider
                     continue;
                 frameEvent.Invoke(activeFrame, maxFrame);
                 UpdateCycle();
-                if (activeFrame == maxFrame)
+                if (activeFrame == maxFrame || activeFrame == 0)
                 {
                     activeUpdater = false;
                     Pause();
@@ -174,7 +179,7 @@ namespace Game.Provider
         {
             if (timePause == 1)
                 Pause();
-            else if (activeFrame == maxFrame)
+            else if (activeFrame == maxFrame || activeFrame == 0)
                 Restart();
             else
                 PlaySafe();
@@ -187,9 +192,19 @@ namespace Game.Provider
         }
         public void PlaySafe()
         {
-            if (activeFrame != maxFrame)
+            if (timeScale < 0)
             {
-                Play();
+                if (activeFrame != 0)
+                {
+                    Play();
+                }
+            }
+            else if (timeScale > 0)
+            {
+                if (activeFrame != maxFrame)
+                {
+                    Play();
+                }
             }
         }
         public void Play()
@@ -215,8 +230,18 @@ namespace Game.Provider
         {
             Pause();
             StopGame();
-            timer = 0;
-            activeFrame = 0;
+
+            if (timeScale < 0)
+            {
+                timer = levelLength;
+                activeFrame = maxFrame;
+            }
+            else if (timeScale > 0)
+            {
+                timer = 0;
+                activeFrame = 0;
+            }
+
             StartGame();
             PlaySafe();
         }
@@ -230,13 +255,18 @@ namespace Game.Provider
                 timer = sec;
             audioPlayer.Drag(timer);
         }
-
+        public void SetTimeScale(float scale)
+        {
+            timeScale = scale;
+            audioPlayer.SetScale(scale);
+        }
         private void UpdateCycle()
         {
             FindFramePrefabs(out NativeArray<int> activePrefabs, out int activeCount);
             CreateParentTree(ref activePrefabs, activeCount);
             CalculateFrame(ref activePrefabs, activeCount);
             lastActivePrefabs = activeCount;
+            prefabsEvent.Invoke(activePrefabs);
             activePrefabs.Dispose();
         }
         private void FindFramePrefabs(out NativeArray<int> activePrefabs, out int activeCount)
@@ -303,9 +333,7 @@ namespace Game.Provider
                     }
                 }
 
-                var temp = parentsID;
-                parentsID = activesID;
-                activesID = temp;
+                (activesID, parentsID) = (parentsID, activesID);
                 activesID.Clear();
             }
         }

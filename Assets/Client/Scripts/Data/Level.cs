@@ -178,7 +178,7 @@ namespace Data
                     }
                 },
                 Anchor = AnchorPresets.Center_Middle,
-                Layer = 1
+                Layer = 1, Height = 0
             },
             new Prefab()
             {
@@ -226,7 +226,7 @@ namespace Data
                     }
                 },
                 Anchor = AnchorPresets.Center_Middle,
-                Layer = 1
+                Layer = 1, Height = 1
             }
         };
         public static readonly Level DEFAULT_LEVEL = new Level(levelData, identificationData, 

@@ -64,33 +64,5 @@ namespace Utils
         }
         public const float SecondLength = 100f;
         public const float LayerLength = 50f;
-        public static void RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
-            Vector2 contentStart, Vector2 contentEnd, Vector2 viewportStart, Vector2 viewportEnd)//Доделать
-        {
-            if (viewportStart.x < contentStart.x)
-                startFrame = Sec2Frame(0);
-            else
-                startFrame = Sec2Frame(viewportStart.x / SecondLength);
-
-            if (viewportEnd.x > contentEnd.x)
-                endFrame = Sec2Frame(contentEnd.x / SecondLength);
-            else
-                endFrame = Sec2Frame(viewportEnd.x / SecondLength);
-
-            if (viewportStart.y > contentStart.y)
-                startHeigth = 0;
-            else
-                startHeigth = Mathf.FloorToInt(-viewportStart.y / LayerLength);
-
-            if (viewportEnd.y < contentEnd.y)
-                endHeigth = -(int)(contentEnd.y / LayerLength);
-            else
-                endHeigth = Mathf.FloorToInt(-viewportEnd.y / LayerLength) + 1;
-
-            /*float lengthViewport = viewportStart.y - viewportEnd.y;
-            endHeigth = startHeigth + Mathf.FloorToInt(lengthViewport) + 1;
-            if (endHeigth > heigthCount)
-                endHeigth = heigthCount;*/
-        }
     }
 }

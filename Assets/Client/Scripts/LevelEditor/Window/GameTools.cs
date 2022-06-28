@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using Game.SerializationSaver;
 using Game.Provider;
 using UnityEngine;
+using TMPro;
 using UI;
 
 namespace LevelEditor.Windows
 {
     public class GameTools : Window
     {
+        [SerializeField] private float scaleTimeStep = 0.1f;
+        [SerializeField] private TMP_Text updateTimeScale;
         [SerializeField] private GameObject play, pause;
 
         private Runtime runtime;
@@ -52,6 +55,40 @@ namespace LevelEditor.Windows
         {
             play.SetActive(!isPlay);
             pause.SetActive(isPlay);
+        }
+
+        public void ScaleDefault()
+        {
+            LevelHolder.GameRules.time = 1f;
+            UpdateScale();
+        }
+        public void ScaleUp()
+        {
+            LevelHolder.GameRules.time = ClampMax(LevelHolder.GameRules.time + scaleTimeStep, 3f);
+            UpdateScale();
+        }
+        public void ScaleDown()
+        {
+            LevelHolder.GameRules.time = ClampMin(LevelHolder.GameRules.time - scaleTimeStep, -3f);
+            UpdateScale();
+        }
+        private void UpdateScale()
+        {
+            runtime.SetTimeScale(LevelHolder.GameRules.time);
+            updateTimeScale.text = LevelHolder.GameRules.time.ToString("0.0");
+        }
+
+        private static float ClampMax(float value, float max)
+        {
+            if (value > max)
+                value = max;
+            return value;
+        }
+        private static float ClampMin(float value, float min)
+        {
+            if (value < min)
+                value = min;
+            return value;
         }
     }
 }

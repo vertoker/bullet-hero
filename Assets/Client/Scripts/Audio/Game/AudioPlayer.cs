@@ -23,15 +23,18 @@ namespace Audio.Game
             audioSource = GetComponent<AudioSource>();
         }
 
-        public void SetAudio(IdentificationData identificationData, AudioData audioData, GameRules gameRules)
+        public void SetAudio(IdentificationData identificationData, AudioData audioData)
         {
             loadAudio = LevelSaver.GetAudioPath(identificationData, audioData, out string path, out AudioFormat format);
             if (loadAudio)
             {
                 ReadAllBytes(path);
                 audioSource.clip = GetClip(bytes, format);
-                audioSource.pitch = gameRules.time;
             }
+        }
+        public void SetScale(float scale)
+        {
+            audioSource.pitch = scale;
         }
 
         public void Pause()

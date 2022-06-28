@@ -10,6 +10,8 @@ namespace LevelEditor.UI
 {
     public class Timeline : MonoBehaviour
     {
+        [SerializeField] private RectTransform parent;
+        [SerializeField] private Vector2 offset = new Vector2();
         [SerializeField] private RectTransform timeline;
         [SerializeField] private Scrollbar scrollbarHorizontal;
         [SerializeField] private RectTransform scrollView;
@@ -18,9 +20,6 @@ namespace LevelEditor.UI
         [SerializeField] private RectTransform secLineMarker;
         [SerializeField] private RectTransform secMarkerScrollbar;
         [SerializeField] private RectTransform content;
-
-        [Space]
-        [SerializeField] private bool verticalControl = false;
 
         private ITimelineController controller;
 
@@ -37,6 +36,7 @@ namespace LevelEditor.UI
         [SerializeField] private Vector2 contentSizeDelta;
         [SerializeField] private Vector2 viewportStart;
         [SerializeField] private Vector2 viewportEnd;
+        [SerializeField] private Vector2 secLineOffset;
 
         private UnityEvent<int, int, int, int> updateTimeline = new UnityEvent<int, int, int, int>();
         public event UnityAction<int, int, int, int> UpdateTimeline
@@ -47,11 +47,12 @@ namespace LevelEditor.UI
 
         private void Awake()
         {
+            secLineOffset = new Vector2(0f, 50f);
             aspect = (float)Screen.width / Screen.height;
             fullScreen = new Vector2(1080f * aspect, 1080f);
-            viewportSizeDelta = new Vector2(timeline.sizeDelta.x, timeline.sizeDelta.y - scrollView.sizeDelta.y);
-            viewportStart = timeline.anchoredPosition - viewportSizeDelta / 2f + fullScreen / 2f;
-            viewportEnd = timeline.anchoredPosition + viewportSizeDelta / 2f + fullScreen / 2f;
+            viewportSizeDelta = new Vector2(timeline.rect.width, timeline.rect.height - scrollView.sizeDelta.y);
+            viewportStart = parent.anchoredPosition + offset - viewportSizeDelta / 2f + fullScreen / 2f + secLineOffset;
+            viewportEnd = parent.anchoredPosition + offset + viewportSizeDelta / 2f + fullScreen / 2f - secLineOffset;
             startCoeff = viewportStart.x / fullScreen.x;
             endCoeff = viewportEnd.x / fullScreen.x;
             width = viewportSizeDelta.x;
@@ -63,11 +64,7 @@ namespace LevelEditor.UI
             this.controller = controller;
             timelineLength = 100f * secLength;
             secLine.sizeDelta = new Vector2(timelineLength, Static.LayerLength);
-            if (verticalControl)
-                content.sizeDelta = new Vector2(timelineLength, 1000f);
-            else
-                content.sizeDelta = new Vector2(timelineLength, content.sizeDelta.y);
-            contentSizeDelta = new Vector2(timelineLength, -1000f);
+            content.sizeDelta = contentSizeDelta = new Vector2(timelineLength, content.sizeDelta.y);
 
             controller.Add(UpdateSecLineMarker);
             UpdateSecLineMarker(secCurrent);
@@ -95,15 +92,37 @@ namespace LevelEditor.UI
         }
         public void RenderTimeline()
         {
-            Vector2 contentStart = Vector2.zero;
-            Vector2 contentEnd = contentSizeDelta;
-            //Debug.Log(string.Join(" - ", contentStart, contentEnd, viewportStart, viewportEnd));
+            float posStart = (timelineLength - width) * scrollbarHorizontal.value;
+            float posEnd = width + timelineLength * scrollbarHorizontal.value;
+            float posFull = timelineLength * scrollbarHorizontal.value;
 
-            Static.RenderTimelineBorders(out int startFrame, out int endFrame, out int startHeigth, out int endHeigth,
-                contentStart, contentEnd, viewportStart, viewportEnd);
+            Vector2 contentStart = new Vector2(-posFull, 0f);
+            Vector2 contentEnd = contentStart + contentSizeDelta;
+            //Debug.Log(string.Join(' ', posStart, posEnd, posFull));
+
+            int startFrame, endFrame, startHeigth, endHeigth;
+
+            if (viewportStart.x < contentStart.x)
+                startFrame = Static.Sec2Frame(0);
+            else
+                startFrame = Static.Sec2Frame(posStart / Static.SecondLength);
+
+            if (viewportEnd.x > contentEnd.x)
+                endFrame = Static.Sec2Frame(secLength);
+            else
+                endFrame = Static.Sec2Frame(posEnd / Static.SecondLength);
+
+            if (viewportStart.y > contentStart.y)
+                startHeigth = 0;
+            else
+                startHeigth = Mathf.FloorToInt(-viewportStart.y / Static.LayerLength);
+
+            if (viewportEnd.y < contentEnd.y)
+                endHeigth = -(int)(contentEnd.y / Static.LayerLength);
+            else
+                endHeigth = Mathf.FloorToInt(-viewportEnd.y / Static.LayerLength) + 1;
 
             updateTimeline.Invoke(startFrame, endFrame, startHeigth, endHeigth);
-            //Debug.Log(string.Join(" - ", startFrame, endFrame, startHeigth, endHeigth));
         }
 
         public void SecLineDown()
