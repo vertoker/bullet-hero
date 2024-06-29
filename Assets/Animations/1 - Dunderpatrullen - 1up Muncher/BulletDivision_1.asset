@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12bcff2fdbf878a42acc97ca2e6ee0f5, type: 3}
+  m_Name: BulletDivision_1
+  m_EditorClassIdentifier: 
+  time2point: 0.2
+  time2charging: 0.4
+  time2spread: 0.1
+  time2end: 0.3
+  camMod:
+    cam: 1
+    parameter:
+      func: 1
+      instance: 3
+      start: 0
+      end: 0
+    radius:
+      func: 1
+      instance: 0.03
+      start: 0
+      end: 0
+  size:
+    func: 1
+    instance: 1
+    start: 0
+    end: 0
+  spinSpeed:
+    func: 1
+    instance: 2
+    start: 0
+    end: 0
+  sprite: 2
+  bulletCounts:
+  - func: 1
+    instance: 10
+    start: 0
+    end: 0
+  bulletDivide: {fileID: 11400000, guid: 07e0994b43f8f5344aaebdf5c2bcda0d, type: 2}

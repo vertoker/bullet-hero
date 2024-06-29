@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Bullet
+  - Enemy
+  - Money
+  - Line
+  - Circle
+  - Effect
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player
+  - Bullet
+  - Effect
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Effect
+    uniqueID: 2519311777
+    locked: 0
+  - name: Player
+    uniqueID: 2627311363
+    locked: 0
+  - name: Bullet
+    uniqueID: 1099279485
+    locked: 0
+  - name: Enemy
+    uniqueID: 4029779419
+    locked: 0
+  - name: Money
+    uniqueID: 4209711295
+    locked: 0
+  - name: Light
+    uniqueID: 389644825
+    locked: 0
+  - name: UI
+    uniqueID: 605283093
+    locked: 0

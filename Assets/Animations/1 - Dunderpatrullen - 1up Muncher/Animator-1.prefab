@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6090091822910989619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7942726783191105673}
+  - component: {fileID: 4194468182775296926}
+  - component: {fileID: -9040481530326053217}
+  m_Layer: 0
+  m_Name: Animator-1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7942726783191105673
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090091822910989619}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &4194468182775296926
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090091822910989619}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 92ee868ea413b8249afd75508aa2fa08, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-9040481530326053217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6090091822910989619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0e99c71645a5b74cb215fb56dbf9954, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - data: 0
+    dataItem: {fileID: 11400000, guid: 14c80796bcf16e84181c44997aa67ffa, type: 2}
+    movementItem: {fileID: 11400000, guid: 07dff19abcb3c5c43899df5e91d6e6fb, type: 2}
+  - data: 3
+    dataItem: {fileID: 11400000, guid: ec6b8f258cb39aa458ff4fb9c2f2baf4, type: 2}
+    movementItem: {fileID: 11400000, guid: b20c3056577897447b3b8be275b0433c, type: 2}
+  - data: 3
+    dataItem: {fileID: 11400000, guid: ec6b8f258cb39aa458ff4fb9c2f2baf4, type: 2}
+    movementItem: {fileID: 11400000, guid: 9312a36bad49fbd46b502d5feda61599, type: 2}
+  - data: 3
+    dataItem: {fileID: 11400000, guid: ec6b8f258cb39aa458ff4fb9c2f2baf4, type: 2}
+    movementItem: {fileID: 11400000, guid: 8540ba5d80cce8a4fa1ec7fe3e358965, type: 2}
+  - data: 3
+    dataItem: {fileID: 11400000, guid: ec6b8f258cb39aa458ff4fb9c2f2baf4, type: 2}
+    movementItem: {fileID: 11400000, guid: 357861f00dec49d42a1700288691be6e, type: 2}
+  - data: 4
+    dataItem: {fileID: 11400000, guid: 4975f8509a033d14286dc19812a3d405, type: 2}
+    movementItem: {fileID: 11400000, guid: 5b871d598d609034c95cdaff2a548c12, type: 2}
+  - data: 0
+    dataItem: {fileID: 11400000, guid: 14c80796bcf16e84181c44997aa67ffa, type: 2}
+    movementItem: {fileID: 11400000, guid: 8028cd8652d28b94ba9f4f1f435bbdaa, type: 2}
+  - data: 7
+    dataItem: {fileID: 11400000, guid: ca67b05dbadc61042a21ca7718dd7198, type: 2}
+    movementItem: {fileID: 11400000, guid: 3dd34108de932f247a6ae9a8ff69b795, type: 2}
+  - data: 7
+    dataItem: {fileID: 11400000, guid: ca67b05dbadc61042a21ca7718dd7198, type: 2}
+    movementItem: {fileID: 11400000, guid: 1fa55e47f3943544680c92c3c0a5a366, type: 2}
+  - data: 2
+    dataItem: {fileID: 11400000, guid: bfea28a61e1a97740a84cd800027e0fd, type: 2}
+    movementItem: {fileID: 11400000, guid: 4d8db04f5b93fea4f832d5fc3a621794, type: 2}
+  - data: 2
+    dataItem: {fileID: 11400000, guid: bfea28a61e1a97740a84cd800027e0fd, type: 2}
+    movementItem: {fileID: 11400000, guid: 504a88d48cb60534496b83f7c73c4333, type: 2}
+  - data: 2
+    dataItem: {fileID: 11400000, guid: e2c583719e2dd6a41a18ccdf8b3e557d, type: 2}
+    movementItem: {fileID: 11400000, guid: 06edc6adeb096af4f9304de505af4a81, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 0ce8a9fa1d6149f4c9a1e983fb9a2a8d, type: 2}
+    movementItem: {fileID: 11400000, guid: 7d1da2a864d72fd4aa8bc2f5745042e2, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 5ca68532636943b49bb31564838cc309, type: 2}
+    movementItem: {fileID: 11400000, guid: 7d1da2a864d72fd4aa8bc2f5745042e2, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 915141d9a2f79e443b0c12cf0671f47b, type: 2}
+    movementItem: {fileID: 11400000, guid: af485c89a9f6a64498ab6de3ea49a372, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 915141d9a2f79e443b0c12cf0671f47b, type: 2}
+    movementItem: {fileID: 11400000, guid: 9aad26cc75a67a24aa1c9b28f85c8ec1, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 6736b24f302c15c4b8a8eca3884cce4e, type: 2}
+    movementItem: {fileID: 11400000, guid: 396ce33bed737cc498daedf162a94463, type: 2}
+  - data: 8
+    dataItem: {fileID: 11400000, guid: 6736b24f302c15c4b8a8eca3884cce4e, type: 2}
+    movementItem: {fileID: 11400000, guid: b64a6ed60ae5cc240b80b8542e6443d2, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: 658e0c545e4d36d4dac12b0d7b99eccf, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: cbde9fdf59d57a9469813fb059dede82, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: ab9bff485ff9a304ca61dc586920b2f7, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: ec63e03d74dfd394e9bf8dd473e7c6ca, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: 41f99a10fe3f04a48983110d7e6c3f2e, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: ec6f35881100b9d40a83a663b3267afc, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}
+  - data: 10
+    dataItem: {fileID: 11400000, guid: 116db4e8bf8510f43b92a0ccf5947033, type: 2}
+    movementItem: {fileID: 11400000, guid: 67d876e11a5451e42bc0177ccca2ed07, type: 2}

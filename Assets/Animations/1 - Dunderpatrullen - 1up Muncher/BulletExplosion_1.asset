@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c638649ceb45ddb42bd3178002ed4be3, type: 3}
+  m_Name: BulletExplosion_1
+  m_EditorClassIdentifier: 
+  time2point: 1
+  time2charging: 3.5
+  time2spread: 0.5
+  time2end: 0.5
+  camMod:
+    cam: 2
+    parameter:
+      func: 1
+      instance: 3
+      start: 0
+      end: 0
+    radius:
+      func: 1
+      instance: 0.03
+      start: 0
+      end: 0
+  size:
+    func: 1
+    instance: 0.3
+    start: 0
+    end: 0
+  spinSpeed:
+    func: 1
+    instance: 0
+    start: 0
+    end: 0
+  bomb: 0
+  sizeExp:
+    func: 1
+    instance: 18
+    start: 0
+    end: 0

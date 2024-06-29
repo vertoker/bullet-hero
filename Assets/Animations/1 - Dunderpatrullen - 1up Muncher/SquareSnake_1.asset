@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1cc7b43f4b18b429ea5a56c009cdc8, type: 3}
+  m_Name: SquareSnake_1
+  m_EditorClassIdentifier: 
+  time4Spawn:
+    func: 2
+    instance: 0.028140213
+    start: 0.01
+    end: 0.034
+  angleSpeed:
+    func: 1
+    instance: 0
+    start: 0
+    end: 0
+  distance:
+    func: 1
+    instance: 0.1
+    start: 0
+    end: 0
+  scale:
+    func: 2
+    instance: 0.29341435
+    start: 0.2
+    end: 0.7
+  animSprite: {fileID: 11400000, guid: 8a46d181315872049bca2005ea1a0519, type: 2}
